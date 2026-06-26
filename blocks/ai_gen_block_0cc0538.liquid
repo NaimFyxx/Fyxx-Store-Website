@@ -1,0 +1,417 @@
+{% doc %}
+  @prompt
+    i want a section of three other products that i can link for my menu , dont show the price , and add a "book a table" button on each. Make the prouct image and title clickable. , make sure the button is in the center and I want it to go to the product when you tap on the photo and title
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-menu-products-{{ ai_gen_id }} {
+    padding: 40px 20px;
+background-color: #0f3c39;
+  }
+
+  .ai-menu-products-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-menu-products-heading-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+  }
+
+  .ai-menu-products-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    align-items: start;
+  }
+
+  .ai-menu-product-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-menu-product-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-menu-product-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+  }
+
+  .ai-menu-product-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-menu-product-link-{{ ai_gen_id }}:hover .ai-menu-product-image-{{ ai_gen_id }} {
+    transform: scale(1.05);
+  }
+
+  .ai-menu-product-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-menu-product-placeholder-{{ ai_gen_id }} svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+  }
+
+  .ai-menu-product-content-{{ ai_gen_id }} {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .ai-menu-product-title-{{ ai_gen_id }} {
+    margin: 0 0 15px;
+    font-size: {{ block.settings.product_title_size }}px;
+    color: {{ block.settings.product_title_color }};
+    font-family: {{ block.settings.product_title_font.family }}, {{ block.settings.product_title_font.fallback_families }};
+    font-weight: {{ block.settings.product_title_font.weight }};
+    line-height: 1.3;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .ai-menu-product-title-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.product_title_hover_color }};
+  }
+
+  .ai-menu-product-description-{{ ai_gen_id }} {
+    margin: 0 0 20px;
+    color: {{ block.settings.product_description_color }};
+    font-size: {{ block.settings.product_description_size }}px;
+    line-height: 1.5;
+  }
+
+  .ai-menu-book-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid {{ block.settings.button_background_color }};
+  }
+
+  .ai-menu-book-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_background_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-menu-empty-product-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-menu-products-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .ai-menu-products-{{ ai_gen_id }} {
+      padding: 30px 15px;
+    }
+
+    .ai-menu-product-image-wrapper-{{ ai_gen_id }} {
+      height: 200px;
+    }
+
+    .ai-menu-product-content-{{ ai_gen_id }} {
+      padding: 15px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-menu-products-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-menu-products-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-menu-products-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ai-menu-products-grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign product_key = 'product_' | append: i
+          assign product = block.settings[product_key]
+        %}
+
+        <div class="ai-menu-product-card-{{ ai_gen_id }}">
+          {% if product != blank %}
+            <a href="{{ product.url }}" class="ai-menu-product-link-{{ ai_gen_id }}">
+              <div class="ai-menu-product-image-wrapper-{{ ai_gen_id }}">
+                {% if product.featured_image %}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 400 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    class="ai-menu-product-image-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="400"
+                    height="250"
+                  >
+                {% else %}
+                  <div class="ai-menu-product-placeholder-{{ ai_gen_id }}">
+                    {{ 'product-apparel-1' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+              </div>
+            </a>
+
+            <div class="ai-menu-product-content-{{ ai_gen_id }}">
+              <a href="{{ product.url }}" class="ai-menu-product-title-{{ ai_gen_id }}">
+                <h3 class="ai-menu-product-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+              </a>
+
+              {% if product.description != blank %}
+                <div class="ai-menu-product-description-{{ ai_gen_id }}">
+                  {{ product.description | strip_html | truncate: 120 }}
+                </div>
+              {% endif %}
+
+              <a href="{{ product.url }} " class="ai-menu-book-button-{{ ai_gen_id }}">
+                {{ block.settings.button_text }}
+              </a>
+            </div>
+          {% else %}
+            <div class="ai-menu-empty-product-{{ ai_gen_id }}">
+              <div class="ai-menu-product-image-wrapper-{{ ai_gen_id }}">
+                <div class="ai-menu-product-placeholder-{{ ai_gen_id }}">
+                  {{ 'product-apparel-1' | placeholder_svg_tag }}
+                </div>
+              </div>
+              <div class="ai-menu-product-content-{{ ai_gen_id }}">
+                <p>Select a product for menu item {{ i }}</p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Menu products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Our Menu Highlights"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Book a table"
+    },
+    {
+      "type": "url",
+      "id": "booking_link",
+      "label": "Booking link"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Menu item 1"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Menu item 2"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "Menu item 3"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Card background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "product_title_hover_color",
+      "label": "Product title hover color",
+      "default": "#085959"
+    },
+    {
+      "type": "color",
+      "id": "product_description_color",
+      "label": "Product description color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background_color",
+      "label": "Button hover background color",
+      "default": "#085959"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "baskerville_no_2_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "font_picker",
+      "id": "product_title_font",
+      "label": "Product title font",
+      "default": "baskerville_no_2_n4"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "label": "Product title size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "product_description_size",
+      "label": "Product description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Button text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu products"
+    }
+  ]
+}
+{% endschema %}

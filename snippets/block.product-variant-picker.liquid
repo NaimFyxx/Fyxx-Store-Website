@@ -1,0 +1,198 @@
+{% doc %}
+  Copyright © 2025 Archetype Themes LP. All rights reserved.
+
+  Interactive variant selection with dropdown, button, or swatch options for product variants.
+
+  @param {object} [block] - Block object
+  @param {object} [product] - Product object
+  @param {boolean} [update_url] - Update URL when variant changes, default: false
+  @param {string} [swatch_style] - ('round'|'square') Swatch display style
+
+  @example
+  {% render 'block.product-variant-picker', product: product, swatch_style: 'round' %}
+{% enddoc %}
+
+{% stylesheet %}
+  .block-variant-picker {
+    --element-button-padding-inline: var(--size-4);
+    --element-button-padding-block: var(--size-2);
+
+    display: grid;
+    gap: 25px;
+  }
+
+  .block-variant-picker[data-picker-type='dropdown'] {
+    display: block;
+    gap: normal;
+  }
+
+  .variant-input__select {
+    min-width: 100px;
+  }
+
+  .variant-input {
+    display: inline-block;
+
+    /*Firefox bug fix*/
+    select & {
+      display: block;
+    }
+  }
+
+  .variant-input__select {
+    min-width: 100px;
+  }
+
+  .variant-input {
+    display: inline-block;
+
+    /*Firefox bug fix*/
+    select & {
+      display: block;
+    }
+  }
+
+  .variant-wrapper + .variant-wrapper {
+    margin-top: var(--size-6);
+  }
+
+  .no-js .variant-wrapper {
+    display: none;
+  }
+
+  .variant-wrapper--dropdown {
+    display: inline-block;
+    max-width: 100%;
+    margin-right: calc(var(--gutter) / 2);
+    margin-bottom: 0;
+  }
+
+  .variant-dropdown-wrap {
+    border: 0;
+    padding: 0;
+    position: relative;
+
+    & label {
+      font: inherit;
+      position: relative;
+      display: inline-block;
+      font-weight: normal;
+      padding: 7px 15px 7px;
+      margin: 0 8px 12px 0;
+      background-color: var(--colorBody);
+      box-shadow: 0 0 0 1px var(--colorBorder);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+  }
+
+  .variant-dropdown__label,
+  .variant-dropdown__label[for] {
+    display: block;
+    margin-bottom: 10px;
+    cursor: default;
+  }
+
+  .variant__label-info {
+    /*undo accent stack styles*/
+    text-transform: none;
+    font-weight: normal;
+    letter-spacing: 0;
+  }
+
+  .variant__label {
+    font-weight: var(--font-weight-700);
+  }
+
+  .variant-button-wrap {
+    border: 0;
+    padding: 0;
+    position: relative;
+
+    & label {
+      margin: 0 8px 12px 0;
+    }
+
+    & .variant__label,
+    & .variant__label[for] {
+      display: block;
+      margin-bottom: 10px;
+      cursor: default;
+    }
+
+    .element-radio {
+      &:hover {
+        --element-swatch-shade-outer: 20%;
+      }
+
+      &:has(input[type='radio']:checked) {
+        /* Swatch tokens */
+        --element-swatch-shade-outer: 100%;
+      }
+
+      &:has(input[type='radio']:focus) {
+        /* Swatch tokens */
+        --element-swatch-shade-outer: 100%;
+        --element-swatch-shade-outer-selected: 100%;
+        /* --color-primary: var(--color-focus); */
+        --element-swatch-outline-width: 4px;
+      }
+
+      &:has(input[type='radio'][data-disabled]) {
+        /* Swatch tokens */
+        --element-swatch-line-disabled-width: max(var(--size-0-25), calc(var(--size-8) * 0.0625));
+        --element-swatch-color-disabled: linear-gradient(
+          to bottom right,
+          transparent calc(50% - var(--element-swatch-line-disabled-width)),
+          var(--color-secondary) calc(50% - var(--element-swatch-line-disabled-width))
+            calc(50% + var(--element-swatch-line-disabled-width)),
+          transparent calc(50% + var(--element-swatch-line-disabled-width))
+        );
+      }
+    }
+  }
+{% endstylesheet %}
+
+{%- liquid
+  assign product = section.settings.product | default: product
+  assign update_url = update_url | default: true, allow_false: true
+  assign prev_block_index = forloop.index0 | minus: 1
+  assign swatch_style = swatch_style | default: settings.swatch_style | default: 'round'
+-%}
+
+{%- unless product.has_only_default_variant -%}
+  <block-variant-picker
+    class="block-variant-picker"
+    id="variant-selects-{{ section.id }}"
+    data-section-id="{{ section.id }}"
+    data-url="{{ product.url }}"
+    {% if update_url %}
+      data-update-url=""
+    {% endif %}
+    {% if block.settings.product_dynamic_variants_enable %}
+      data-dynamic-variants-enabled=""
+    {% endif %}
+    data-picker-type="{{ block.settings.picker_type }}"
+    data-product-id="{{ product.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- if block.settings.picker_type == 'button' -%}
+        {%- render 'block.product-variant-picker.button',
+          option: option,
+          block: block,
+          prev_block_index: prev_block_index
+        -%}
+      {%- else -%}
+        {%- render 'block.product-variant-picker.dropdown', option: option, block: block -%}
+      {%- endif -%}
+    {%- endfor -%}
+    <script type="application/json">
+      {{ product.variants | json }}
+    </script>
+  </block-variant-picker>
+
+  <script type="module">
+    import 'block.product-variant-picker'
+  </script>
+{%- endunless -%}

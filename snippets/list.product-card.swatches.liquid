@@ -1,0 +1,96 @@
+{%- comment -%}
+  Renders a product's color swatches.
+
+  Accepts:
+  - product {product} - The product object
+
+  Usage:
+  {% render 'list.product-card.swatches', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  capture swatch_trigger
+    assign trigger_color_swatch = 'trigger.color_swatch' | t | downcase
+    render 'utility.translate', t: trigger_color_swatch, fallback: 'color'
+  endcapture
+
+  assign swatch_file_extension = 'png'
+  assign color_count = 0
+  assign max_colors_show = 4
+  assign more_than_max = false
+  assign hydration = hydration | default: 'on:idle'
+-%}
+
+{% capture swatches_items %}
+  {% for option in product.options_with_values %}
+    {% for value in option.values %}
+      {%- liquid
+        assign is_color = false
+        assign swatch_trigger = swatch_trigger | strip
+        assign downcased_option = option.name | downcase
+        if value.swatch
+          assign is_color = true
+        elsif downcased_option contains swatch_trigger
+          assign is_color = true
+        elsif swatch_trigger == 'color' and downcased_option contains 'colour'
+          assign is_color = true
+        endif
+      -%}
+      {% if is_color %}
+        {% assign color_count = color_count | plus: 1 %}
+        {% for variant in product.variants %}
+          {% if variant.options contains value %}
+            {%- if color_count <= max_colors_show -%}
+
+              {%- if value.swatch == blank -%}
+                {%- liquid
+                  assign color_file_name = value | handle | append: '.' | append: swatch_file_extension
+                  assign color_image = color_file_name | file_img_url: '50x50' | prepend: 'https:' | split: '?' | first
+                  assign color_swatch_fallback = value | split: ' ' | last | handle
+                -%}
+                {%- capture swatch_style -%}
+                  --element-swatch-color-background: {{ color_swatch_fallback }};
+                  --element-swatch-color-background-image: url({{ color_image }});
+                {%- endcapture -%}
+              {%- endif -%}
+
+              {% capture swatch_attributes %}
+                data-url="{{ variant.url | within: collection }}"
+                data-variant-id="{{ variant.id }}"
+                data-variant-image="{{ variant.image | image_url: width: 400 }}"
+                aria-label="{{ option.name | escape }}: {{ value | escape }}"
+              {% endcapture %}
+              {%- assign swatch_url = variant.url | within: collection -%}
+              {% render 'element.swatch', swatch: value.swatch, large: true, element: 'a', href: swatch_url, attributes: swatch_attributes, style: swatch_style %}
+            {%- else -%}
+              {%- assign more_than_max = true -%}
+            {%- endif -%}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {%- if more_than_max -%}
+    {%- assign more_colors = color_count | minus: max_colors_show | prepend: '+' -%}
+    {% render 'element.text', text: more_colors, variant: 'body-sm' %}
+  {%- endif -%}
+{% endcapture %}
+
+{% # We only support hover effects for products with less than 250 variants %}
+{% if product.variants_count <= 250 %}
+  <is-land {{ hydration }}> <color-swatches>
+{% endif %}
+
+{% render 'layout.stack', slot: swatches_items, gap: 'xs', horizontal: true %}
+
+{% if product.variants_count <= 250 %}
+  <template data-island>
+    <script type="module">
+      import 'list.product-card.swatches'
+    </script>
+  </template>
+  </color-swatches>
+  </is-land>
+{% endif %}

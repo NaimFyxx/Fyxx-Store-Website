@@ -1,0 +1,250 @@
+import { EVENTS } from 'util.events'
+
+class BlockVariantPicker extends HTMLElement {
+  connectedCallback() {
+    this.productInfo = new Map()
+
+    this.addEventListener('change', this.handleVariantChange.bind(this))
+    this.addEventListener('touchstart', this.handleElementEvent.bind(this))
+    this.addEventListener('mousedown', this.handleElementEvent.bind(this))
+  }
+
+  handleElementEvent(event) {
+    let target = event.target
+
+    // In case the target is not an input, redirect to the input and trigger change event (e.g. Safari)
+    if (target?.tagName !== 'INPUT') {
+      target = event.target.closest('label')?.querySelector('input[type="radio"]')
+      !target?.checked && target?.click()
+    }
+
+    if (!target) return
+
+    this.updateOptions(target)
+    this.updateMasterId()
+    // start preloading
+    this.currentVariant && this.getProductInfo()
+  }
+
+  async handleVariantChange(event) {
+    this.updateOptions()
+    this.updateMasterId(event.target)
+    if ('dynamicVariantsEnabled' in this.dataset) this.updateVariantStatuses(event.target)
+    this.updateColorNames()
+
+    // Dispatch immediately with loading: true to disable button during fetch
+    this.dispatchEvent(
+      new CustomEvent(`${EVENTS.variantChange}:${this.dataset.sectionId}:${this.dataset.productId}`, {
+        bubbles: true,
+        detail: {
+          sectionId: this.dataset.sectionId,
+          html: null,
+          variant: this.currentVariant,
+          loading: true
+        }
+      })
+    )
+
+    if (this.currentVariant) {
+      this.updateURL()
+      let html = null
+
+      try {
+        html = await this.getProductInfo()
+      } catch (error) {
+        console.error('Failed to fetch product info:', error)
+      }
+
+      this.dispatchEvent(
+        new CustomEvent(`${EVENTS.variantChange}:${this.dataset.sectionId}:${this.dataset.productId}`, {
+          bubbles: true,
+          detail: {
+            sectionId: this.dataset.sectionId,
+            html,
+            variant: this.currentVariant,
+            loading: false
+          }
+        })
+      )
+    } else {
+      this.dispatchEvent(
+        new CustomEvent(`${EVENTS.variantChange}:${this.dataset.sectionId}:${this.dataset.productId}`, {
+          bubbles: true,
+          detail: {
+            sectionId: this.dataset.sectionId,
+            html: null,
+            variant: null,
+            loading: false
+          }
+        })
+      )
+    }
+  }
+
+  updateOptions(target) {
+    this.options = Array.from(this.querySelectorAll('select, fieldset'), (element) => {
+      if (element.tagName === 'SELECT') {
+        return element.value
+      }
+
+      if (element.tagName === 'FIELDSET') {
+        // Check if target belongs to this fieldset (fixes iOS issue with multiple variant fieldset)
+        // When multiple fieldsets exist, we need to verify which fieldset the target belongs to
+        const targetInFieldset = target && element.contains(target) ? target : null
+        return Array.from(element.querySelectorAll('input')).find(
+          // If target is in this fieldset, use it; otherwise use the checked radio button
+          (radio) => targetInFieldset ? radio === targetInFieldset : radio.checked
+        )?.value
+      }
+    })
+  }
+
+  updateMasterId(target) {
+    const availableFullMatch = this.getFullMatch(true)
+    const closestAvailableMatch = this.getClosestAvailableMatch(target)
+    const fullMatch = this.getFullMatch(false)
+
+    this.currentVariant =
+      'dynamicVariantsEnabled' in this.dataset
+        ? // Add some additional smarts to variant matching if Dynamic Variants are enabled
+        availableFullMatch || closestAvailableMatch || fullMatch || null
+        : // Only return a full match or null (variant doesn't exist) if Dynamic Variants are disabled
+        fullMatch || null
+  }
+
+  getFullMatch(needsToBeAvailable) {
+    return this.getVariantData().find((variant) => {
+      const isMatch = this.options.every((value, index) => {
+        return variant[this.getOptionName(index)] === value
+      })
+
+      if (needsToBeAvailable) {
+        return isMatch && variant.available
+      } else {
+        return isMatch
+      }
+    })
+  }
+
+  // Find a variant that is available and best matches last selected option
+  getClosestAvailableMatch(lastSelectedOption) {
+    if (!lastSelectedOption) return null
+
+    const potentialAvailableMatches =
+      lastSelectedOption &&
+      this.getVariantData().filter((variant) => {
+        return (
+          this.options
+            .filter(
+              // Only match based selected options that are equal and preceeding the last selected option
+              (_, index) => index + 1 <= this.numberFromOptionKey(lastSelectedOption.dataset.index)
+            )
+            .every((value, index) => {
+              // Variant needs to have options that match the current and preceeding selection options
+              return variant[this.getOptionName(index)] === value
+            }) && variant.available
+        )
+      })
+
+    return potentialAvailableMatches.reduce((bestMatch, variant) => {
+      // If this is the first potential match we've found, store it as the best match
+      if (bestMatch === null) return variant
+
+      // If this is not the first potential match, compare the number of options our current best match has in common
+      // compared to the next contender.
+      const bestMatchCount = this.getWeightedOptionMatchCount(bestMatch, lastSelectedOption)
+      const newCount = this.getWeightedOptionMatchCount(variant, lastSelectedOption)
+
+      return newCount > bestMatchCount ? variant : bestMatch
+    }, null)
+  }
+
+  // Options should be ordered from highest to lowest priority. Make sure that priority
+  // is represented using weighted values when finding best match
+  getWeightedOptionMatchCount(variant) {
+    return this.options.reduce((count, value, index) => {
+      const weightedCount = 3 - index // The lower the index, the better the match we have
+      return variant[this.getOptionName(index)] === value ? count + weightedCount : count
+    }, 0)
+  }
+
+  // Pull the number out of the option index name, e.g. 'option1' -> 1
+  numberFromOptionKey(key) {
+    return parseInt(key.substr(-1))
+  }
+
+  getOptionName(index) {
+    return `option${index + 1}`
+  }
+
+  getVariantData() {
+    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent)
+    return this.variantData
+  }
+
+  updateVariantStatuses(lastSelectedOption) {
+    const selectedOptionOneVariants = this.variantData.filter(
+      (variant) => this.querySelector(':checked').value === variant.option1
+    )
+    const inputWrappers = [...this.querySelectorAll('fieldset, .variant-wrapper')]
+    inputWrappers.forEach((option, index) => {
+      if (index === 0 || lastSelectedOption.parentElement === option) return
+
+      const optionInputs = [...option.querySelectorAll('input[type="radio"], option')]
+      const previousOptionSelected = inputWrappers[index - 1].querySelector(':checked').value
+      const availableOptionInputsValue = selectedOptionOneVariants
+        .filter((variant) => variant.available && variant[`option${index}`] === previousOptionSelected)
+        .map((variantOption) => variantOption[this.getOptionName(index)])
+
+      this.setInputAvailability(optionInputs, availableOptionInputsValue)
+    })
+  }
+
+  updateColorNames() {
+    this.querySelectorAll('fieldset').forEach((fieldset) => {
+      const input = fieldset.querySelector('input:checked')
+      if (!input) return
+      const colorLabel = fieldset.querySelector('[data-variant-color-label]')
+      if (!colorLabel) return
+      colorLabel.textContent = input.value
+    })
+  }
+
+  setInputAvailability(elementList, availableValuesList) {
+    elementList.forEach((element) => {
+      const value = element.getAttribute('value')
+      const availableElement = availableValuesList.includes(value)
+
+      if (element.tagName === 'INPUT') {
+        element.parentElement.classList.toggle('disabled', !availableElement)
+        this.currentVariant?.[element.dataset.index] === value && (element.checked = true)
+      } else {
+        element.toggleAttribute('disabled', !availableElement)
+        this.currentVariant?.[element.dataset.index] === value && (element.selected = true)
+      }
+    })
+  }
+
+  updateURL() {
+    if (!this.currentVariant || !('updateUrl' in this.dataset)) return
+    window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`)
+  }
+
+  getProductInfo() {
+    const requestedVariantId = this.currentVariant.id
+    if (this.productInfo.has(requestedVariantId)) {
+      return this.productInfo.get(requestedVariantId)
+    }
+
+    this.productInfo.set(
+      requestedVariantId,
+      fetch(`${this.dataset.url}?variant=${requestedVariantId}&section_id=${this.dataset.sectionId}`)
+        .then((response) => response.text())
+        .then((responseText) => new DOMParser().parseFromString(responseText, 'text/html'))
+    )
+
+    return this.productInfo.get(requestedVariantId)
+  }
+}
+
+customElements.define('block-variant-picker', BlockVariantPicker)

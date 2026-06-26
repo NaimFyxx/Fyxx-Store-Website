@@ -1,0 +1,259 @@
+{% comment %}
+  TGR Menu Section
+  Renders all entries from metaobject type "menu_item",
+  grouped by Category and ordered by Sort Order (ascending).
+
+  Metaobject: menu_item
+    - title        (single line text)
+    - description  (multi-line text)
+    - category     (single line text)
+    - product      (product reference)
+    - sort_order   (integer)
+{% endcomment %}
+
+<style>
+/* Hide the default page title only on the tgr-menu page template */
+.page--tgr-menu .section-header__title,
+.page--tgr-menu .page-title,
+.page--tgr-menu h1,
+.page--tgr-menu .main-page-title {
+  display: none !important;
+}
+
+/* Base menu styles */
+.tgr-menu-section {
+  background-color: #F5F0E8;
+  padding: 0;
+}
+
+.tgr-menu-section .menu-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  font-family: 'Dunbar Text', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.tgr-menu-section .header {
+  color: #80AA96;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 12px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.tgr-menu-section .section-title {
+  color: #80AA96;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  margin-top: 40px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.tgr-menu-section .menu-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: #0F3C39;
+  text-decoration: none;
+  transition: color 0.28s ease, transform 0.18s ease;
+}
+
+.tgr-menu-section .menu-item:hover {
+  color: #80AA96;
+  transform: translateY(-1px);
+}
+
+.tgr-menu-section .item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.tgr-menu-section .item-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #0F3C39;
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tgr-menu-section .menu-item:hover .item-title {
+  color: #80AA96;
+}
+
+.tgr-menu-section .item-bullet {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+  color: #0F3C39;
+  display: flex;
+  align-items: center;
+}
+
+.tgr-menu-section .menu-action {
+  opacity: 0;
+  font-size: 0.85em;
+  color: #80AA96;
+  text-transform: lowercase;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  transform: translateX(-6px);
+  pointer-events: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tgr-menu-section .menu-item:hover .menu-action {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tgr-menu-section .item-description {
+  color: #0F3C39;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.tgr-menu-section .divider {
+  border: none;
+  border-top: 2px solid #0F3C39;
+  margin: 20px 0;
+  height: 2px;
+  display: block;
+}
+
+@media (max-width: 520px) {
+  .tgr-menu-section .menu-container { padding: 20px 15px 40px; }
+  .tgr-menu-section .header,
+  .tgr-menu-section .section-title {
+    font-size: 28px;
+    letter-spacing: 6px;
+    margin-bottom: 10px;
+  }
+  .tgr-menu-section .item-title {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .tgr-menu-section .item-bullet { font-size: 14px; }
+  .tgr-menu-section .item-description {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+  .tgr-menu-section .item-header {
+    gap: 4px;
+    justify-content: flex-start;
+  }
+  .tgr-menu-section .menu-action {
+    transform: translateX(0);
+    margin-left: 0;
+    font-size: 0.7em;
+  }
+  .tgr-menu-section .divider { margin: 10px 0; }
+}
+</style>
+
+<div class="tgr-menu-section">
+  <div class="menu-container">
+
+    {%- if section.settings.menu_title != blank -%}
+      <div class="header">
+        {{ section.settings.menu_title }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      Load all menu_item entries and order them by sort_order (number).
+    {%- endcomment -%}
+    {%- assign all_items = shop.metaobjects.menu_item.values | sort: "sort_order" -%}
+
+    {%- assign current_category = "" -%}
+
+    {%- for entry in all_items -%}
+      {%- if entry.category == blank -%}
+        {%- continue -%}
+      {%- endif -%}
+
+      {%- if entry.category != current_category -%}
+        {%- if current_category != "" -%}
+          <hr class="divider">
+        {%- endif -%}
+        {%- assign current_category = entry.category -%}
+        <div class="section-title">
+          {{ current_category }}
+        </div>
+      {%- endif -%}
+
+      <a
+        class="menu-item"
+        {%- if entry.product != blank and entry.product.value != blank -%}
+          href="{{ entry.product.value.url }}"
+        {%- endif -%}
+      >
+        <div class="item-header">
+          <div class="item-title">
+            {{ entry.title }}
+          </div>
+
+          {%- if entry.product != blank and entry.product.value != blank -%}
+            <span class="item-bullet">•</span>
+            <span class="menu-action">view</span>
+          {%- endif -%}
+        </div>
+
+        {%- if entry.description != blank -%}
+          <div class="item-description">
+            {{ entry.description }}
+          </div>
+        {%- endif -%}
+      </a>
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{%- if section.settings.custom_css != blank -%}
+  <style>
+    {{ section.settings.custom_css }}
+  </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "TGR Menu Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "menu_title",
+      "label": "Menu Title",
+      "default": "Food Menu"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Optional extra CSS just for this menu section."
+    }
+  ],
+  "presets": [
+    {
+      "name": "TGR Menu Section"
+    }
+  ]
+}
+{% endschema %}

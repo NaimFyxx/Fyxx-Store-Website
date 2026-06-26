@@ -1,0 +1,22 @@
+{% doc %}
+  Copyright © 2025 Archetype Themes LP. All rights reserved.
+
+  Inventory status messages for stock availability.
+
+  @param {number} [inventory_threshold] - The inventory level at which to show low stock warning (default: 10)
+
+  @example
+  {% render 'section.flex-pdp.inventory', inventory_threshold: 5, product: closest.product %}
+{% enddoc %}
+
+{%- liquid
+  assign inventory_threshold = inventory_threshold | default: block.settings.inventory_threshold | default: 10
+-%}
+
+{% capture inventory_text %}
+  {% render 'section.flex-pdp._inventory-text', product: product, inventory_threshold: inventory_threshold %}
+{% endcapture %}
+
+{% if inventory_text != blank %}
+  {% render 'element.text', variant: 'body-sm', text: inventory_text %}
+{% endif %}

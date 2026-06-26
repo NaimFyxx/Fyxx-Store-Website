@@ -1,0 +1,681 @@
+{% doc %}
+  @prompt
+    Create a Shopify section that displays event images as card-sized thumbnails in a single horizontal row.
+    
+    Layout (do not change):
+    
+    Display multiple image cards visible at the same time in one row
+    
+    Images must be card-sized, not full-width and not hero-style
+    
+    Set a fixed max width per card (event poster size)
+    
+    Maintain original image proportions
+    
+    Never stack images vertically on any device
+    
+    Interaction & navigation (very important):
+    
+    Enable drag / swipe scrolling on BOTH desktop and mobile
+    
+    On desktop:
+    
+    Users can click and drag with the cursor to scroll horizontally
+    
+    Left and right arrow buttons must be visible and usable
+    
+    On mobile:
+    
+    Users scroll only by swiping with touch
+    
+    Do NOT rely on arrows for mobile navigation
+    
+    Content rules:
+    
+    Images only (no text, no captions, no overlays)
+    
+    Each image is individually clickable with its own link URL
+    
+    Behavior:
+    
+    Smooth horizontal scrolling (not slide-by-slide)
+    
+    Continuous scroll of the row, not one image per slide
+    
+    Overflow hidden with a scrollable track
+    
+    This section should behave like a horizontal event card rail, not a carousel and not a hero banner.,  move the arrow more to the sides, its blocking the image AND PLEASE MAKE SURE THE LINKS ARE PROPERLY WORKING ESPECIALLY ON MOBILE , the cards are cut off please make it adjustable , keep the width as it is and make the height based on what image i add pease
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-event-rail-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-event-rail-container-{{ ai_gen_id }} {
+    position: relative;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.container_padding_desktop }}px;
+  }
+
+  .ai-event-rail-scroll-wrapper-{{ ai_gen_id }} {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    user-select: none;
+    padding: {{ block.settings.track_padding_vertical }}px 0;
+  }
+
+  .ai-event-rail-scroll-wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-event-rail-scroll-wrapper-{{ ai_gen_id }}.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+  }
+
+  .ai-event-rail-scroll-wrapper-{{ ai_gen_id }}:not(.is-dragging) {
+    scroll-behavior: smooth;
+  }
+
+  .ai-event-rail-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.card_gap }}px;
+    width: max-content;
+    align-items: flex-start;
+  }
+
+  .ai-event-card-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.card_width }}px;
+    position: relative;
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-event-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-event-card-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: #f4f4f4;
+  }
+
+  .ai-event-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-event-card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-event-card-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background-color: {{ block.settings.arrow_background_color }};
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.arrow_hover_color }};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }}:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }}--left {
+    left: 8px;
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }}--right {
+    right: 8px;
+  }
+
+  .ai-event-rail-arrow-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+    stroke: {{ block.settings.arrow_icon_color }};
+    stroke-width: 2.5;
+    fill: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-event-rail-container-{{ ai_gen_id }} {
+      padding: 0 {{ block.settings.container_padding_mobile }}px;
+    }
+
+    .ai-event-rail-arrow-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-event-card-{{ ai_gen_id }} {
+      width: {{ block.settings.card_width_mobile }}px;
+    }
+
+    .ai-event-rail-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top_mobile }}px 0 {{ block.settings.section_padding_bottom_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<event-rail-{{ ai_gen_id }} class="ai-event-rail-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-event-rail-container-{{ ai_gen_id }}">
+    <button
+      class="ai-event-rail-arrow-{{ ai_gen_id }} ai-event-rail-arrow-{{ ai_gen_id }}--left"
+      aria-label="Scroll left"
+      data-direction="left"
+    >
+      <svg viewBox="0 0 24 24">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <div class="ai-event-rail-scroll-wrapper-{{ ai_gen_id }}">
+      <div class="ai-event-rail-track-{{ ai_gen_id }}">
+        {% for i in (1..10) %}
+          {% liquid
+            assign image_key = 'event_image_' | append: i
+            assign link_key = 'event_link_' | append: i
+            assign event_image = block.settings[image_key]
+            assign event_link = block.settings[link_key]
+          %}
+
+          {% if event_image != blank %}
+            <a
+              href="{{ event_link | default: '#' }}"
+              class="ai-event-card-{{ ai_gen_id }}"
+              data-card-index="{{ i }}"
+            >
+              <div class="ai-event-card-image-wrapper-{{ ai_gen_id }}">
+                <img
+                  src="{{ event_image | image_url: width: 800 }}"
+                  alt="{{ event_image.alt | escape }}"
+                  loading="lazy"
+                  width="{{ event_image.width }}"
+                  height="{{ event_image.height }}"
+                  class="ai-event-card-image-{{ ai_gen_id }}"
+                >
+              </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+
+        {% if block.settings.event_image_1 == blank %}
+          {% for i in (1..5) %}
+            <div class="ai-event-card-{{ ai_gen_id }}">
+              <div class="ai-event-card-image-wrapper-{{ ai_gen_id }}">
+                <div class="ai-event-card-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <button
+      class="ai-event-rail-arrow-{{ ai_gen_id }} ai-event-rail-arrow-{{ ai_gen_id }}--right"
+      aria-label="Scroll right"
+      data-direction="right"
+    >
+      <svg viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+</event-rail-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class EventRail{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.scrollWrapper = null;
+        this.leftArrow = null;
+        this.rightArrow = null;
+        this.isDragging = false;
+        this.startX = 0;
+        this.scrollLeft = 0;
+        this.isClick = true;
+        this.clickThreshold = 5;
+        this.totalDragDistance = 0;
+      }
+
+      connectedCallback() {
+        this.scrollWrapper = this.querySelector('.ai-event-rail-scroll-wrapper-{{ ai_gen_id }}');
+        this.leftArrow = this.querySelector('.ai-event-rail-arrow-{{ ai_gen_id }}--left');
+        this.rightArrow = this.querySelector('.ai-event-rail-arrow-{{ ai_gen_id }}--right');
+
+        if (!this.scrollWrapper) return;
+
+        this.setupArrows();
+        this.setupDragScroll();
+        this.updateArrowStates();
+
+        this.scrollWrapper.addEventListener('scroll', () => {
+          this.updateArrowStates();
+        });
+      }
+
+      setupArrows() {
+        if (this.leftArrow) {
+          this.leftArrow.addEventListener('click', () => {
+            const scrollAmount = this.scrollWrapper.offsetWidth * 0.8;
+            this.scrollWrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          });
+        }
+
+        if (this.rightArrow) {
+          this.rightArrow.addEventListener('click', () => {
+            const scrollAmount = this.scrollWrapper.offsetWidth * 0.8;
+            this.scrollWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          });
+        }
+      }
+
+      setupDragScroll() {
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice) {
+          this.scrollWrapper.addEventListener('mousedown', (e) => this.handleDragStart(e));
+          this.scrollWrapper.addEventListener('mousemove', (e) => this.handleDragMove(e));
+          this.scrollWrapper.addEventListener('mouseup', () => this.handleDragEnd());
+          this.scrollWrapper.addEventListener('mouseleave', () => this.handleDragEnd());
+
+          this.scrollWrapper.addEventListener('click', (e) => {
+            if (!this.isClick) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }, true);
+        }
+      }
+
+      handleDragStart(e) {
+        this.isDragging = true;
+        this.isClick = true;
+        this.totalDragDistance = 0;
+        this.scrollWrapper.classList.add('is-dragging');
+        this.startX = e.pageX - this.scrollWrapper.offsetLeft;
+        this.scrollLeft = this.scrollWrapper.scrollLeft;
+      }
+
+      handleDragMove(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
+
+        const x = e.pageX - this.scrollWrapper.offsetLeft;
+        const walk = (x - this.startX) * 1.5;
+        this.totalDragDistance += Math.abs(walk);
+
+        if (this.totalDragDistance > this.clickThreshold) {
+          this.isClick = false;
+        }
+
+        this.scrollWrapper.scrollLeft = this.scrollLeft - walk;
+      }
+
+      handleDragEnd() {
+        this.isDragging = false;
+        this.scrollWrapper.classList.remove('is-dragging');
+      }
+
+      updateArrowStates() {
+        if (!this.leftArrow || !this.rightArrow) return;
+
+        const isAtStart = this.scrollWrapper.scrollLeft <= 0;
+        const isAtEnd = this.scrollWrapper.scrollLeft + this.scrollWrapper.offsetWidth >= this.scrollWrapper.scrollWidth - 1;
+
+        this.leftArrow.disabled = isAtStart;
+        this.rightArrow.disabled = isAtEnd;
+      }
+    }
+
+    customElements.define('event-rail-{{ ai_gen_id }}', EventRail{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Event card rail",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding (mobile)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding (mobile)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "container_padding_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Side padding (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "container_padding_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Side padding (mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "track_padding_vertical",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Card track vertical padding",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Card layout"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width (desktop)",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "card_width_mobile",
+      "min": 150,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width (mobile)",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_background_color",
+      "label": "Arrow background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_color",
+      "label": "Arrow hover background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "arrow_icon_color",
+      "label": "Arrow icon",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Event 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_1",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_1",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_2",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_2",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_3",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_3",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_4",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_4",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_5",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_5",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_6",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_6",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 7"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_7",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_7",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 8"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_8",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_8",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 9"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_9",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_9",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Event 10"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image_10",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "event_link_10",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Event card rail"
+    }
+  ]
+}
+{% endschema %}

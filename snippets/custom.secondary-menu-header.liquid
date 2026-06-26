@@ -1,0 +1,89 @@
+{% comment %}
+  ===== FYXX CUSTOM: secondary "quick links" header nav + slim desktop menu =====
+
+  Renders the compact quick-links menu (linklist 'secondary-menu-test':
+  Home / Shop / Rewards) inline in the desktop header, and slims the main
+  desktop navigation so the long 15-item menu no longer sprawls across the top.
+
+  How the slim works: the theme already has a hamburger button
+  (.site-nav__compress-menu) whose click handler always toggles the full nav
+  row (.site-header__element--sub[data-type="nav"]) open/closed — it is just
+  hidden by CSS until you scroll. We surface that hamburger at all times on
+  desktop and hide the full nav row by default, so the quick-links become the
+  primary visible desktop nav and the full menu is one tap away in the
+  hamburger (and still in the drawer on mobile).
+
+  Originally authored by NAIM on the previous (8.0.0) theme as the
+  'custom.secondary-menu-header' snippet; migrated + cleaned up for 9.1.0.
+  To revert: delete this snippet and remove its {% render %} hook in
+  snippets/section.header.liquid.
+{% endcomment %}
+
+<style>
+  /* --- Quick links --- */
+  .secondary-menu {
+    display: none; /* hidden on mobile; full menu lives in the mobile drawer there */
+    align-items: center;
+    margin-left: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .secondary-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 18px;
+  }
+
+  .secondary-menu li {
+    margin: 0;
+  }
+
+  .secondary-menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: var(--element-text-font-size--body-md);
+    padding: 5px 8px;
+    display: block;
+    white-space: nowrap;
+  }
+
+  .secondary-menu a:hover {
+    text-decoration: underline;
+  }
+
+  @media only screen and (min-width: 769px) {
+    .secondary-menu {
+      display: flex;
+    }
+
+    /* --- Slim desktop nav ---
+       Keep the hamburger trigger visible at all times (it normally only
+       appears once the header compresses on scroll), and hide the full menu
+       row until the hamburger toggles it open. */
+    .header-layout[data-nav='below'] .header-item--compress-nav {
+      visibility: visible;
+      opacity: 1;
+      width: auto;
+      transform: none;
+    }
+
+    .site-header__element--sub[data-type='nav']:not(.is-active) {
+      display: none;
+    }
+  }
+</style>
+
+{% if linklists['secondary-menu-test'].links.size > 0 %}
+  <nav class="secondary-menu" role="navigation" aria-label="Secondary menu">
+    <ul>
+      {% for link in linklists['secondary-menu-test'].links %}
+        <li>
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endif %}
+{% comment %} ===== END FYXX CUSTOM ===== {% endcomment %}

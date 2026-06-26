@@ -1,0 +1,55 @@
+{% doc %}
+  Copyright © 2025 Archetype Themes LP. All rights reserved.
+
+  Size chart modal trigger with smart integration to variant picker buttons.
+
+  @param {object} [block] - Block object
+  @param {object} [forloop] - Parent loop object for block positioning
+  @param {object} [product] - Product object
+
+  @example
+  {% render 'block.product-size-chart', block: block, product: product %}
+{% enddoc %}
+
+{%- liquid
+  assign product = section.settings.product | default: product
+  assign connect_to_variant_picker = false
+  assign sizechart_index = forloop.index0
+  assign next_block_index = sizechart_index | plus: 1
+  assign next_block = section.blocks[next_block_index]
+
+  if next_block.type == 'variant_picker' and next_block.settings.picker_type == 'button' and product.has_only_default_variant == false
+    capture size_trigger
+      render 'utility.translate', key: 'labels.size_chart', fallback: 'size chart'
+    endcapture
+    assign size_trigger = size_trigger | downcase
+
+    for option in product.options_with_values
+      assign downcased_option = option.name | downcase
+
+      if size_trigger contains downcased_option
+        assign connect_to_variant_picker = true
+      endif
+    endfor
+  endif
+-%}
+
+{% unless connect_to_variant_picker %}
+  {%- capture size_chart_title -%}
+    {% render 'utility.translate', key: 'labels.size_chart', fallback: 'Size chart' %}
+    {% render 'element.icon', name: 'size-chart' %}
+  {%- endcapture -%}
+
+  <div class="size-chart__standalone" {{ block.shopify_attributes }}>
+    {%- render 'overlay.tool-tip.trigger',
+      title: size_chart_title,
+      content: block.settings.size_chart.content,
+      context: 'size-chart'
+    -%}
+    {% style %}
+      tool-tip-trigger {
+        font-weight: 800;
+      }
+    {% endstyle %}
+  </div>
+{% endunless %}

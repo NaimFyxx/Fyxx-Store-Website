@@ -1,0 +1,41 @@
+<style>
+    .go-to-xmas-link
+    {
+        position: fixed !important;
+        bottom: 22px;
+        right: 22px;
+        z-index: 999999;
+        font-size: 13px;
+        padding: 10px 16px;
+        border-radius: 50px;
+        background: #b21e25;
+        border: 1px solid #b21e25;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        color: #efe8dc;
+        text-decoration: none;
+    }
+
+    @media(max-width: 800px){
+    .go-to-xmas-link.\--with-floater {
+        margin-bottom: 3.5rem;
+    }
+
+    .go-to-xmas-link.\--without-floater {
+        margin-bottom: 0rem;
+    }
+}
+   
+</style>
+
+<div> 
+    <a id="xmasButton" href="https://christmas.myfyxx.com?utm_source=website&utm_medium=promo&utm_campaign=fyxx_christmas_2025&utm_content=_floating_cta_floating_button" class="go-to-xmas-link" target="_blank" rel="noopener noreferrer"> See December Offers → </a>
+</div>
+
+{% schema %}
+{
+  "name": "Go To Fyxx Christmas",
+  "settings": []
+}
+{% endschema %}

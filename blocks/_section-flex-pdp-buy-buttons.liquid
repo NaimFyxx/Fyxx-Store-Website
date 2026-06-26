@@ -1,0 +1,21 @@
+{% render 'section.flex-pdp.buy-buttons', product: closest.product %}
+
+{% schema %}
+{
+  "name": "t:labels.buy_buttons",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "t:actions.show_dynamic_checkout",
+      "default": true,
+      "info": "t:info.dynamic_checkout_shows_preferred"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.buy_buttons"
+    }
+  ]
+}
+{% endschema %}

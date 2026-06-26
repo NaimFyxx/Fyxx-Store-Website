@@ -1,0 +1,28 @@
+{% render 'section.flex-pdp.variant-picker',
+  product: closest.product,
+  variant_selector_type: block.settings.variant_selector_type
+%}
+
+{% schema %}
+{
+  "name": "t:labels.variant_picker",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant_selector_type",
+      "label": "t:labels.style",
+      "default": "radio",
+      "options": [
+        { "value": "radio", "label": "t:labels.button" },
+        { "value": "select", "label": "t:labels.dropdown" }
+      ],
+      "info": "t:info.variant_picker_display_options"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.variant_picker"
+    }
+  ]
+}
+{% endschema %}

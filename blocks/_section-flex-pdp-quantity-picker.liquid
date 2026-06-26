@@ -1,0 +1,27 @@
+{% render 'section.flex-pdp.quantity-picker', product: closest.product %}
+
+{% schema %}
+{
+  "name": "t:labels.quantity_picker",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_inventory_status",
+      "label": "t:actions.show_inventory_status",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "inventory_threshold",
+      "label": "t:labels.low_inventory_threshold",
+      "default": 10,
+      "visible_if": "{{ block.settings.show_inventory_status }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.quantity_picker"
+    }
+  ]
+}
+{% endschema %}

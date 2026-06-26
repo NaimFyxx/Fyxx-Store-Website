@@ -1,0 +1,24 @@
+{% render 'section.flex-pdp.inventory', product: closest.product %}
+
+{% schema %}
+{
+  "name": "t:labels.inventory",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.inventory_status_description"
+    },
+    {
+      "type": "number",
+      "id": "inventory_threshold",
+      "label": "t:labels.low_inventory_threshold",
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.inventory"
+    }
+  ]
+}
+{% endschema %}

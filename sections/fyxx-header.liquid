@@ -1,0 +1,508 @@
+{% comment %}
+  ===== FYXX CUSTOM: custom storefront header =====
+  Ported from the approved prototype (fyxx-header-prototype.html). Self-contained
+  section: one {% stylesheet %}, the markup, one inline <script>, and a {% schema %}.
+
+  Reuses the theme's proven pieces so core functionality keeps working:
+    - search:  {% render 'form.predictive-search' %}  (real predictive results)
+    - cart:    {% render 'header.toggle-cart' %} + {% render 'header.drawer' %}  (slide-out drawer)
+    - account: {% if customer %} … person / logout icon + greeting
+
+  Design toggles from the prototype are exposed as section settings and emitted as
+  data-* attributes on the <fyxx-header> wrapper (the CSS keys off those values).
+  To roll back: set the header group's "header" section type back to "header".
+{% endcomment %}
+
+{% stylesheet %}
+  fyxx-header {
+    display: block;
+
+    --header-bg:   #000000;
+    --header-fg:   #ffffff;
+    --accent:      #f0b09e;
+    --accent-deep: #e39c86;
+    --hairline:    rgba(255,255,255,.12);
+    --muted:       rgba(255,255,255,.60);
+    --icon-hover:  rgba(255,255,255,.08);
+    --search-border:      rgba(255,255,255,.85);
+    --search-placeholder: rgba(255,255,255,.70);
+    --search-filled-bg:   rgba(255,255,255,.13);
+    --qbtn-bg:   #ffffff;
+    --qbtn-fg:   #231F20;
+    --qbtn-soft: rgba(255,255,255,.12);
+    --drawer-sub-bg: rgba(255,255,255,.03);
+    --panel-bg:    #ffffff;
+    --panel-fg:    #1c1a19;
+    --panel-muted: #8a847f;
+    --panel-line:  #eceae7;
+    --pill-radius: 999px;
+    --btn-radius:  12px;
+    --nav-fs:      14px;
+    /* FYXX: use the theme's own configured fonts (do not override the brand font) */
+    --ui-font:     var(--element-text-font-family--body), var(--element-text-font-family-fallback--body);
+    --serif:       var(--element-text-font-family--heading), var(--element-text-font-family-fallback--heading);
+    --button-font: var(--element-text-font-family--heading), var(--element-text-font-family-fallback--heading);
+  }
+
+  fyxx-header[data-theme="white"] {
+    --header-bg:   #ffffff;
+    --header-fg:   #231F20;
+    --hairline:    rgba(0,0,0,.12);
+    --muted:       rgba(0,0,0,.55);
+    --icon-hover:  rgba(0,0,0,.06);
+    --search-border:      rgba(0,0,0,.28);
+    --search-placeholder: rgba(0,0,0,.45);
+    --search-filled-bg:   rgba(0,0,0,.05);
+    --qbtn-bg:   #231F20;
+    --qbtn-fg:   #ffffff;
+    --qbtn-soft: rgba(0,0,0,.06);
+    --drawer-sub-bg: rgba(0,0,0,.035);
+  }
+
+  fyxx-header *,
+  fyxx-header *::before,
+  fyxx-header *::after { box-sizing: border-box; }
+
+  /* ---- top row ---- */
+  .fyxx-header__bar { background: var(--header-bg); color: var(--header-fg); position: relative; z-index: 30; }
+  .fyxx-header__inner { display: flex; align-items: center; gap: 16px; padding: 14px 20px; }
+
+  .fyxx-icon-btn {
+    background: none; border: 0; color: var(--header-fg);
+    width: 38px; height: 38px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0; flex: 0 0 auto; transition: background .15s ease;
+    text-decoration: none;
+  }
+  .fyxx-icon-btn:hover { background: var(--icon-hover); color: var(--header-fg); }
+  .fyxx-icon-btn svg { width: 22px; height: 22px; stroke: var(--header-fg); fill: none; stroke-width: 1.7; }
+
+  .fyxx-logo {
+    flex: 0 0 auto; font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 32px; line-height: 1; letter-spacing: .2px; color: var(--header-fg); text-decoration: none;
+  }
+  .fyxx-logo:hover { color: var(--header-fg); }
+  .fyxx-logo-img { display: block; height: 34px; width: auto; }
+  .fyxx-logo--light { display: none; }
+  fyxx-header[data-theme="black"] .fyxx-logo--dark { display: none; }
+  fyxx-header[data-theme="black"] .fyxx-logo--light { display: block; }
+  .fyxx-drawer__head .fyxx-logo-img { height: 26px; }
+  .fyxx-slogan { display: block; height: 20px; width: auto; margin: 0 auto; }
+  .fyxx-slogan--light { display: none; }
+  fyxx-header[data-theme="black"] .fyxx-slogan--dark { display: none; }
+  fyxx-header[data-theme="black"] .fyxx-slogan--light { display: block; }
+
+  /* ---- account / greeting ---- */
+  .fyxx-welcome { display: none; font-size: 13px; color: var(--header-fg); white-space: nowrap; margin-right: 6px; }
+  .fyxx-welcome b { font-weight: 600; }
+  @media (min-width: 769px) { fyxx-header[data-account="in"] .fyxx-welcome { display: inline; } }
+
+  /* ---- search (reuses theme predictive-search, restyled to the pill) ---- */
+  .fyxx-search { flex: 1 1 auto; max-width: 520px; position: relative; }
+  .fyxx-search predictive-search { width: 100%; max-width: none; margin: 0; }
+  .fyxx-search .search__input {
+    width: 100%; height: 42px; background: transparent; color: var(--header-fg);
+    border: 1px solid var(--search-border); border-radius: var(--pill-radius);
+    padding: 0 44px 0 18px; font-size: 15px; font-family: var(--ui-font);
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .fyxx-search .search__input::placeholder { color: var(--search-placeholder); }
+  .fyxx-search .search__input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(240,176,158,.25); }
+  fyxx-header[data-search="filled"] .fyxx-search .search__input { border-color: transparent; background: var(--search-filled-bg); }
+  fyxx-header[data-search="square"] .fyxx-search .search__input { border-radius: 8px; }
+  .fyxx-search .element-button--search svg,
+  .fyxx-search .element-icon { stroke: var(--header-fg); color: var(--header-fg); }
+  fyxx-header[data-overlay="off"] .fyxx-search .predictive__screen { display: none !important; }
+
+  /* ---- quick links (app-style CTA buttons) ---- */
+  .fyxx-quick { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+  .fyxx-quick a {
+    font-family: var(--button-font); font-weight: 700; font-size: 12.5px; letter-spacing: .04em;
+    text-transform: uppercase; text-decoration: none; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 110px; flex: 0 0 auto; box-sizing: border-box;
+    padding: 9px 8px; border-radius: var(--btn-radius); border: 1.5px solid transparent;
+    transition: background .15s ease, color .15s ease, border-color .15s ease, transform .1s ease;
+  }
+  .fyxx-quick a:active { transform: translateY(1px); }
+  fyxx-header[data-quickstyle="solid"] .fyxx-quick a { background: var(--qbtn-bg); color: var(--qbtn-fg); }
+  fyxx-header[data-quickstyle="solid"] .fyxx-quick a:hover { background: var(--accent); color: #231F20; }
+  fyxx-header[data-quickstyle="outline"] .fyxx-quick a { background: transparent; color: var(--header-fg); border-color: var(--header-fg); }
+  fyxx-header[data-quickstyle="outline"] .fyxx-quick a:hover { background: var(--accent); color: #231F20; border-color: var(--accent); }
+  fyxx-header[data-quickstyle="soft"] .fyxx-quick a { background: var(--qbtn-soft); color: var(--header-fg); }
+  fyxx-header[data-quickstyle="soft"] .fyxx-quick a:hover { background: var(--accent); color: #231F20; }
+  fyxx-header[data-quick="off"] .fyxx-quick { display: none; }
+
+  /* ---- actions (account + cart) ---- */
+  .fyxx-actions { display: flex; gap: 4px; align-items: center; flex: 0 0 auto; margin-left: auto; }
+  .fyxx-actions .cart-link__bubble,
+  .fyxx-cart-count {
+    position: absolute; top: 3px; right: 2px; min-width: 17px; height: 17px; padding: 0 4px;
+    background: var(--accent); color: #231F20; border-radius: 999px;
+    font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .fyxx-cart { position: relative; }
+  .fyxx-cart toggle-cart { display: inline-flex; }
+
+  /* ---- FLOATING style ---- */
+  fyxx-header[data-headerstyle="floating"] .fyxx-header__bar { background: transparent; }
+  fyxx-header[data-headerstyle="floating"] .fyxx-header__inner { padding: 16px 24px; }
+  fyxx-header[data-headerstyle="floating"] .fyxx-icon-btn {
+    width: 46px; height: 46px; border-radius: 50%; background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.05);
+  }
+  fyxx-header[data-headerstyle="floating"] .fyxx-icon-btn:hover { box-shadow: 0 5px 18px rgba(0,0,0,.14); }
+  fyxx-header[data-headerstyle="floating"] .fyxx-icon-btn svg { stroke: #231F20; }
+  fyxx-header[data-headerstyle="floating"] .fyxx-search .search__input {
+    background: #ffffff; border-color: transparent; box-shadow: 0 2px 10px rgba(0,0,0,.07), 0 1px 3px rgba(0,0,0,.04);
+  }
+  fyxx-header[data-headerstyle="floating"] .fyxx-search .search__input { color: #231F20; }
+  fyxx-header[data-headerstyle="floating"] .fyxx-search .element-icon { stroke: #231F20; color: #231F20; }
+  fyxx-header[data-headerstyle="floating"] .fyxx-quick a { box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  fyxx-header[data-headerstyle="floating"][data-quickstyle="outline"] .fyxx-quick a { box-shadow: none; }
+
+  /* ---- main menu row (desktop) ---- */
+  .fyxx-mainnav { background: var(--header-bg); color: var(--header-fg); border-top: 1px solid var(--hairline); }
+  .fyxx-mainnav__list { list-style: none; margin: 0; padding: 4px 12px; display: flex; flex-wrap: wrap; gap: 0 2px; }
+  .fyxx-mainnav__item { position: relative; }
+  .fyxx-mainnav__link {
+    display: inline-flex; align-items: center; gap: 6px; color: var(--header-fg); text-decoration: none;
+    font-size: var(--nav-fs); font-family: var(--ui-font); padding: 11px 13px; white-space: nowrap;
+    background: none; border: 0; cursor: pointer; position: relative;
+  }
+  .fyxx-mainnav__link::after {
+    content: ""; position: absolute; left: 13px; right: 13px; bottom: 6px; height: 1.5px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .18s ease;
+  }
+  .fyxx-mainnav__link:hover::after,
+  .fyxx-mainnav__item.is-open > .fyxx-mainnav__link::after { transform: scaleX(1); }
+  .fyxx-caret { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .2s ease; opacity: .8; }
+  .fyxx-mainnav__item.is-open > .fyxx-mainnav__link .fyxx-caret { transform: rotate(180deg); }
+
+  .fyxx-submenu {
+    position: absolute; top: 100%; left: 8px; min-width: 210px; background: var(--panel-bg); color: var(--panel-fg);
+    border-radius: 12px; box-shadow: 0 18px 40px rgba(0,0,0,.22); padding: 8px; z-index: 50;
+    opacity: 0; visibility: hidden; transform: translateY(6px);
+    transition: opacity .16s ease, transform .16s ease, visibility .16s;
+  }
+  .fyxx-mainnav__item.is-open > .fyxx-submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+  @media (hover: hover) and (min-width: 769px) {
+    .fyxx-mainnav__item.has-submenu:hover > .fyxx-submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+    .fyxx-mainnav__item.has-submenu:hover > .fyxx-mainnav__link .fyxx-caret { transform: rotate(180deg); }
+  }
+  .fyxx-submenu a { display: block; text-decoration: none; color: var(--panel-fg); font-size: 13.5px; padding: 9px 12px; border-radius: 7px; }
+  .fyxx-submenu a:hover { background: #f6f4f2; color: var(--accent-deep); }
+
+  fyxx-header[data-fullmenu="slim"] .fyxx-mainnav { max-height: 0; overflow: hidden; transition: max-height .3s cubic-bezier(.18,.77,.58,1); }
+  fyxx-header[data-fullmenu="slim"] .fyxx-mainnav.is-open { max-height: 360px; overflow: visible; }
+  fyxx-header[data-fullmenu="always"] .fyxx-mainnav { max-height: none; }
+  fyxx-header[data-fullmenu="always"] .fyxx-nav-toggle { display: none; }
+
+  /* ---- slide-in nav drawer (desktop + mobile), fixed to viewport ---- */
+  .fyxx-scrim {
+    position: fixed; inset: 0; background: rgba(0,0,0,.45); opacity: 0; visibility: hidden;
+    pointer-events: none; transition: opacity .2s ease; z-index: 9998;
+  }
+  fyxx-header.drawer-open .fyxx-scrim { opacity: 1; visibility: visible; pointer-events: auto; }
+  .fyxx-drawer {
+    position: fixed; top: 0; bottom: 0; left: 0; width: 84%; max-width: 360px;
+    background: var(--header-bg); color: var(--header-fg); transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.18,.77,.58,1); z-index: 9999; overflow-y: auto;
+    pointer-events: none; box-shadow: 0 0 40px rgba(0,0,0,.18); display: flex; flex-direction: column;
+  }
+  fyxx-header.drawer-open .fyxx-drawer { transform: translateX(0); pointer-events: auto; }
+  .fyxx-drawer__head { display: flex; align-items: center; justify-content: space-between; padding: 18px; border-bottom: 1px solid var(--hairline); }
+  .fyxx-drawer__head .fyxx-logo { font-size: 26px; }
+  .fyxx-drawer__quick { display: none; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--hairline); }
+  @media (max-width: 768px) { .fyxx-drawer__quick { display: flex; } }
+  .fyxx-drawer__quick a {
+    flex: 1; text-align: center; font-family: var(--button-font); font-weight: 700; font-size: 13px;
+    letter-spacing: .04em; text-transform: uppercase; text-decoration: none; padding: 13px 12px;
+    border-radius: var(--btn-radius); background: var(--qbtn-bg); color: var(--qbtn-fg);
+  }
+  .fyxx-drawer__quick a:hover { background: var(--accent); color: #231F20; }
+  .fyxx-drawer__nav { padding: 8px 8px 16px; flex: 1 0 auto; margin: 0; }
+  .fyxx-drawer__nav li { list-style: none; }
+  .fyxx-drawer__nav ul { margin: 0; padding: 0; }
+  .fyxx-drawer__foot { padding: 26px 16px; text-align: center; border-top: 1px solid var(--hairline); position: sticky; bottom: 0; background: var(--header-bg); }
+  .fyxx-drawer__tagline { font-family: var(--serif); font-style: italic; font-size: 24px; letter-spacing: .01em; color: var(--header-fg); }
+  .fyxx-drawer__link, .fyxx-drawer__toggle {
+    display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left;
+    color: var(--header-fg); text-decoration: none; font-size: 15.5px; font-family: var(--ui-font);
+    padding: 14px 12px; background: none; border: 0; cursor: pointer; border-bottom: 1px solid var(--hairline);
+  }
+  .fyxx-drawer__toggle .fyxx-caret { width: 11px; height: 11px; }
+  .fyxx-drawer__item.is-open > .fyxx-drawer__toggle .fyxx-caret { transform: rotate(180deg); }
+  .fyxx-drawer__submenu { max-height: 0; overflow: hidden; transition: max-height .26s ease; background: var(--drawer-sub-bg); }
+  .fyxx-drawer__item.is-open > .fyxx-drawer__submenu { max-height: 600px; }
+  .fyxx-drawer__submenu a { display: block; color: var(--muted); text-decoration: none; font-size: 14px; padding: 12px 12px 12px 26px; border-bottom: 1px solid var(--hairline); }
+  .fyxx-drawer__submenu a:hover { color: var(--accent-deep); }
+
+  /* ---- responsive ---- */
+  @media (max-width: 768px) {
+    .fyxx-quick, .fyxx-welcome, .fyxx-mainnav { display: none; }
+    .fyxx-nav-toggle { display: inline-flex !important; }
+    .fyxx-search { max-width: none; }
+    .fyxx-header__inner { flex-wrap: wrap; row-gap: 12px; }
+    fyxx-header[data-msearch="line"] .fyxx-search { order: 5; flex: 1 0 100%; }
+    .fyxx-actions { margin-left: auto; }
+  }
+  fyxx-header:not([data-fullmenu="always"]) .fyxx-nav-toggle { display: inline-flex; }
+  @media (min-width: 769px) {
+    fyxx-header[data-fullmenu="always"] .fyxx-nav-toggle { display: none; }
+  }
+
+  fyxx-header a:focus-visible, fyxx-header button:focus-visible, fyxx-header input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) { fyxx-header * { transition: none !important; } }
+{% endstylesheet %}
+
+{%- liquid
+  assign menu = section.settings.menu | default: linklists['main-navigation']
+  assign quick_menu = section.settings.quick_menu | default: linklists['secondary-menu-test']
+  assign show_quick = section.settings.show_quick
+  assign tagline = section.settings.tagline | default: 'sip back and relax'
+
+  assign data_quick = 'off'
+  if show_quick
+    assign data_quick = 'on'
+  endif
+
+  assign data_overlay = 'off'
+  if section.settings.search_overlay
+    assign data_overlay = 'on'
+  endif
+
+  capture caret_svg
+    echo '<svg class="fyxx-caret" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>'
+  endcapture
+-%}
+
+{%- capture cart_link -%}
+  <a href="{{ routes.cart_url }}" id="HeaderCartTrigger" class="fyxx-icon-btn fyxx-cart" data-fyxx-cart-open
+     aria-label="{% render 'utility.translate', key: 'labels.cart', fallback: 'Cart' %}">
+    <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.6 9.5a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8L6 6z"/><path d="M6 6L5.2 3H2.5"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></svg>
+    <span class="fyxx-cart-count"{% if cart.item_count == 0 %} style="display:none"{% endif %}>{{ cart.item_count }}</span>
+  </a>
+{%- endcapture -%}
+
+<fyxx-header
+  data-headerstyle="{{ section.settings.header_style }}"
+  data-theme="{{ section.settings.header_theme }}"
+  data-quickstyle="{{ section.settings.quick_style }}"
+  data-fullmenu="{{ section.settings.full_menu }}"
+  data-quick="{{ data_quick }}"
+  data-msearch="{{ section.settings.mobile_search }}"
+  data-search="{{ section.settings.search_style }}"
+  data-overlay="{{ data_overlay }}"
+  data-account="{% if customer %}in{% else %}out{% endif %}"
+  style="--accent: {{ section.settings.accent }};"
+>
+  <div class="fyxx-header__bar">
+    <div class="fyxx-header__inner">
+
+      <button class="fyxx-icon-btn fyxx-nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-drawer-open>
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+
+      <a href="{{ routes.root_url }}" class="fyxx-logo" aria-label="{{ shop.name | escape }}">
+        <img class="fyxx-logo-img fyxx-logo--dark" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/fyxx_logo_black_80fed8f3-3062-4b6b-b3ac-85923027c518.svg?v=1782036836" alt="{{ shop.name | escape }}" width="120" height="34" loading="eager">
+        <img class="fyxx-logo-img fyxx-logo--light" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/Fyxx_Logo_White_fcf94a36-1ae9-4622-8ac7-e476ff44c2b1.svg?v=1782036836" alt="{{ shop.name | escape }}" width="120" height="34" loading="eager">
+      </a>
+
+      <div class="fyxx-search">
+        {%- render 'form.predictive-search', context: 'header' -%}
+      </div>
+
+      {%- if show_quick and quick_menu != blank -%}
+        <nav class="fyxx-quick" aria-label="Quick links">
+          {%- for link in quick_menu.links -%}
+            {%- unless link.url == '/' or link.title == 'Home' -%}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+          <a href="/pages/the-green-room">TGR</a>
+        </nav>
+      {%- endif -%}
+
+      <div class="fyxx-actions">
+        {%- if customer -%}
+          <span class="fyxx-welcome">Welcome back, <b>{{ customer.first_name | default: customer.name }}</b></span>
+          <a href="{{ routes.account_url }}" class="fyxx-icon-btn" aria-label="Account">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="fyxx-icon-btn" aria-label="Log out">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="fyxx-icon-btn" aria-label="Log in">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          </a>
+        {%- endif -%}
+
+        {{ cart_link }}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Cart: the slide-in cart drawer lives in its own section (fyxx-cart-drawer) in the
+    header group. The cart icon above opens it via the 'fyxx-cart:open' event (see script).
+    The theme's slide-down cart (header.drawer / header.cart-drawer) is intentionally NOT
+    rendered here, so adding to cart never auto-pops a drawer.
+  {%- endcomment -%}
+
+  {%- comment -%} main menu row (desktop) {%- endcomment -%}
+  {%- if menu != blank -%}
+    <nav class="fyxx-mainnav" aria-label="Main menu">
+      <ul class="fyxx-mainnav__list">
+        {%- for link in menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <li class="fyxx-mainnav__item has-submenu">
+              <button class="fyxx-mainnav__link" type="button" aria-expanded="false">{{ link.title }} {{ caret_svg }}</button>
+              <div class="fyxx-submenu">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}">{{ child.title }}</a>
+                {%- endfor -%}
+              </div>
+            </li>
+          {%- else -%}
+            <li class="fyxx-mainnav__item"><a class="fyxx-mainnav__link" href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </nav>
+  {%- endif -%}
+
+  {%- comment -%} slide-in nav drawer {%- endcomment -%}
+  <div class="fyxx-scrim" data-drawer-close></div>
+  <aside class="fyxx-drawer" aria-label="Menu">
+    <div class="fyxx-drawer__head">
+      <a href="{{ routes.root_url }}" class="fyxx-logo" aria-label="{{ shop.name | escape }}">
+        <img class="fyxx-logo-img fyxx-logo--dark" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/fyxx_logo_black_80fed8f3-3062-4b6b-b3ac-85923027c518.svg?v=1782036836" alt="{{ shop.name | escape }}" width="100" height="26" loading="lazy">
+        <img class="fyxx-logo-img fyxx-logo--light" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/Fyxx_Logo_White_fcf94a36-1ae9-4622-8ac7-e476ff44c2b1.svg?v=1782036836" alt="{{ shop.name | escape }}" width="100" height="26" loading="lazy">
+      </a>
+      <button class="fyxx-icon-btn" type="button" aria-label="Close menu" data-drawer-close>
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    {%- if show_quick and quick_menu != blank -%}
+      <div class="fyxx-drawer__quick">
+        {%- for link in quick_menu.links -%}
+          {%- unless link.url == '/' or link.title == 'Home' -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endunless -%}
+        {%- endfor -%}
+        <a href="/pages/the-green-room">TGR</a>
+      </div>
+    {%- endif -%}
+
+    {%- if menu != blank -%}
+      <ul class="fyxx-drawer__nav">
+        {%- for link in menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <li class="fyxx-drawer__item has-submenu">
+              <button class="fyxx-drawer__toggle" type="button" aria-expanded="false">{{ link.title }} {{ caret_svg }}</button>
+              <div class="fyxx-drawer__submenu">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}">{{ child.title }}</a>
+                {%- endfor -%}
+              </div>
+            </li>
+          {%- else -%}
+            <li class="fyxx-drawer__item"><a class="fyxx-drawer__link" href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="fyxx-drawer__foot">
+      <img class="fyxx-slogan fyxx-slogan--dark" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/fyxx-slogan-black.svg?v=1782037158" alt="{{ tagline | escape }}" loading="lazy">
+      <img class="fyxx-slogan fyxx-slogan--light" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/fyxx-slogan-white.svg?v=1782037158" alt="{{ tagline | escape }}" loading="lazy">
+    </div>
+  </aside>
+
+  <script>
+    (function () {
+      var root = document.currentScript.closest('fyxx-header');
+      if (!root || root.dataset.fyxxInit) return;
+      root.dataset.fyxxInit = '1';
+
+      function openDrawer()  { root.classList.add('drawer-open'); var t = root.querySelector('.fyxx-nav-toggle'); if (t) t.setAttribute('aria-expanded', 'true'); }
+      function closeDrawer() { root.classList.remove('drawer-open'); var t = root.querySelector('.fyxx-nav-toggle'); if (t) t.setAttribute('aria-expanded', 'false'); }
+
+      root.querySelectorAll('[data-drawer-open]').forEach(function (b) { b.addEventListener('click', openDrawer); });
+      root.querySelectorAll('[data-drawer-close]').forEach(function (b) { b.addEventListener('click', closeDrawer); });
+
+      // cart icon opens the slide-in cart drawer (fyxx-cart-drawer section); it never auto-opens on add
+      root.querySelectorAll('[data-fyxx-cart-open]').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent('fyxx-cart:open'));
+        });
+      });
+
+      // desktop dropdowns (click; hover handled in CSS)
+      var dItems = root.querySelectorAll('.fyxx-mainnav__item.has-submenu');
+      function closeSubmenus() {
+        dItems.forEach(function (i) { i.classList.remove('is-open'); var b = i.querySelector('.fyxx-mainnav__link'); if (b) b.setAttribute('aria-expanded', 'false'); });
+      }
+      dItems.forEach(function (item) {
+        var btn = item.querySelector('.fyxx-mainnav__link');
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          var willOpen = !item.classList.contains('is-open');
+          closeSubmenus();
+          item.classList.toggle('is-open', willOpen);
+          btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+      });
+      document.addEventListener('click', function (e) { if (!e.target.closest('.fyxx-mainnav__item.has-submenu')) closeSubmenus(); });
+
+      // drawer accordions
+      root.querySelectorAll('.fyxx-drawer__item.has-submenu > .fyxx-drawer__toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var item = btn.parentElement;
+          var open = item.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      });
+
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDrawer(); closeSubmenus(); } });
+    })();
+  </script>
+</fyxx-header>
+
+{% schema %}
+{
+  "name": "Fyxx header",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "header_style", "label": "Header style", "default": "floating",
+      "options": [ { "value": "bar", "label": "Solid bar" }, { "value": "floating", "label": "Floating" } ] },
+    { "type": "select", "id": "header_theme", "label": "Header theme", "default": "white",
+      "options": [ { "value": "black", "label": "Black" }, { "value": "white", "label": "White (app)" } ] },
+    { "type": "select", "id": "full_menu", "label": "Full menu", "default": "slim",
+      "options": [ { "value": "slim", "label": "Behind hamburger" }, { "value": "always", "label": "Always-visible row" } ] },
+    { "type": "header", "content": "Navigation" },
+    { "type": "link_list", "id": "menu", "label": "Main menu" },
+    { "type": "link_list", "id": "quick_menu", "label": "Quick-links menu" },
+    { "type": "checkbox", "id": "show_quick", "label": "Show quick links", "default": true },
+    { "type": "select", "id": "quick_style", "label": "Quick-link button style", "default": "solid",
+      "options": [ { "value": "solid", "label": "Solid" }, { "value": "outline", "label": "Outline" }, { "value": "soft", "label": "Soft" } ] },
+    { "type": "header", "content": "Search" },
+    { "type": "select", "id": "search_style", "label": "Search bar style", "default": "pill",
+      "options": [ { "value": "pill", "label": "Pill outline" }, { "value": "filled", "label": "Filled pill" }, { "value": "square", "label": "Square" } ] },
+    { "type": "select", "id": "mobile_search", "label": "Mobile search position", "default": "line",
+      "options": [ { "value": "inline", "label": "Inline" }, { "value": "line", "label": "Own line" } ] },
+    { "type": "checkbox", "id": "search_overlay", "label": "Search dim overlay", "default": true },
+    { "type": "header", "content": "Brand" },
+    { "type": "image_picker", "id": "logo", "label": "Logo image", "info": "Optional. Leave blank to use the 'fyxx' wordmark." },
+    { "type": "color", "id": "accent", "label": "Fyxx pink (accent)", "default": "#f0b09e" },
+    { "type": "text", "id": "tagline", "label": "Drawer tagline", "default": "sip back and relax" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

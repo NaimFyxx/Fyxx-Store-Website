@@ -1,0 +1,64 @@
+{%- comment -%}
+NAIM
+Snippet to calculate savings on product and display the pice near the product price
+
+{%- endcomment -%}
+
+
+{% comment %}
+ Step 1: Get PRoduct Data of the Data that is currently open, and covnert to JOD
+{% endcomment %}
+
+{% liquid 
+    assign current_product_variant_price = product.selected_or_first_available_variant.price
+    assign variant_price_jod = current_product_variant_price | divided_by: 100.0
+%}
+
+
+{% comment %}
+ Step 2A: Check if custoemr is logged in, show the savings for current tier
+{% endcomment %}
+
+{% if customer %}
+    {% assign  customer_tier = customer.metafields.loyaltylion.loyalty_tier %}
+
+    {% case customer_tier %}
+    {% when 'Blue' %}
+        {% assign discounted_price = variant_price_jod | times: 0.97 %}
+    {% when 'Silver' %}
+        {% assign discounted_price = variant_price_jod | times: 0.96 %}
+    {% when 'Gold' %}
+        {% assign discounted_price = variant_price_jod | times: 0.95 %}
+    {% when 'Platinum' %}
+        {% assign discounted_price = variant_price_jod | times: 0.95 %}
+    {% endcase %}
+
+    <div>
+        <p>
+            Member Pricing: {{discounted_price}} JD
+        </p>
+    </div>
+
+{% endif %}
+
+{% comment %}
+ Step 2B: If customer is not logged in, show the savings for the base tier
+{% endcomment %}
+
+{% unless customer %}
+        {% assign discounted_price = variant_price_jod | times: 0.97 %}
+
+        <div>
+            <p>
+            <a href="{{routes.account_login_url}}?return_url={{ product.url }}" class="loyalty-price-link">
+                Sign in</a>
+                or
+            <a href="{{ routes.account_register_url}}?return_url={{ product.url }}" class="loyalty-price-link">
+                create an account</a>
+                to get this product for {{discounted_price}} JD
+            </p>
+        </div>
+
+{% endunless %}
+
+

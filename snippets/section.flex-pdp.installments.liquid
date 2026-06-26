@@ -1,0 +1,22 @@
+{% doc %}
+  Copyright © 2025 Archetype Themes LP. All rights reserved.
+
+  Payment installment options for paying over time.
+
+  @param {object} product - A product object
+
+  @example
+  {% render 'section.flex-pdp.installments', product: closest.product %}
+{% enddoc %}
+
+{% capture payment_terms_content %}
+  {% form 'product', product %}
+    {% capture payment_terms %}
+      {{ form | payment_terms }}
+    {% endcapture %}
+  {% endform %}
+{% endcapture %}
+
+{% if payment_terms != blank %}
+  {% render 'element.text', variant: 'body-sm', text: payment_terms %}
+{% endif %}

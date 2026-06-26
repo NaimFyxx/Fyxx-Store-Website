@@ -1,0 +1,133 @@
+{% capture slot_gallery %}
+  {% content_for 'block', type: '_section-flex-pdp-media-gallery', id: 'section-flex-pdp-media-gallery' %}
+{% endcapture %}
+
+{% capture slot_details %}
+  {% content_for 'blocks' %}
+{% endcapture %}
+
+{%- render 'section.flex-pdp', slot_gallery: slot_gallery, slot_details: slot_details -%}
+
+{% javascript %}
+  document.addEventListener('product-form:cart:navigate', (event) => {
+    const headerEl = document.querySelector('header-section[data-cart-type]');
+    const cartType = headerEl ? headerEl.getAttribute('data-cart-type') : undefined;
+    if (cartType !== 'page') {
+      event.preventDefault();
+    }
+  });
+
+  document.addEventListener('product-form:submit:success', async (event) => {
+    try {
+      const response = await fetch(`${window.Shopify.routes.root}cart?sections=cart-ajax`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      const sections = await response.json();
+      const state = { sections };
+
+      document.dispatchEvent(
+        new CustomEvent('ajaxProduct:added', {
+          bubbles: true,
+          detail: {
+            product: state,
+          },
+        })
+      );
+
+      document.dispatchEvent(
+        new CustomEvent('cart:updated', {
+          bubbles: true,
+          detail: {
+            cart: state,
+          },
+        })
+      );
+    } catch (e) {
+      console.warn('Failed to load cart sections after add:', e);
+    }
+  });
+
+  document.addEventListener('product-form:message:success', (event) => event.preventDefault());
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:labels.product_high_variants",
+  "settings": [
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:labels.padding",
+      "default": "both",
+      "options": [
+        { "value": "none", "label": "t:labels.none" },
+        { "value": "top", "label": "t:labels.alignments.top" },
+        { "value": "bottom", "label": "t:labels.alignments.bottom" },
+        { "value": "both", "label": "t:labels.both" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:labels.none"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "@theme" },
+    { "type": "_section-flex-pdp-buy-buttons" },
+    { "type": "_section-flex-pdp-description" },
+    { "type": "_section-flex-pdp-divider" },
+    { "type": "_section-flex-pdp-media-gallery" },
+    { "type": "_section-flex-pdp-policies" },
+    { "type": "_section-flex-pdp-price" },
+    { "type": "_section-flex-pdp-quantity-picker" },
+    { "type": "_section-flex-pdp-sku" },
+    { "type": "_section-flex-pdp-title" },
+    { "type": "_section-flex-pdp-variant-picker" },
+    { "type": "_section-flex-pdp-vendor" },
+    { "type": "_section-flex-pdp-pick-up" },
+    { "type": "_section-flex-pdp-installments" }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.product_high_variants",
+      "category": "t:labels.category_products",
+      "blocks": [
+        { "type": "_section-flex-pdp-title" },
+        { "type": "_section-flex-pdp-vendor" },
+        { "type": "_section-flex-pdp-price" },
+        { "type": "_section-flex-pdp-installments" },
+        { "type": "_section-flex-pdp-divider" },
+        { "type": "_section-flex-pdp-variant-picker" },
+        { "type": "_section-flex-pdp-quantity-picker" },
+        { "type": "_section-flex-pdp-buy-buttons" },
+        { "type": "_section-flex-pdp-pick-up" },
+        { "type": "_section-flex-pdp-description" }
+      ]
+    }
+  ],
+    "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

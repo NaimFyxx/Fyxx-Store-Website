@@ -1,0 +1,53 @@
+{% comment %}
+  ===== FYXX CUSTOM: Fyxx Cup 2026 floating button (dismissible) =====
+  Site-wide promo FAB. Rendered once before </body> from layout/theme.liquid.
+  Self-contained: HTML + CSS + a tiny JS snippet, no Liquid logic. The "×" dismisses
+  it and remembers via localStorage so it won't reappear for that visitor.
+
+  Placement: BOTTOM-LEFT — deliberately kept clear of the centered "Download the App"
+  PA floater (mobile) and any bottom-right chat / AI / cart widget. On mobile it is
+  raised above the bottom edge so it clears the app banner. Opens in a new tab.
+  This snippet does not touch the PA floater or any other code.
+{% endcomment %}
+<div class="fyxx-cup-fab-wrap" id="fyxx-cup-fab">
+  <a href="https://passport.myfyxx.com/?utm_source=myfyxx_store&utm_medium=floating_button&utm_campaign=fyxx_cup_2026"
+     class="fyxx-cup-fab" target="_blank" rel="noopener" aria-label="Fyxx Cup 2026 — Predict and Earn Points">
+    <span class="fyxx-cup-fab__icon" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1430" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/>
+        <path d="M17 5h2.5A1.5 1.5 0 0 1 21 6.5a3 3 0 0 1-3 3H17"/>
+        <path d="M7 5H4.5A1.5 1.5 0 0 0 3 6.5a3 3 0 0 0 3 3H7"/>
+      </svg>
+    </span>
+    <span class="fyxx-cup-fab__text">
+      <span class="fyxx-cup-fab__title">Fyxx Cup 2026</span>
+      <span class="fyxx-cup-fab__sub">Predict &amp; Earn Points</span>
+    </span>
+  </a>
+  <button type="button" class="fyxx-cup-fab__close" aria-label="Dismiss">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+<style>
+.fyxx-cup-fab-wrap{position:fixed;left:20px;bottom:20px;z-index:9998}
+.fyxx-cup-fab{display:inline-flex;align-items:center;gap:13px;padding:12px 24px 12px 13px;background:#17121e;border:1.5px solid rgba(230,201,100,.5);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.34);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.fyxx-cup-fab:hover{transform:translateY(-2px);border-color:rgba(230,201,100,.9);box-shadow:0 14px 38px rgba(0,0,0,.46)}
+.fyxx-cup-fab__icon{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#E6C964;flex:none}
+.fyxx-cup-fab__icon svg{width:27px;height:27px}
+.fyxx-cup-fab__text{display:flex;flex-direction:column;line-height:1.22}
+.fyxx-cup-fab__title{font-size:16.5px;font-weight:700;color:#fff;letter-spacing:.1px}
+.fyxx-cup-fab__sub{font-size:12.5px;color:#c2b3df;margin-top:1px}
+.fyxx-cup-fab__close{position:absolute;top:-9px;right:-9px;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:#2a2433;color:#cfc6dd;border:1px solid rgba(255,255,255,.15);cursor:pointer;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fyxx-cup-fab__close:hover{background:#3a3346;color:#fff}
+@media (max-width:600px){.fyxx-cup-fab-wrap{left:12px;bottom:84px}.fyxx-cup-fab{gap:11px;padding:8px 14px 8px 9px;border-radius:15px}.fyxx-cup-fab__icon{width:36px;height:36px}.fyxx-cup-fab__icon svg{width:20px;height:20px}.fyxx-cup-fab__title{font-size:13.5px}.fyxx-cup-fab__sub{font-size:11px}.fyxx-cup-fab__close{width:22px;height:22px;top:-8px;right:-8px}}
+</style>
+<script>
+(function(){
+  var KEY='fyxx_cup_fab_dismissed';
+  var el=document.getElementById('fyxx-cup-fab');
+  if(!el)return;
+  try{if(localStorage.getItem(KEY)==='1'){el.style.display='none';return;}}catch(e){}
+  var c=el.querySelector('.fyxx-cup-fab__close');
+  if(c)c.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();el.style.display='none';try{localStorage.setItem(KEY,'1');}catch(e){}});
+})();
+</script>

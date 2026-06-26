@@ -1,0 +1,818 @@
+{% doc %}
+  @prompt
+    this <div style="text-align: center; padding: 40px 20px; background-color: #F5F0E8;">
+      <a href="/pages/your-menu-page" style="text-decoration: none; display: inline-block;">
+        <span class="view-menu-text">VIEW FULL MENU</span>
+      </a>
+    </div>
+    
+    <style>
+    .view-menu-text {
+        font-family: Arial Black, sans-serif;
+        font-size: 120px;
+        font-weight: 900;
+        color: #0F3C39;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .view-menu-text::after {
+        content: "\2192";
+        margin-left: 40px;
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: all 0.4s ease;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .view-menu-text:hover {
+        color: #80AA96;
+    }
+    
+    .view-menu-text:hover::after {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    @media (max-width: 1400px) {
+        .view-menu-text {
+            font-size: 80px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .view-menu-text {
+            font-size: 40px;
+        }
+    }
+    </style>, when i thovers its adding a backgeound color ? can u make that go away and also can u make this way smaller and add a heading section ? also whenever i hover on "view full menu" i want it tolist down a few products that i have , make the drop down thing of product more subtle, like make it obviousi ts just a display and odnt add any prices , also i=only include 4 products, add a mini section next to the code where i can add my logo, make it one standard size since my file is big, perfectly aligned on the left side of this code, why is i tso far left what , i want ot be next to the code, please make it go right nex to the "view full menu" text , its so far left, keep everything the same , i just want u to center the "view full menu" text on mobile version and have the arrown right at the bottom of it, can u make fetaures items fall under "view full menu" exactly. without the spacing of the arrow, no make it smaller what is this , please make the logo image and view full menu bigger and the featured items smaller
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-menu-button-container-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{ block.settings.logo_spacing }}px;
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-menu-button-logo-section-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-menu-button-logo-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_size }}px;
+    height: {{ block.settings.logo_size }}px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ai-menu-button-logo-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_size }}px;
+    height: {{ block.settings.logo_size }}px;
+    background-color: #f4f4f4;
+    border: 2px dashed #cccccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+
+  .ai-menu-button-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 50%;
+    height: 50%;
+    opacity: 0.5;
+  }
+
+  .ai-menu-button-content-section-{{ ai_gen_id }} {
+    text-align: center;
+  }
+
+  .ai-menu-button-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px 0;
+    font-weight: {{ block.settings.heading_weight }};
+  }
+
+  .ai-menu-button-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-block;
+  }
+
+  .ai-menu-button-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    display: inline-block;
+    background: none !important;
+  }
+
+  .ai-menu-button-link-{{ ai_gen_id }}:hover {
+    background: none !important;
+    background-color: transparent !important;
+  }
+
+  .ai-menu-button-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font_family.family }}, {{ block.settings.font_family.fallback_families }};
+    font-size: {{ block.settings.font_size_desktop }}px;
+    font-weight: {{ block.settings.font_weight }};
+    color: {{ block.settings.text_color }};
+    letter-spacing: {{ block.settings.letter_spacing | divided_by: 100.0 }}em;
+    text-transform: {{ block.settings.text_transform }};
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    background: none !important;
+  }
+
+  .ai-menu-button-text-{{ ai_gen_id }}:hover {
+    background: none !important;
+    background-color: transparent !important;
+  }
+
+  .ai-menu-button-text-{{ ai_gen_id }}::after {
+    content: "{{ block.settings.arrow_symbol }}";
+    margin-left: {{ block.settings.arrow_spacing }}px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .ai-menu-button-text-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.hover_color }};
+  }
+
+  {% if block.settings.show_arrow_on_hover %}
+    .ai-menu-button-text-{{ ai_gen_id }}:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  {% else %}
+    .ai-menu-button-text-{{ ai_gen_id }}::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  {% endif %}
+
+  .ai-menu-dropdown-{{ ai_gen_id }} {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: {{ block.settings.dropdown_bg_color }};
+    border-radius: {{ block.settings.dropdown_border_radius }}px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: {{ block.settings.dropdown_padding }}px;
+    min-width: {{ block.settings.dropdown_width }}px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    margin-top: {{ block.settings.dropdown_offset }}px;
+    pointer-events: none;
+  }
+
+  .ai-menu-button-wrapper-{{ ai_gen_id }}:hover .ai-menu-dropdown-{{ ai_gen_id }} {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .ai-menu-dropdown-item-{{ ai_gen_id }} {
+    display: block;
+    padding: {{ block.settings.item_padding }}px;
+    text-decoration: none;
+    color: {{ block.settings.dropdown_text_color }};
+    border-bottom: 1px solid {{ block.settings.dropdown_border_color }};
+    transition: none;
+    font-size: {{ block.settings.dropdown_font_size }}px;
+    font-family: {{ block.settings.dropdown_font.family }}, {{ block.settings.dropdown_font.fallback_families }};
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .ai-menu-dropdown-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-menu-dropdown-product-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-menu-dropdown-product-image-{{ ai_gen_id }} {
+    width: {{ block.settings.product_image_size }}px;
+    height: {{ block.settings.product_image_size }}px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0.9;
+  }
+
+  .ai-menu-dropdown-product-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-menu-dropdown-product-info-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-menu-dropdown-product-title-{{ ai_gen_id }} {
+    font-weight: 500;
+    margin: 0;
+    font-size: {{ block.settings.dropdown_font_size }}px;
+    opacity: 0.8;
+  }
+
+  .ai-menu-dropdown-preview-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.dropdown_font_size | minus: 1 }}px;
+    color: {{ block.settings.dropdown_text_color }};
+    opacity: 0.6;
+    font-style: italic;
+    text-align: center;
+    padding: {{ block.settings.item_padding | divided_by: 2 }}px;
+    border-bottom: 1px solid {{ block.settings.dropdown_border_color }};
+    margin-bottom: {{ block.settings.item_padding | divided_by: 2 }}px;
+  }
+
+  @media (max-width: 1400px) {
+    .ai-menu-button-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_tablet }}px;
+    }
+    
+    .ai-menu-button-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-menu-button-logo-{{ ai_gen_id }},
+    .ai-menu-button-logo-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.logo_size | times: 0.8 }}px;
+      height: {{ block.settings.logo_size | times: 0.8 }}px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ai-menu-button-container-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: {{ block.settings.logo_spacing | divided_by: 2 }}px;
+      padding: {{ block.settings.padding_top_mobile }}px {{ block.settings.padding_horizontal_mobile }}px {{ block.settings.padding_bottom_mobile }}px;
+    }
+
+    .ai-menu-button-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_mobile }}px;
+      white-space: normal;
+      text-align: center;
+      display: block;
+    }
+
+    .ai-menu-button-text-{{ ai_gen_id }}::after {
+      display: block;
+      margin-left: 0;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    {% if block.settings.show_arrow_on_hover %}
+      .ai-menu-button-text-{{ ai_gen_id }}:hover::after {
+        transform: translateY(0);
+      }
+    {% else %}
+      .ai-menu-button-text-{{ ai_gen_id }}::after {
+        transform: translateY(0);
+      }
+    {% endif %}
+    
+    .ai-menu-button-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.6 }}px;
+    }
+
+    .ai-menu-button-logo-{{ ai_gen_id }},
+    .ai-menu-button-logo-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.logo_size | times: 0.7 }}px;
+      height: {{ block.settings.logo_size | times: 0.7 }}px;
+    }
+
+    .ai-menu-dropdown-{{ ai_gen_id }} {
+      min-width: 200px;
+      left: 20px;
+      right: 20px;
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-menu-button-container-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-menu-button-logo-section-{{ ai_gen_id }}">
+    {% if block.settings.logo_image %}
+      <img
+        src="{{ block.settings.logo_image | image_url: width: 300 }}"
+        alt="{{ block.settings.logo_image.alt | default: 'Logo' | escape }}"
+        class="ai-menu-button-logo-{{ ai_gen_id }}"
+        loading="lazy"
+        width="{{ block.settings.logo_size }}"
+        height="{{ block.settings.logo_size }}"
+      >
+    {% else %}
+      <div class="ai-menu-button-logo-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-menu-button-content-section-{{ ai_gen_id }}">
+    {% if block.settings.heading_text != blank %}
+      <h2 class="ai-menu-button-heading-{{ ai_gen_id }}">{{ block.settings.heading_text }}</h2>
+    {% endif %}
+
+    <div class="ai-menu-button-wrapper-{{ ai_gen_id }}">
+      <a href="{{ block.settings.menu_link }}" class="ai-menu-button-link-{{ ai_gen_id }}">
+        <span class="ai-menu-button-text-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
+      </a>
+
+      {% if block.settings.show_dropdown %}
+        <div class="ai-menu-dropdown-{{ ai_gen_id }}">
+          {% if block.settings.preview_text != blank %}
+            <div class="ai-menu-dropdown-preview-text-{{ ai_gen_id }}">{{ block.settings.preview_text }}</div>
+          {% endif %}
+          
+          {% for i in (1..4) %}
+            {% liquid
+              assign product_key = 'featured_product_' | append: i
+              assign product = block.settings[product_key]
+            %}
+            
+            {% if product != blank %}
+              <div class="ai-menu-dropdown-item-{{ ai_gen_id }}">
+                <div class="ai-menu-dropdown-product-{{ ai_gen_id }}">
+                  <div class="ai-menu-dropdown-product-image-{{ ai_gen_id }}">
+                    {% if product.featured_image %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 60 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        loading="lazy"
+                        width="60"
+                        height="60"
+                      >
+                    {% endif %}
+                  </div>
+                  <div class="ai-menu-dropdown-product-info-{{ ai_gen_id }}">
+                    <div class="ai-menu-dropdown-product-title-{{ ai_gen_id }}">{{ product.title }}</div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "View menu button",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_size",
+      "label": "Logo size",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "logo_spacing",
+      "label": "Logo spacing",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading text"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0F3C39"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Spacing below heading",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "VIEW FULL MENU"
+    },
+    {
+      "type": "url",
+      "id": "menu_link",
+      "label": "Menu page link"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "label": "Font size (desktop)",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "font_size_tablet",
+      "label": "Font size (tablet)",
+      "min": 24,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "900"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 25,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0F3C39"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Hover color",
+      "default": "#80AA96"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F5F0E8"
+    },
+    {
+      "type": "header",
+      "content": "Arrow"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow_on_hover",
+      "label": "Show arrow only on hover",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "arrow_symbol",
+      "label": "Arrow symbol",
+      "default": "→"
+    },
+    {
+      "type": "range",
+      "id": "arrow_spacing",
+      "label": "Arrow spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Product preview"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dropdown",
+      "label": "Show product preview on hover",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "preview_text",
+      "label": "Preview text",
+      "default": "Featured items"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_1",
+      "label": "Featured product 1"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_2",
+      "label": "Featured product 2"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_3",
+      "label": "Featured product 3"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_4",
+      "label": "Featured product 4"
+    },
+    {
+      "type": "header",
+      "content": "Preview style"
+    },
+    {
+      "type": "font_picker",
+      "id": "dropdown_font",
+      "label": "Preview font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "range",
+      "id": "dropdown_font_size",
+      "label": "Preview font size",
+      "min": 8,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "dropdown_width",
+      "label": "Preview width",
+      "min": 120,
+      "max": 200,
+      "step": 20,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "dropdown_padding",
+      "label": "Preview padding",
+      "min": 6,
+      "max": 12,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "dropdown_border_radius",
+      "label": "Preview border radius",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "dropdown_offset",
+      "label": "Preview offset",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item padding",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "product_image_size",
+      "label": "Product image size",
+      "min": 15,
+      "max": 25,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "dropdown_bg_color",
+      "label": "Preview background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_text_color",
+      "label": "Preview text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_border_color",
+      "label": "Preview border color",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 60,
+      "step": 10,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 10,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 10,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "View menu button"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

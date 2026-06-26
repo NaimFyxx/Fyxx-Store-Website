@@ -1,0 +1,18 @@
+{% render 'section.flex-pdp.installments', product: closest.product %}
+
+{% schema %}
+{
+  "name": "t:labels.payment_installments",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.requires_shop_pay_installments"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.payment_installments"
+    }
+  ]
+}
+{% endschema %}

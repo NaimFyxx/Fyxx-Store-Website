@@ -1,0 +1,53 @@
+{% render 'section.flex-pdp.media-gallery',
+  product: closest.product
+%}
+
+{% schema %}
+{
+  "name": "t:labels.media_gallery",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "t:labels.image_ratio",
+      "default": "1/1",
+      "options": [
+        {
+          "value": "initial",
+          "label": "t:labels.natural"
+        },
+        {
+          "value": "9/16",
+          "label": "t:labels.portrait"
+        },
+        {
+          "value": "1/1",
+          "label": "t:labels.square"
+        },
+        {
+          "value": "16/9",
+          "label": "t:labels.landscape"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "t:actions.enable_video_looping",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_autoplay",
+      "label": "t:actions.autoplay_video",
+      "default": false,
+      "info": "t:info.autoplay_videos_are_muted"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:labels.media_gallery"
+    }
+  ]
+}
+{% endschema %}
