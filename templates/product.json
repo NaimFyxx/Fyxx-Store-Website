@@ -163,6 +163,10 @@
             "show_shop_reviews": false,
             "empty_state": "empty_widget"
           }
+        },
+        "judge_me_reviews_review_snippet_widget_DRfBGX": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_snippet_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         }
       },
       "block_order": [
@@ -184,7 +188,8 @@
         "sales_point4",
         "wishlist_plus_wishlist_pdp_button_9DFm9M",
         "judge_me_reviews_preview_badge_tAm7Vf",
-        "judge_me_reviews_review_widget_AQWwa3"
+        "judge_me_reviews_review_widget_AQWwa3",
+        "judge_me_reviews_review_snippet_widget_DRfBGX"
       ],
       "settings": {
         "image_position": "right",
