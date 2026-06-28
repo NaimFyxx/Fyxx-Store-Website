@@ -268,6 +268,8 @@
             </h3>
             <ul role="listbox" aria-labelledby="predictive-search-products">
               {%- for product in predictive_search.resources.products -%}
+                {%- comment -%} FYXX CUSTOM: hide products tagged oos-hidden from the search suggestions dropdown only (they still appear on the full search results page) {%- endcomment -%}
+                {%- unless product.tags contains 'oos-hidden' -%}
                 <li role="option">
                   <a href="{{ product.url }}">
                     <div class="results-products__image grid__image-ratio">
@@ -351,6 +353,7 @@
                     </div>
                   </a>
                 </li>
+                {%- endunless -%}
               {%- endfor -%}
             </ul>
           </div>
