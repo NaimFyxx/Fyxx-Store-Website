@@ -298,8 +298,6 @@
           transparent: true
         -%}
         <input name="options[prefix]" type="hidden" value="last">
-        {%- comment -%} ===== FYXX CUSTOM: scope the storefront search to title/type/variant/vendor (exclude the product body/description) so the results page matches the accurate predictive dropdown instead of matching on description text ===== {%- endcomment -%}
-        <input name="options[fields]" type="hidden" value="title,product_type,variants.title,vendor">
         {%- unless no_submit_button -%}
           {%- render 'element.button',
             classlist: 'element-button--search',
