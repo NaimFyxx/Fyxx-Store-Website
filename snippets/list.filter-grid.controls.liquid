@@ -160,6 +160,12 @@
   if context.results
     assign count = context.results_count
   endif
+
+  # FYXX CUSTOM: let the search page pass an oos-hidden-adjusted count so the
+  # displayed total matches the rendered grid (0 is a valid override).
+  if results_count_override != blank
+    assign count = results_count_override
+  endif
 %}
 
 <div class="collection-filter">

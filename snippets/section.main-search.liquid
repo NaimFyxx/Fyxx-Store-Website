@@ -64,6 +64,21 @@
     assign grid_style = cart.attributes.product_view
   endif
 
+  # FYXX CUSTOM: our oos-hidden filter (in the loop below) removes products from
+  # the grid, but Shopify's search.results_count still counts them — so the header
+  # read e.g. "2 results" while only 1 card rendered. Recompute a visible total
+  # that excludes oos-hidden products so the displayed count matches the grid.
+  # Note: counts the matched products Liquid exposes for this query (the common
+  # specific-product search is a single page, so this is exact there).
+  assign fyxx_hidden_count = 0
+  for fyxx_item in search.results
+    if fyxx_item.object_type == 'product' and fyxx_item.tags contains 'oos-hidden'
+      assign fyxx_hidden_count = fyxx_hidden_count | plus: 1
+    endif
+  endfor
+  assign fyxx_visible_count = search.results_count | minus: fyxx_hidden_count
+  # END FYXX CUSTOM
+
   # Get search cards content
   capture search_cards
     if slot_search_cards != blank
@@ -93,6 +108,7 @@
 {%- capture search_content -%}
   {%- render 'list.filter-grid.controls',
     context: search,
+    results_count_override: fyxx_visible_count,
     grid_style: grid_style,
     active_tags_location_desktop: active_tags_location_desktop,
     enable_reset_all_filters: enable_reset_all_filters,
@@ -111,9 +127,10 @@
       {% render 'utility.translate', key: 'labels.search', fallback: 'Search' %}
     </h1>
     <p class="medium-up--hide" data-collection-count>
-      {% assign info_search_result_count = 'info.search_result_count' | t: count: search.results_count %}
+      {%- comment -%} FYXX CUSTOM: use the oos-hidden-adjusted visible count (computed at top of file) {%- endcomment -%}
+      {% assign info_search_result_count = 'info.search_result_count' | t: count: fyxx_visible_count %}
       {%- capture fallback_info_search_result_count -%}
-        {{ search.results_count }} result{%- if ssearch.results_count != 1 -%}s{%- endif -%}
+        {{ fyxx_visible_count }} result{%- if fyxx_visible_count != 1 -%}s{%- endif -%}
       {%- endcapture -%}
       {% render 'utility.translate', t: info_search_result_count, fallback: fallback_info_search_result_count %}
     </p>
@@ -122,7 +139,8 @@
   {%- render 'form.predictive-search', context: 'search-page' -%}
 
   {%- if search.performed -%}
-    {%- if search.results_count == 0 -%}
+    {%- comment -%} FYXX CUSTOM: treat "all matches hidden by oos-hidden" as no results so the empty grid is not shown {%- endcomment -%}
+    {%- if fyxx_visible_count == 0 -%}
       {%- capture no_results_message -%}
         {% assign info_search_no_results_html = 'info.search_no_results_html'
           | t: terms: search.terms
