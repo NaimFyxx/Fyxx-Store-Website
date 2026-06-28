@@ -150,12 +150,12 @@
 
     {%- comment -%}
       ===== FYXX CUSTOM: "Download the App" floating banner (PA Floater) =====
-      Mobile sticky bottom smart-banner. Shows on every page except cart / checkout / black-friday.
+      Mobile sticky bottom smart-banner. Shows on every page except cart / checkout.
       Toggle: settings.enable_pa_floater (defaults ON if the setting does not exist).
       Desktop testing: add ?show_floater=1 to any URL to force show.
       Reset cookies: add ?reset_floater=1 once.
     {%- endcomment -%}
-    {% unless template.name contains 'cart' or template.name contains 'checkout' or template.suffix == 'black-friday' %}
+    {% unless template.name contains 'cart' or template.name contains 'checkout' %}
       {% if settings.enable_pa_floater == true or settings.enable_pa_floater == blank %}
         <script>
           if (!window.__PAFloaterInjected) {
