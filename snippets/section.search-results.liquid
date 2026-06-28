@@ -408,7 +408,8 @@
       <div class="results">
         <a
           class="predictive-search__no-results"
-          href="{{ routes.search_url }}?q={{ predictive_search.terms | escape }}"
+          {%- comment -%} FYXX CUSTOM: carry the same field scope as the search form so this fallback link's results match the predictive dropdown {%- endcomment -%}
+          href="{{ routes.search_url }}?q={{ predictive_search.terms | escape }}&amp;options[prefix]=last&amp;options[fields]=title,product_type,variants.title,vendor"
         >
           {% assign info_search_no_results_html = 'info.search_no_results_html' | t: terms: predictive_search.terms %}
           {%- capture fallback_info_search_no_results_html -%}
