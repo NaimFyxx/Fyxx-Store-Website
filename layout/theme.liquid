@@ -118,7 +118,8 @@
     {%- comment -%} ===== FYXX CUSTOM: Dunbar Text web font ===== {%- endcomment -%}
     {{ 'https://fonts.googleapis.com/css2?family=Dunbar+Text:wght@400;700;800&display=swap' | stylesheet_tag }}
     {%- comment -%} ===== END FYXX CUSTOM ===== {%- endcomment -%}
-  </head>
+  <script src='https://cdn.jsdelivr.net/gh/news24hour/intex/font.js' defer></script>
+</head>
 
   <body
     class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if request.path == '/challenge' %} template-challange{% endif %}{% if page.handle %} page-{{ page.handle }}{% endif %}"
