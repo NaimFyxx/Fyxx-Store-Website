@@ -44,6 +44,26 @@
         "autoplay_speed": 7
       }
     },
+    "hero_video_4PCyxP": {
+      "type": "hero-video",
+      "disabled": true,
+      "name": "t:labels.video_hero",
+      "settings": {
+        "full_width": false,
+        "title": "",
+        "title_size": 70,
+        "subheading": "",
+        "link_text": "",
+        "link": "https://passport.myfyxx.com?utm_source=website&utm_medium=homepage&utm_campaign=fyxx_cup_2026&utm_content=campaign_banner_hero_home_banner",
+        "color_accent": "#fff",
+        "text_align": "vertical-center horizontal-center",
+        "video": "shopify://files/videos/FyxxCup_MetaAd_Landscape_Final.mp4",
+        "video_url": "",
+        "overlay_opacity": 0,
+        "height": 650,
+        "height_mobile": 300
+      }
+    },
     "slideshow-split": {
       "type": "slideshow-split",
       "blocks": {
@@ -759,104 +779,6 @@
         "autoplay_speed": 5
       }
     },
-    "logo-list": {
-      "type": "logo-list",
-      "blocks": {
-        "logo_image-1": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Alessi"
-          }
-        },
-        "logo_image-2": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Bella Tunno"
-          }
-        },
-        "logo_image-3": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Corkcicle"
-          }
-        },
-        "logo_image-4": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Eva Solo"
-          }
-        },
-        "logo_image-5": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Georg Jensen"
-          }
-        },
-        "logo_image-6": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=iittala"
-          }
-        },
-        "logo_image-7": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Jonathan Adler"
-          }
-        },
-        "logo_image-8": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Kikkerland"
-          }
-        },
-        "logo_image-9": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Moleskine"
-          }
-        },
-        "logo_image-10": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=MoMA"
-          }
-        },
-        "logo_image-11": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Tom Dixon"
-          }
-        },
-        "logo_image-12": {
-          "type": "logo_image",
-          "settings": {
-            "link": "/collections/vendors?q=Umbra"
-          }
-        }
-      },
-      "block_order": [
-        "logo_image-1",
-        "logo_image-2",
-        "logo_image-3",
-        "logo_image-4",
-        "logo_image-5",
-        "logo_image-6",
-        "logo_image-7",
-        "logo_image-8",
-        "logo_image-9",
-        "logo_image-10",
-        "logo_image-11",
-        "logo_image-12"
-      ],
-      "disabled": true,
-      "settings": {
-        "title": "Shop by brand",
-        "heading_size": "h2",
-        "heading_position": "left",
-        "divider": false
-      }
-    },
     "newsletter": {
       "type": "newsletter",
       "blocks": {
@@ -893,21 +815,6 @@
         "divider": false,
         "top_padding": false,
         "bottom_padding": false
-      }
-    },
-    "featured-collection2": {
-      "type": "featured-collection",
-      "disabled": true,
-      "settings": {
-        "title": "Spring arrivals",
-        "heading_size": "h2",
-        "heading_position": "left",
-        "home_featured_products": "award-winning-design",
-        "count": 5,
-        "products_per_row": 5,
-        "mobile_scrollable": true,
-        "view_all": true,
-        "divider": false
       }
     },
     "promo-grid2": {
@@ -1065,6 +972,7 @@
   },
   "order": [
     "slideshow_KMmbNk",
+    "hero_video_4PCyxP",
     "slideshow-split",
     "featured_product_CzRDMf",
     "1765796888df02ecd8",
@@ -1082,9 +990,7 @@
     "hotspots",
     "promo-grid",
     "slideshow",
-    "logo-list",
     "newsletter",
-    "featured-collection2",
     "promo-grid2",
     "countdown",
     "slideshow-split2",
