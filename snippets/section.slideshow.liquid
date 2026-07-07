@@ -224,14 +224,8 @@
                   </div>
 
                   {%- if block.settings.link != blank and block.settings.link_2 == blank -%}
-                    {%- comment -%} FYXX CUSTOM: open external hero links (e.g. the Fyxx Cup app) in a new tab; internal store links stay in the same tab {%- endcomment -%}
-                    {%- assign hero_link_target = '' -%}
-                    {%- if block.settings.link contains '://' -%}
-                      {%- unless block.settings.link contains request.host -%}
-                        {%- assign hero_link_target = ' target="_blank" rel="noopener external"' -%}
-                      {%- endunless -%}
-                    {%- endif -%}
-                    <a href="{{ block.settings.link }}" class="hero__slide-link" aria-hidden="true"{{ hero_link_target }}></a>
+                    {%- comment -%} FYXX CUSTOM: open the whole-slide hero link in a new tab (e.g. the Fyxx Cup app) {%- endcomment -%}
+                    <a href="{{ block.settings.link }}" class="hero__slide-link" aria-hidden="true" target="_blank" rel="noopener external"></a>
                   {%- endif -%}
 
                   {%- if hero_text -%}
