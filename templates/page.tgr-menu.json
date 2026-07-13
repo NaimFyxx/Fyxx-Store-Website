@@ -1,1 +1,2 @@
+/* FYXX CUSTOM: App Download banner (above footer) is intentionally hidden on this template. Hide logic lives in sections/footer-group.json — the 'App Download Banner' advanced-content block, via a template.suffix condition (suffix: tgr-menu). */
 {"sections":{"main":{"type":"main-page","disabled":true,"settings":{}},"tgr_menu_section_x6yMYL":{"type":"tgr-menu-section","name":"TGR Menu Section","settings":{"menu_title":"Food Menu","custom_css":""}}},"order":["main","tgr_menu_section_x6yMYL"]}

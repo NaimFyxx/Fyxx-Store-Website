@@ -7,6 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
+/* FYXX CUSTOM: App Download banner (above footer) is intentionally hidden on this template. Hide logic lives in sections/footer-group.json — the 'App Download Banner' advanced-content block, via a template.suffix condition (suffix: tgr-cocktail). */
 {
   "sections": {
     "main": {
