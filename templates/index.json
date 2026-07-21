@@ -34,6 +34,7 @@
       "block_order": [
         "hero_NVCdTH"
       ],
+      "disabled": true,
       "name": "t:labels.hero_optional_slides",
       "settings": {
         "full_width": false,
@@ -69,6 +70,7 @@
       "blocks": {
         "slide_h8FLck": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "top_subheading": "Fyxx Cup 2026 by Fyxx Rewards",
             "title": "Fyxx Cup 2026",
@@ -86,7 +88,6 @@
         },
         "slide-4": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "top_subheading": "The Green Room",
             "title": "Tapas & Cocktails",
@@ -104,7 +105,6 @@
         },
         "slide-2": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "top_subheading": "Visit Us",
             "title": "Our Shop",
@@ -122,7 +122,6 @@
         },
         "slide-3": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "top_subheading": "",
             "title": "Chilled, Curated, Delivered. \nThat’s Fyxx",
@@ -140,7 +139,6 @@
         },
         "slide-1": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "top_subheading": "",
             "title": "Download the Fyxx App",
@@ -164,7 +162,6 @@
         "slide-3",
         "slide-1"
       ],
-      "disabled": true,
       "custom_css": [
         "a.element-button {margin: auto;}"
       ],
