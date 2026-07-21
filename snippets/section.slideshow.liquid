@@ -223,9 +223,14 @@
                     {%- endif -%}
                   </div>
 
+                  {%- comment -%} FYXX CUSTOM: per-slide "Open link in a new tab" toggle (block.settings.open_new_tab); applies to the whole-slide link and the buttons below {%- endcomment -%}
+                  {%- assign hero_link_attrs = '' -%}
+                  {%- if block.settings.open_new_tab -%}
+                    {%- assign hero_link_attrs = 'target="_blank" rel="noopener external"' -%}
+                  {%- endif -%}
+
                   {%- if block.settings.link != blank and block.settings.link_2 == blank -%}
-                    {%- comment -%} FYXX CUSTOM: open the whole-slide hero link in a new tab (e.g. the Fyxx Cup app) {%- endcomment -%}
-                    <a href="{{ block.settings.link }}" class="hero__slide-link" aria-hidden="true" target="_blank" rel="noopener external"></a>
+                    <a href="{{ block.settings.link }}" class="hero__slide-link" aria-hidden="true"{% if block.settings.open_new_tab %} target="_blank" rel="noopener external"{% endif %}></a>
                   {%- endif -%}
 
                   {%- if hero_text -%}
@@ -276,7 +281,8 @@
                                     {%- render 'element.button',
                                       href: block.settings.link,
                                       text: block.settings.link_text,
-                                      style: button_style
+                                      style: button_style,
+                                      attributes: hero_link_attrs
                                     -%}
                                   {%- endif -%}
 
@@ -284,7 +290,8 @@
                                     {%- render 'element.button',
                                       href: block.settings.link_2,
                                       text: block.settings.link_text_2,
-                                      style: button_style
+                                      style: button_style,
+                                      attributes: hero_link_attrs
                                     -%}
                                   {%- endif -%}
                                 {% endcapture %}
