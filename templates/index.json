@@ -20,6 +20,7 @@
             "title_size": 70,
             "subheading": "",
             "link": "https://passport.myfyxx.com?utm_source=website&utm_medium=homepage&utm_campaign=fyxx_cup_2026&utm_content=campaign_banner_hero_home_banner",
+            "open_new_tab": false,
             "link_text": "",
             "link_2": "",
             "link_text_2": "",
@@ -43,26 +44,6 @@
         "style": "arrows",
         "autoplay": true,
         "autoplay_speed": 7
-      }
-    },
-    "hero_video_4PCyxP": {
-      "type": "hero-video",
-      "disabled": true,
-      "name": "t:labels.video_hero",
-      "settings": {
-        "full_width": false,
-        "title": "",
-        "title_size": 70,
-        "subheading": "",
-        "link_text": "",
-        "link": "https://passport.myfyxx.com?utm_source=website&utm_medium=homepage&utm_campaign=fyxx_cup_2026&utm_content=campaign_banner_hero_home_banner",
-        "color_accent": "#fff",
-        "text_align": "vertical-center horizontal-center",
-        "video": "shopify://files/videos/FyxxCup_MetaAd_Landscape_Final.mp4",
-        "video_url": "",
-        "overlay_opacity": 0,
-        "height": 650,
-        "height_mobile": 300
       }
     },
     "slideshow-split": {
@@ -720,6 +701,7 @@
             "title_size": 48,
             "subheading": "",
             "link": "",
+            "open_new_tab": false,
             "link_text": "Shop Outdoor",
             "link_2": "",
             "link_text_2": "Shop All",
@@ -736,6 +718,7 @@
             "title_size": 48,
             "subheading": "",
             "link": "",
+            "open_new_tab": false,
             "link_text": "Shop Outdoor",
             "link_2": "",
             "link_text_2": "Shop All",
@@ -752,6 +735,7 @@
             "title_size": 40,
             "subheading": "Original planters manufactured by local producers",
             "link": "",
+            "open_new_tab": false,
             "link_text": "Shop Now",
             "link_2": "",
             "link_text_2": "",
@@ -969,7 +953,6 @@
   },
   "order": [
     "slideshow_KMmbNk",
-    "hero_video_4PCyxP",
     "slideshow-split",
     "featured_product_CzRDMf",
     "1765796888df02ecd8",
