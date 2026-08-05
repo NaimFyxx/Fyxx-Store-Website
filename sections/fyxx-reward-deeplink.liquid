@@ -1,0 +1,76 @@
+{%- comment -%}
+  FYXX CUSTOM — Reward deep-link (?r=<LoyaltyLion reward ID>)
+  On the rewards page: if the URL has ?r=<id>, wait for the LoyaltyLion widget,
+  scroll the matching reward to centre, briefly highlight it, and focus (never
+  click) its "Get Reward" button. No-op if ?r is missing/malformed or matches
+  nothing. Never throws, never blocks rendering.
+  To remove: delete "fyxx_reward_deeplink" from templates/page.fyxx-rewards.json
+  (and delete this file).
+{%- endcomment -%}
+<style>
+  @keyframes fyxxRewardPulse {
+    0%   { box-shadow: 0 0 0 2px rgba(240,176,158,1), 0 0 0 4px rgba(240,176,158,.35); }
+    60%  { box-shadow: 0 0 0 2px rgba(240,176,158,1), 0 0 0 14px rgba(240,176,158,0); }
+    100% { box-shadow: 0 0 0 2px rgba(240,176,158,0), 0 0 0 14px rgba(240,176,158,0); }
+  }
+  .fyxx-reward-highlight {
+    border-radius: 12px;
+    outline: 2px solid rgba(240,176,158,.95);
+    outline-offset: 2px;
+    animation: fyxxRewardPulse 1.4s ease-out 2;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fyxx-reward-highlight { animation: none; }
+  }
+</style>
+<script>
+(function () {
+  'use strict';
+  try {
+    var raw = new URLSearchParams(window.location.search).get('r');
+    if (!raw || !/^\d+$/.test(raw)) return;           // absent or malformed -> do nothing
+    var rewardId = raw, DONE = false, observer = null;
+    var startedAt = Date.now(), TIMEOUT_MS = 15000;
+
+    function cleanup() { if (observer) { try { observer.disconnect(); } catch (e) {} observer = null; } }
+    function findReward() { return document.querySelector('.lion-reward-item[data-reward-id="' + rewardId + '"]'); }
+
+    function reveal(el) {
+      if (DONE || !el) return;
+      DONE = true; cleanup();
+      try {
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        el.classList.add('fyxx-reward-highlight');
+        el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        var btn = el.querySelector('button[data-testid="redeem-reward-button"]:not([aria-disabled="true"])');
+        if (btn) setTimeout(function () { try { btn.focus({ preventScroll: true }); } catch (e) {} }, 600);
+        setTimeout(function () { try { el.classList.remove('fyxx-reward-highlight'); } catch (e) {} }, 4200);
+      } catch (e) {}
+    }
+
+    function check() {
+      if (DONE) return true;
+      var el = findReward();
+      if (el) { reveal(el); return true; }
+      if (Date.now() - startedAt > TIMEOUT_MS) { cleanup(); return true; }
+      return false;
+    }
+
+    function start() {
+      if (check()) return;                              // already rendered?
+      try {
+        observer = new MutationObserver(check);
+        observer.observe(document.body, { childList: true, subtree: true });
+        setTimeout(function () { if (!DONE) cleanup(); }, TIMEOUT_MS + 500);  // hard stop, no infinite poll
+      } catch (e) { cleanup(); }
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+    else start();
+  } catch (e) { /* never throw, never block */ }
+})();
+</script>
+
+{% schema %}
+{ "name": "Reward deep-link", "settings": [] }
+{% endschema %}
