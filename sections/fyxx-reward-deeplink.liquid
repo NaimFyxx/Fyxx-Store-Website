@@ -9,15 +9,17 @@
 {%- endcomment -%}
 <style>
   @keyframes fyxxRewardPulse {
-    0%   { box-shadow: 0 0 0 2px rgba(240,176,158,1), 0 0 0 4px rgba(240,176,158,.35); }
-    60%  { box-shadow: 0 0 0 2px rgba(240,176,158,1), 0 0 0 14px rgba(240,176,158,0); }
-    100% { box-shadow: 0 0 0 2px rgba(240,176,158,0), 0 0 0 14px rgba(240,176,158,0); }
+    0%   { box-shadow: 0 0 0 3px rgba(230,120,95,1), 0 0 0 8px rgba(240,176,158,.65); }
+    60%  { box-shadow: 0 0 0 3px rgba(230,120,95,1), 0 0 0 26px rgba(240,176,158,0); }
+    100% { box-shadow: 0 0 0 3px rgba(230,120,95,.95), 0 0 0 26px rgba(240,176,158,0); }
   }
   .fyxx-reward-highlight {
     border-radius: 12px;
-    outline: 2px solid rgba(240,176,158,.95);
-    outline-offset: 2px;
-    animation: fyxxRewardPulse 1.4s ease-out 2;
+    outline: 3px solid rgba(230,120,95,.98);
+    outline-offset: 3px;
+    background-color: rgba(240,176,158,.22);
+    animation: fyxxRewardPulse 1.2s ease-out 3;
+    transition: background-color .3s ease;
   }
   @media (prefers-reduced-motion: reduce) {
     .fyxx-reward-highlight { animation: none; }
@@ -44,7 +46,7 @@
         el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
         var btn = el.querySelector('button[data-testid="redeem-reward-button"]:not([aria-disabled="true"])');
         if (btn) setTimeout(function () { try { btn.focus({ preventScroll: true }); } catch (e) {} }, 600);
-        setTimeout(function () { try { el.classList.remove('fyxx-reward-highlight'); } catch (e) {} }, 4200);
+        setTimeout(function () { try { el.classList.remove('fyxx-reward-highlight'); } catch (e) {} }, 5200);
       } catch (e) {}
     }
 
