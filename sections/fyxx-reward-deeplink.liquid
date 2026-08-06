@@ -73,6 +73,30 @@
 })();
 </script>
 
+<script>
+  /* FYXX CUSTOM — return to the rewards page after login/join.
+     LoyaltyLion's guest header links to /account/login and /account/register with no
+     return_url, so Shopify sends the member to /account by default (misleading). We add
+     return_url pointing back to THIS page (keeps any ?r= so the deep-link highlight still
+     fires after login). Capture-phase, left-click only, never throws. */
+  (function () {
+    'use strict';
+    try {
+      document.addEventListener('click', function (e) {
+        try {
+          var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+          if (!a) return;
+          var href = a.getAttribute('href') || '';
+          if (!/^\/account\/(login|register)(?:[/?#]|$)/.test(href)) return; // only login/register
+          if (/[?&]return_url=/.test(href)) return;                          // respect an existing return_url
+          var ret = window.location.pathname + window.location.search;       // e.g. /pages/rewards?r=232331
+          a.setAttribute('href', href + (href.indexOf('?') === -1 ? '?' : '&') + 'return_url=' + encodeURIComponent(ret));
+        } catch (err) { /* never throw */ }
+      }, true); // capture phase: rewrite href before the browser navigates
+    } catch (err) { /* never throw, never block */ }
+  })();
+</script>
+
 {% schema %}
 { "name": "Reward deep-link", "settings": [] }
 {% endschema %}
