@@ -156,14 +156,6 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-  .tgr-delivery__footnote {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 13px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.70);
-    margin: 22px 0 0;
-  }
-
   @media (min-width: 750px) {
     .tgr-delivery__heading { font-size: 48px; }
   }
@@ -255,10 +247,6 @@
           </dl>
         </div>
       {%- endif -%}
-
-      {%- if section.settings.footnote != blank -%}
-        <p class="tgr-delivery__footnote">{{ section.settings.footnote | escape }}</p>
-      {%- endif -%}
     {%- else -%}
       <p class="tgr-delivery__placeholder">{{ section.settings.subheading | default: 'Pick your delivery app.' | escape }}</p>
     {%- endif -%}
@@ -312,7 +300,6 @@
     { "type": "text", "id": "hours_days_2", "label": "Row 2 days", "default": "Thursday - Saturday", "info": "Leave days blank to hide a row." },
     { "type": "text", "id": "hours_time_2", "label": "Row 2 time", "default": "12:00 - 23:30" },
     { "type": "header", "content": "Page" },
-    { "type": "text", "id": "footnote", "label": "Footnote", "default": "" },
     { "type": "checkbox", "id": "noindex", "label": "Hide from search engines (noindex)", "default": true }
   ]
 }
