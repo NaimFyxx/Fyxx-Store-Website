@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction | default: 'ltr' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#092727">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <title>{{ page.title | default: 'The Green Room' }}</title>
+
+    {%- comment -%}
+      FYXX CUSTOM: minimal layout for the TGR delivery handoff page only.
+      No theme header/footer/announcement/cart/popups, no theme global JS, no theme
+      global stylesheet, so this page inherits nothing from the main theme.
+      All page styling lives in sections/tgr-delivery-links.liquid; the only rules here
+      are a tiny document reset (this layout is used by a single template, so it cannot
+      leak elsewhere). Fonts: Baskervville 400 (heading), Syne 700 (button labels),
+      Inter 400/500 (body/UI). The theme does not self-host these, so load from Google
+      Fonts with preconnect.
+    {%- endcomment -%}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville&family=Inter:wght@400;500&family=Syne:wght@700&display=swap">
+
+    <style>
+      html, body { margin: 0; padding: 0; }
+      body { min-height: 100svh; background: #092727; }
+    </style>
+
+    {{ content_for_header }}
+  </head>
+  <body>
+    {{ content_for_layout }}
+  </body>
+</html>
