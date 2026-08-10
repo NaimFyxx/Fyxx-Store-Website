@@ -124,6 +124,38 @@
   .tgr-delivery__btn:hover  { filter: brightness(1.04); }
   .tgr-delivery__btn:active { filter: brightness(0.96); transform: translateY(1px); }
   .tgr-delivery__btn:focus-visible { outline: 2px solid #EEC36A; outline-offset: 2px; }
+  .tgr-delivery__hours {
+    width: 100%;
+    margin: 26px 0 0;
+  }
+  .tgr-delivery__hours-title {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.60);
+    margin: 0 0 8px;
+  }
+  .tgr-delivery__hours-list { margin: 0; }
+  .tgr-delivery__hours-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+  }
+  .tgr-delivery__hours-row:first-child { border-top: 0; }
+  .tgr-delivery__hours-row dt { color: rgba(255, 255, 255, 0.72); }
+  .tgr-delivery__hours-row dd {
+    margin: 0;
+    color: #EEC36A;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
   .tgr-delivery__footnote {
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
@@ -202,6 +234,28 @@
         {%- endif -%}
       </div>
 
+      {%- if section.settings.hours_days_1 != blank or section.settings.hours_days_2 != blank -%}
+        <div class="tgr-delivery__hours">
+          {%- if section.settings.hours_title != blank -%}
+            <p class="tgr-delivery__hours-title">{{ section.settings.hours_title | escape }}</p>
+          {%- endif -%}
+          <dl class="tgr-delivery__hours-list">
+            {%- if section.settings.hours_days_1 != blank -%}
+              <div class="tgr-delivery__hours-row">
+                <dt>{{ section.settings.hours_days_1 | escape }}</dt>
+                <dd>{{ section.settings.hours_time_1 | escape }}</dd>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.hours_days_2 != blank -%}
+              <div class="tgr-delivery__hours-row">
+                <dt>{{ section.settings.hours_days_2 | escape }}</dt>
+                <dd>{{ section.settings.hours_time_2 | escape }}</dd>
+              </div>
+            {%- endif -%}
+          </dl>
+        </div>
+      {%- endif -%}
+
       {%- if section.settings.footnote != blank -%}
         <p class="tgr-delivery__footnote">{{ section.settings.footnote | escape }}</p>
       {%- endif -%}
@@ -251,8 +305,14 @@
     { "type": "url", "id": "careem_url", "label": "Careem URL", "info": "Pre-filled with the Green Room Careem link. Blank hides the button." },
     { "type": "text", "id": "careem_label", "label": "Careem button label", "default": "Order on Careem" },
     { "type": "image_picker", "id": "careem_logo", "label": "Careem logo", "info": "Optional. Use the official asset unmodified (wordmark plus symbol). No logo falls back to the label alone." },
+    { "type": "header", "content": "Delivery hours" },
+    { "type": "text", "id": "hours_title", "label": "Hours title", "default": "Delivery hours" },
+    { "type": "text", "id": "hours_days_1", "label": "Row 1 days", "default": "Sunday - Wednesday" },
+    { "type": "text", "id": "hours_time_1", "label": "Row 1 time", "default": "17:00 - 23:00" },
+    { "type": "text", "id": "hours_days_2", "label": "Row 2 days", "default": "Thursday - Saturday", "info": "Leave days blank to hide a row." },
+    { "type": "text", "id": "hours_time_2", "label": "Row 2 time", "default": "12:00 - 23:30" },
     { "type": "header", "content": "Page" },
-    { "type": "text", "id": "footnote", "label": "Footnote", "default": "Delivery hours and availability are set by each app." },
+    { "type": "text", "id": "footnote", "label": "Footnote", "default": "Hours may vary on each app." },
     { "type": "checkbox", "id": "noindex", "label": "Hide from search engines (noindex)", "default": true }
   ]
 }
