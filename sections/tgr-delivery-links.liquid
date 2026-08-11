@@ -205,7 +205,7 @@
             rel="noopener noreferrer"
             data-platform="talabat">
             {%- if section.settings.talabat_logo != blank -%}
-              <img class="tgr-delivery__btn-logo" src="{{ section.settings.talabat_logo | image_url: height: 44 }}" alt="" aria-hidden="true" decoding="async">
+              <img class="tgr-delivery__btn-logo" src="{{ section.settings.talabat_logo | image_url: height: 96 }}" alt="" aria-hidden="true" decoding="async" style="height: {{ section.settings.talabat_logo_height | default: 22 }}px;">
             {%- endif -%}
             <span class="tgr-delivery__btn-label">{{ section.settings.talabat_label | default: 'Order on Talabat' | escape }}</span>
           </a>
@@ -219,7 +219,7 @@
             rel="noopener noreferrer"
             data-platform="careem">
             {%- if section.settings.careem_logo != blank -%}
-              <img class="tgr-delivery__btn-logo" src="{{ section.settings.careem_logo | image_url: height: 44 }}" alt="" aria-hidden="true" decoding="async">
+              <img class="tgr-delivery__btn-logo" src="{{ section.settings.careem_logo | image_url: height: 96 }}" alt="" aria-hidden="true" decoding="async" style="height: {{ section.settings.careem_logo_height | default: 22 }}px;">
             {%- endif -%}
             <span class="tgr-delivery__btn-label">{{ section.settings.careem_label | default: 'Order on Careem' | escape }}</span>
           </a>
@@ -289,10 +289,12 @@
     { "type": "url", "id": "talabat_url", "label": "Talabat URL", "info": "Pre-filled with the Green Room Talabat listing. Blank hides the button." },
     { "type": "text", "id": "talabat_label", "label": "Talabat button label", "default": "Order on Talabat" },
     { "type": "image_picker", "id": "talabat_logo", "label": "Talabat logo", "info": "Optional. Use the official asset unmodified. No logo falls back to the label alone." },
+    { "type": "range", "id": "talabat_logo_height", "label": "Talabat logo height", "min": 12, "max": 40, "step": 1, "unit": "px", "default": 22 },
     { "type": "header", "content": "Careem" },
     { "type": "url", "id": "careem_url", "label": "Careem URL", "info": "Pre-filled with the Green Room Careem link. Blank hides the button." },
     { "type": "text", "id": "careem_label", "label": "Careem button label", "default": "Order on Careem" },
     { "type": "image_picker", "id": "careem_logo", "label": "Careem logo", "info": "Optional. Use the official asset unmodified (wordmark plus symbol). No logo falls back to the label alone." },
+    { "type": "range", "id": "careem_logo_height", "label": "Careem logo height", "min": 12, "max": 40, "step": 1, "unit": "px", "default": 22 },
     { "type": "header", "content": "Delivery hours" },
     { "type": "text", "id": "hours_title", "label": "Hours title", "default": "Delivery hours" },
     { "type": "text", "id": "hours_days_1", "label": "Row 1 days", "default": "Sunday - Wednesday" },
