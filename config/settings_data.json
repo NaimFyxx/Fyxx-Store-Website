@@ -74,6 +74,25 @@
           "desktop_logo_width": 150,
           "mobile_logo_width": 120
         }
+      },
+      "tgr-delivery-links": {
+        "type": "tgr-delivery-links",
+        "settings": {
+          "logo": "shopify://shop_images/Variation-05_f4efe7.svg",
+          "heading": "Order Now",
+          "subheading": "Pick your delivery app.",
+          "talabat_url": "https://www.talabat.com/jordan/the-green-room",
+          "talabat_label": "Order on Talabat",
+          "careem_url": "https://careem.go.link/1j0U8",
+          "careem_label": "Order on Careem",
+          "careem_logo": "shopify://shop_images/Careem_Logo_Smile.svg",
+          "hours_title": "Delivery hours",
+          "hours_days_1": "Sunday - Wednesday",
+          "hours_time_1": "17:00 - 23:00",
+          "hours_days_2": "Thursday - Saturday",
+          "hours_time_2": "12:00 - 23:30",
+          "noindex": true
+        }
       }
     },
     "content_for_index": [],
@@ -237,50 +256,6 @@
         "disabled": false,
         "settings": {
           "widget_type": "review-widget"
-        }
-      },
-      "5946647744298494267": {
-        "type": "shopify://apps/wishlist-plus/blocks/wishlist-app-embed/80c3b1fc-3a8f-407e-8367-ffdeebb8b612",
-        "disabled": true,
-        "settings": {
-          "show_ui": true,
-          "storefront_layout_enabled": false,
-          "storefront_layout_primary_bg_color": "#000000",
-          "storefront_layout_primary_text_color": "#ffffff",
-          "storefront_layout_secondary_bg_color": "#F4F8FE",
-          "storefront_layout_secondary_text_color": "#333333",
-          "storefront_layout_ui_border_radius": 6,
-          "storefront_layout_notification_position": "left",
-          "storefront_layout_action_popup_position": "left",
-          "storefront_layout_drawer_position": "left",
-          "storefront_layout_as_section_page": ""
-        }
-      },
-      "10274264662263595587": {
-        "type": "shopify://apps/wishlist-plus/blocks/wishlist-collections-embed/80c3b1fc-3a8f-407e-8367-ffdeebb8b612",
-        "disabled": true,
-        "settings": {
-          "swym_collections_icon_type": "heart",
-          "swym_collections_icon_thickness": 1.7,
-          "swym_collections_position": "top-right",
-          "swym_collections_vertical_offset": 0,
-          "swym_collections_horizontal_offset": 0,
-          "swym_collections_button_size": 25,
-          "swym_collections_icon_color": "#000000",
-          "swym_collections_product_link_selector": "-",
-          "swym_collections_product_tile_selector": "-",
-          "enable_variant_selector": false,
-          "swym_add_to_wishlist_title_color": "#333",
-          "swym_variant_selector_font_size_1": 14,
-          "swym_variant_selector_popup_bg_color": "#fff",
-          "swym_variant_selector_section_heading_color": "#000",
-          "swym_variant_selector_section_heading_font_size_2": 12,
-          "swym_variant_selector_choose_create_text": "Choose or Create new Wishlist",
-          "swym_variant_selector_wishlist_btn_bg_color": "#292929",
-          "swym_variant_selector_wishlist_btn_color": "#fff",
-          "swym_variant_selector_product_detail_font_color": "#fff",
-          "swym_variant_selector_create_list_placeholder_text": "Enter wishlist name",
-          "swym_variant_selector_create_list_title": "Name Your Wishlist"
         }
       },
       "15181020662106344915": {
