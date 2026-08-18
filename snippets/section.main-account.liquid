@@ -43,6 +43,10 @@
                 <th>
                   {% render 'utility.translate', key: 'labels.total', fallback: 'Total' %}
                 </th>
+                {%- comment -%} FYXX CUSTOM: Odoo Connector (Webkul) invoice download column {%- endcomment -%}
+                <th class="wk_invoice_show">
+                  {% render 'utility.translate', key: 'labels.invoice', fallback: 'Invoice' %}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +76,10 @@
                     data-label="{% render 'utility.translate', key: 'labels.total', fallback: 'Total' -%}"
                   >
                     {{ order.total_price | money }}
+                  </td>
+                  {%- comment -%} FYXX CUSTOM: Odoo Connector (Webkul) invoice download button target {%- endcomment -%}
+                  <td data-label="Invoice" class="wk_invoice_show">
+                    <div class="wk_invoice" id="wk_invoice_{{ order.id }}"></div>
                   </td>
                 </tr>
               {%- endfor -%}
