@@ -12,7 +12,8 @@
 
   <div class="fyxx-content">
     <!-- Logo / Image -->
-    <a class="fyxx-logo" href="https://www.myfyxx.com" target="_blank" rel="noopener noreferrer">
+    {% comment %} FYXX CUSTOM: use .fyxx-bday-logo (not .fyxx-logo) so this page's CSS never touches the site header logo, which also uses .fyxx-logo. Keep. {% endcomment %}
+    <a class="fyxx-bday-logo" href="https://www.myfyxx.com" target="_blank" rel="noopener noreferrer">
      <img
   src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/fyxx-balloons.png?v=1768311430"
   alt="FYXX Balloons"
@@ -67,7 +68,8 @@
     z-index: 2;
   }
 
-  .fyxx-logo img{
+  /* FYXX CUSTOM: scoped to .fyxx-bday-logo so it can't resize the header's .fyxx-logo img (was oversizing the nav logo on this page). Keep. */
+  .fyxx-bday-logo img{
     width: 320px;
     max-width: 100%;
     height: auto;
