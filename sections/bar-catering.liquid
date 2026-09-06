@@ -1,0 +1,450 @@
+{% comment %} ===== FYXX CUSTOM: Bar Catering landing (/pages/bar-catering). Self-contained, scoped under .fyxx-bc. No shared sections or global CSS touched. Keep. ===== {% endcomment %}
+
+{%- comment -%} FYXX CUSTOM: brand fonts, scoped load (stylesheet only, no scripts) {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville&family=Inter:wght@400;500;600&family=Syne:wght@600;700;800&display=swap">
+
+<div class="fyxx-bc">
+  <div class="fyxx-bc-wrap">
+
+    {%- comment -%} ===== HERO ===== {%- endcomment -%}
+    <header class="fyxx-bc-hero">
+      <p class="fyxx-bc-eyebrow"><span class="fyxx-bc-eyebrow-rule"></span>New Service</p>
+      <h1 class="fyxx-bc-h1">Bar Catering</h1>
+      <p class="fyxx-bc-lead">The bar comes to you.</p>
+      <p class="fyxx-bc-intro">Tell us about your event and we will build the bar around it. Weddings, private parties, corporate evenings, and everything in between.</p>
+    </header>
+
+    {%- comment -%} ===== FEATURES ===== {%- endcomment -%}
+    <ul class="fyxx-bc-features">
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">01</span>
+        <h2 class="fyxx-bc-feature-title">Matched to your event</h2>
+        <p class="fyxx-bc-feature-body">Tell us the occasion, the guest count and the setting. We assign the bartender who fits.</p>
+      </li>
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">02</span>
+        <h2 class="fyxx-bc-feature-title">Seven days notice</h2>
+        <p class="fyxx-bc-feature-body">Send your request at least seven days before the event so we can confirm availability. Shorter notice is welcome but cannot be guaranteed.</p>
+      </li>
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">03</span>
+        <h2 class="fyxx-bc-feature-title">Drinks sourced through Fyxx</h2>
+        <p class="fyxx-bc-feature-body">Every bottle served comes from Fyxx, so quality, safety and compliance are covered.</p>
+      </li>
+    </ul>
+
+    {%- comment -%} ===== FORM / SUCCESS ===== {%- endcomment -%}
+    <section class="fyxx-bc-formwrap" id="bc-form-top">
+      {%- if form.posted_successfully? -%}
+        <div class="fyxx-bc-confirm" id="bc-confirm" tabindex="-1" role="status" aria-live="polite">
+          <h2 class="fyxx-bc-confirm-title">Request received.</h2>
+          <p class="fyxx-bc-confirm-body">Our team will contact you within one business day to confirm availability and pricing.</p>
+        </div>
+        <script>
+          (function(){
+            var el = document.getElementById('bc-confirm');
+            if(!el) return;
+            try { el.focus({preventScroll:true}); } catch(e){}
+            el.scrollIntoView({behavior:'smooth', block:'center'});
+          })();
+        </script>
+      {%- else -%}
+        <div class="fyxx-bc-formhead">
+          <h2 class="fyxx-bc-h2">Request a bartender</h2>
+          <p class="fyxx-bc-sub">Send us your details and our team will come back to you with availability and pricing.</p>
+        </div>
+
+        {%- if form.errors -%}
+          <div class="fyxx-bc-formerrors" role="alert">
+            Please check the highlighted fields and try again.
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} FYXX CUSTOM: Shopify native contact form. Custom fields use contact[Label] so they appear in the notification email. {%- endcomment -%}
+        {%- form 'contact', id: 'bcForm', class: 'fyxx-bc-form', novalidate: 'novalidate' -%}
+
+          {%- comment -%} FYXX CUSTOM: honeypot. Not prefixed contact[] so it is never emailed. If filled, JS silently blocks submit. {%- endcomment -%}
+          <div class="fyxx-bc-hp" aria-hidden="true">
+            <label>Leave this field empty
+              <input type="text" name="website" tabindex="-1" autocomplete="off">
+            </label>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-name">Full name <span class="fyxx-bc-req">*</span></label>
+            <input class="fyxx-bc-input" id="bc-name" type="text" name="contact[name]" autocomplete="name" required data-req data-label="Full name">
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-email">Email <span class="fyxx-bc-req">*</span></label>
+            <input class="fyxx-bc-input" id="bc-email" type="email" name="contact[email]" autocomplete="email" required data-req data-type="email" data-label="Email">
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-phone">Phone <span class="fyxx-bc-req">*</span></label>
+            <input class="fyxx-bc-input" id="bc-phone" type="tel" name="contact[phone]" autocomplete="tel" required data-req data-label="Phone">
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-row">
+            <div class="fyxx-bc-field">
+              <label class="fyxx-bc-label" for="bc-date">Event date <span class="fyxx-bc-req">*</span></label>
+              <input class="fyxx-bc-input" id="bc-date" type="date" name="contact[Event date]" required data-req data-label="Event date">
+              <p class="fyxx-bc-note" id="bc-date-note" hidden>Less than seven days notice. We will try, but availability cannot be guaranteed.</p>
+              <span class="fyxx-bc-err" aria-live="polite"></span>
+            </div>
+
+            <div class="fyxx-bc-field">
+              <label class="fyxx-bc-label" for="bc-time">Start time <span class="fyxx-bc-req">*</span></label>
+              <input class="fyxx-bc-input" id="bc-time" type="time" name="contact[Start time]" required data-req data-label="Start time">
+              <span class="fyxx-bc-err" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="fyxx-bc-row">
+            <div class="fyxx-bc-field">
+              <label class="fyxx-bc-label" for="bc-duration">Duration in hours <span class="fyxx-bc-req">*</span></label>
+              <input class="fyxx-bc-input" id="bc-duration" type="number" name="contact[Duration hours]" min="1" step="1" inputmode="numeric" required data-req data-type="min1" data-label="Duration in hours">
+              <span class="fyxx-bc-err" aria-live="polite"></span>
+            </div>
+
+            <div class="fyxx-bc-field">
+              <label class="fyxx-bc-label" for="bc-guests">Approximate guests <span class="fyxx-bc-req">*</span></label>
+              <input class="fyxx-bc-input" id="bc-guests" type="number" name="contact[Guest count]" min="1" step="1" inputmode="numeric" required data-req data-type="min1" data-label="Approximate guests">
+              <span class="fyxx-bc-err" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-bartenders">Bartenders needed</label>
+            <input class="fyxx-bc-input" id="bc-bartenders" type="number" name="contact[Bartenders needed]" min="1" step="1" inputmode="numeric" value="1" data-type="min1opt" data-label="Bartenders needed">
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-type">Event type <span class="fyxx-bc-req">*</span></label>
+            <select class="fyxx-bc-input fyxx-bc-select" id="bc-type" name="contact[Event type]" required data-req data-label="Event type">
+              <option value="" selected disabled>Select one</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Private party">Private party</option>
+              <option value="Corporate">Corporate</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Other">Other</option>
+            </select>
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-location">Venue address or area <span class="fyxx-bc-req">*</span></label>
+            <input class="fyxx-bc-input" id="bc-location" type="text" name="contact[Location]" autocomplete="off" required data-req data-label="Venue address or area">
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field">
+            <label class="fyxx-bc-label" for="bc-body">Notes or requests</label>
+            <textarea class="fyxx-bc-input fyxx-bc-textarea" id="bc-body" name="contact[body]" rows="4" data-label="Notes or requests"></textarea>
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <div class="fyxx-bc-field fyxx-bc-field--check">
+            <label class="fyxx-bc-check" for="bc-terms">
+              <input type="checkbox" id="bc-terms" name="contact[Terms accepted]" value="Yes" required data-req data-type="check" data-label="Terms accepted">
+              <span>I have read and accept the <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Catering Terms and Conditions</a> <span class="fyxx-bc-req">*</span></span>
+            </label>
+            <span class="fyxx-bc-err" aria-live="polite"></span>
+          </div>
+
+          <button type="submit" class="fyxx-bc-btn">Send request</button>
+
+          <p class="fyxx-bc-fineprint">
+            Bookings are confirmed once payment is arranged with our team. Please read the
+            <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Catering Terms and Conditions</a>
+            before submitting.
+          </p>
+        {%- endform -%}
+      {%- endif -%}
+    </section>
+
+    {%- comment -%} ===== CONTACT STRIP ===== {%- endcomment -%}
+    <aside class="fyxx-bc-contact">
+      <span>Questions?</span> <a href="tel:0791111332">Call 0791111332</a>
+    </aside>
+
+  </div>
+</div>
+
+<style>
+  {%- comment -%} FYXX CUSTOM: all styles scoped under .fyxx-bc so nothing leaks to shared sections/header/footer. {%- endcomment -%}
+  .fyxx-bc{
+    --bc-black:#000000;
+    --bc-pink:#f0b09e;
+    --bc-ink:#141414;
+    --bc-muted:#6b6b6b;
+    --bc-line:#e6e6e6;
+    --bc-bg:#ffffff;
+    --bc-err:#c0392b;
+    --bc-serif:'Baskervville', Georgia, 'Times New Roman', serif;
+    --bc-syne:'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --bc-sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background:var(--bc-bg);
+    color:var(--bc-ink);
+    font-family:var(--bc-sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+  .fyxx-bc *{ box-sizing:border-box; }
+  .fyxx-bc-wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:36px 20px 64px;
+  }
+
+  /* HERO */
+  .fyxx-bc-hero{ padding:8px 0 28px; }
+  .fyxx-bc-eyebrow{
+    display:flex; align-items:center; gap:12px;
+    margin:0 0 14px;
+    font-family:var(--bc-syne); font-weight:800;
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--bc-black);
+  }
+  .fyxx-bc-eyebrow-rule{ display:inline-block; width:34px; height:2px; background:var(--bc-pink); }
+  .fyxx-bc-h1{
+    margin:0 0 10px;
+    font-family:var(--bc-serif); font-weight:400;
+    font-size:42px; line-height:1.05; letter-spacing:-0.01em;
+    color:var(--bc-black);
+  }
+  .fyxx-bc-lead{
+    margin:0 0 18px;
+    font-family:var(--bc-serif); font-weight:400;
+    font-size:22px; line-height:1.3; color:var(--bc-ink);
+  }
+  .fyxx-bc-intro{
+    margin:0; max-width:56ch;
+    font-size:16px; color:var(--bc-muted);
+  }
+
+  /* FEATURES */
+  .fyxx-bc-features{
+    list-style:none; margin:8px 0 40px; padding:0;
+    display:grid; grid-template-columns:1fr; gap:26px;
+    border-top:1px solid var(--bc-line); padding-top:34px;
+  }
+  .fyxx-bc-feature-rule{ display:block; width:40px; height:2px; background:var(--bc-pink); margin-bottom:14px; }
+  .fyxx-bc-feature-num{
+    display:block; font-family:var(--bc-syne); font-weight:700;
+    font-size:13px; letter-spacing:.1em; color:var(--bc-muted); margin-bottom:6px;
+  }
+  .fyxx-bc-feature-title{
+    margin:0 0 8px; font-family:var(--bc-serif); font-weight:400;
+    font-size:22px; line-height:1.2; color:var(--bc-black);
+  }
+  .fyxx-bc-feature-body{ margin:0; font-size:15px; color:var(--bc-muted); }
+
+  /* FORM */
+  .fyxx-bc-formwrap{
+    border:1px solid var(--bc-line); border-radius:16px;
+    padding:26px 20px; background:#fff;
+    scroll-margin-top:24px;
+  }
+  .fyxx-bc-formhead{ margin-bottom:20px; }
+  .fyxx-bc-h2{
+    margin:0 0 8px; font-family:var(--bc-serif); font-weight:400;
+    font-size:30px; line-height:1.1; color:var(--bc-black);
+  }
+  .fyxx-bc-sub{ margin:0; font-size:15px; color:var(--bc-muted); }
+
+  .fyxx-bc-formerrors{
+    margin:0 0 18px; padding:12px 14px; border-radius:10px;
+    background:#fbecea; color:#8a2b1f; font-size:14px;
+  }
+
+  .fyxx-bc-form{ margin:0; }
+  .fyxx-bc-field{ margin-bottom:16px; }
+  .fyxx-bc-row{ display:grid; grid-template-columns:1fr; gap:16px; }
+
+  .fyxx-bc-label{
+    display:block; margin-bottom:7px;
+    font-family:var(--bc-syne); font-weight:700;
+    font-size:13px; letter-spacing:.02em; color:var(--bc-black);
+  }
+  .fyxx-bc-req{ color:var(--bc-pink); font-weight:700; }
+
+  .fyxx-bc-input{
+    width:100%; padding:13px 14px;
+    font-family:var(--bc-sans); font-size:16px; color:var(--bc-ink);
+    background:#fff; border:1px solid #d9d9d9; border-radius:10px;
+    line-height:1.3; transition:border-color .15s ease, box-shadow .15s ease;
+    appearance:none; -webkit-appearance:none;
+  }
+  .fyxx-bc-input:focus{
+    outline:none; border-color:var(--bc-black);
+    box-shadow:0 0 0 3px rgba(240,176,158,0.45);
+  }
+  .fyxx-bc-select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23141414' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:38px;
+  }
+  .fyxx-bc-textarea{ resize:vertical; min-height:100px; }
+
+  .fyxx-bc-field.has-err .fyxx-bc-input{ border-color:var(--bc-err); }
+  .fyxx-bc-err{ display:none; margin-top:6px; font-size:13px; color:var(--bc-err); }
+
+  .fyxx-bc-note{
+    margin:8px 0 0; padding:9px 12px; border-radius:8px;
+    background:#fdf1ee; border:1px solid #f5d7cf;
+    font-size:13px; color:#8a5b4f;
+  }
+
+  /* checkbox */
+  .fyxx-bc-field--check{ margin-top:4px; }
+  .fyxx-bc-check{ display:flex; align-items:flex-start; gap:11px; font-size:15px; color:var(--bc-ink); cursor:pointer; }
+  .fyxx-bc-check input{ width:20px; height:20px; margin:1px 0 0; flex:0 0 auto; accent-color:var(--bc-black); }
+  .fyxx-bc-check a{ color:var(--bc-black); text-decoration:underline; }
+
+  /* button */
+  .fyxx-bc-btn{
+    display:inline-block; width:100%; margin-top:6px;
+    padding:15px 22px; border:2px solid var(--bc-black); border-radius:999px;
+    background:var(--bc-black); color:#fff; cursor:pointer;
+    font-family:var(--bc-syne); font-weight:700;
+    font-size:14px; letter-spacing:.08em; text-transform:uppercase;
+    transition:background-color .15s ease, color .15s ease, transform .12s ease;
+  }
+  .fyxx-bc-btn:hover{ background:var(--bc-pink); color:var(--bc-black); border-color:var(--bc-pink); }
+  .fyxx-bc-btn:active{ transform:translateY(1px); }
+
+  .fyxx-bc-fineprint{ margin:16px 0 0; font-size:13px; color:var(--bc-muted); }
+  .fyxx-bc-fineprint a{ color:var(--bc-black); text-decoration:underline; }
+
+  /* confirmation */
+  .fyxx-bc-confirm{ text-align:center; padding:24px 8px; scroll-margin-top:24px; outline:none; }
+  .fyxx-bc-confirm-title{ margin:0 0 12px; font-family:var(--bc-serif); font-weight:400; font-size:30px; color:var(--bc-black); }
+  .fyxx-bc-confirm-body{ margin:0 auto; max-width:46ch; font-size:16px; color:var(--bc-muted); }
+
+  /* contact strip */
+  .fyxx-bc-contact{
+    margin-top:28px; padding-top:22px; border-top:1px solid var(--bc-line);
+    text-align:center; font-size:15px; color:var(--bc-muted);
+  }
+  .fyxx-bc-contact a{ font-family:var(--bc-syne); font-weight:700; color:var(--bc-black); text-decoration:none; border-bottom:2px solid var(--bc-pink); }
+
+  /* honeypot */
+  .fyxx-bc-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
+
+  /* ===== >=600px ===== */
+  @media only screen and (min-width:600px){
+    .fyxx-bc-wrap{ padding:52px 28px 80px; }
+    .fyxx-bc-h1{ font-size:56px; }
+    .fyxx-bc-lead{ font-size:26px; }
+    .fyxx-bc-intro{ font-size:17px; }
+    .fyxx-bc-features{ grid-template-columns:repeat(3,1fr); gap:30px; }
+    .fyxx-bc-row{ grid-template-columns:1fr 1fr; }
+    .fyxx-bc-formwrap{ padding:36px 34px; }
+    .fyxx-bc-h2{ font-size:34px; }
+    .fyxx-bc-btn{ width:auto; min-width:240px; }
+  }
+  @media only screen and (min-width:900px){
+    .fyxx-bc-wrap{ padding:64px 28px 96px; }
+    .fyxx-bc-h1{ font-size:64px; }
+  }
+</style>
+
+<script>
+  {%- comment -%} FYXX CUSTOM: scoped client validation + 7-day date notice + honeypot. No third-party scripts. {%- endcomment -%}
+  (function(){
+    var form = document.getElementById('bcForm');
+    if(!form) return;
+
+    var hp = form.querySelector('input[name="website"]');
+
+    function fieldOf(el){ return el.closest('.fyxx-bc-field'); }
+    function showErr(el, msg){
+      var f = fieldOf(el); if(!f) return;
+      var e = f.querySelector('.fyxx-bc-err');
+      if(e){ e.textContent = msg; e.style.display = 'block'; }
+      f.classList.add('has-err');
+      el.setAttribute('aria-invalid','true');
+    }
+    function clearErr(el){
+      var f = fieldOf(el); if(!f) return;
+      var e = f.querySelector('.fyxx-bc-err');
+      if(e){ e.textContent=''; e.style.display='none'; }
+      f.classList.remove('has-err');
+      el.removeAttribute('aria-invalid');
+    }
+
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validate(){
+      var first = null;
+      var fields = form.querySelectorAll('[data-label]');
+      for(var i=0;i<fields.length;i++){
+        var el = fields[i];
+        var type = el.getAttribute('data-type') || '';
+        var label = el.getAttribute('data-label') || 'This field';
+        var isReq = el.hasAttribute('data-req');
+        clearErr(el);
+
+        if(type === 'check'){
+          if(isReq && !el.checked){ showErr(el, 'Please accept the terms to continue.'); first = first || el; }
+          continue;
+        }
+
+        var val = (el.value || '').trim();
+
+        if(isReq && !val){ showErr(el, label + ' is required.'); first = first || el; continue; }
+        if(!val) continue; /* optional & empty */
+
+        if(type === 'email' && !emailRe.test(val)){ showErr(el, 'Please enter a valid email address.'); first = first || el; }
+        else if((type === 'min1' || type === 'min1opt') && (isNaN(parseFloat(val)) || parseFloat(val) < 1)){ showErr(el, 'Please enter a number of 1 or more.'); first = first || el; }
+      }
+      return first;
+    }
+
+    form.addEventListener('submit', function(e){
+      /* honeypot: silently refuse bots */
+      if(hp && hp.value){ e.preventDefault(); return; }
+      var first = validate();
+      if(first){
+        e.preventDefault();
+        try { first.focus({preventScroll:true}); } catch(err){ first.focus(); }
+        first.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+
+    /* 7-day notice: never blocks submit */
+    var dateInput = document.getElementById('bc-date');
+    var note = document.getElementById('bc-date-note');
+    function checkDate(){
+      if(!dateInput || !note) return;
+      if(!dateInput.value){ note.hidden = true; return; }
+      var chosen = new Date(dateInput.value + 'T00:00:00');
+      if(isNaN(chosen.getTime())){ note.hidden = true; return; }
+      var today = new Date(); today.setHours(0,0,0,0);
+      var diff = Math.round((chosen - today) / 86400000);
+      note.hidden = !(diff >= 0 && diff < 7);
+    }
+    if(dateInput){
+      dateInput.addEventListener('change', checkDate);
+      dateInput.addEventListener('input', checkDate);
+      checkDate();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Bar Catering",
+  "settings": [],
+  "blocks": []
+}
+{% endschema %}
