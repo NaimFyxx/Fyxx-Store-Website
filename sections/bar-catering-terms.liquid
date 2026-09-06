@@ -1,0 +1,96 @@
+{% comment %} ===== FYXX CUSTOM: Bar Catering Terms & Conditions (/pages/bar-catering-terms). Renders the page body ({{ page.content }}) so Naím can paste the 10 numbered sections in Shopify admin without a code change. Scoped under .fyxx-bct. Keep. ===== {% endcomment %}
+
+{%- comment -%} FYXX CUSTOM: brand fonts, scoped load (stylesheet only, no scripts) {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville&family=Inter:wght@400;500;600&family=Syne:wght@700;800&display=swap">
+
+<div class="fyxx-bct">
+  <div class="fyxx-bct-wrap">
+    <header class="fyxx-bct-head">
+      <p class="fyxx-bct-eyebrow"><span class="fyxx-bct-eyebrow-rule"></span>Bar Catering</p>
+      <h1 class="fyxx-bct-h1">{{ page.title | default: 'Bar Catering Terms and Conditions' }}</h1>
+    </header>
+
+    <div class="fyxx-bct-body rte">
+      {%- if page.content != blank -%}
+        {{ page.content }}
+      {%- else -%}
+        {%- comment -%} FYXX CUSTOM: placeholder scaffold. Replace by editing the page Content in Shopify admin (Online Store > Pages > Bar Catering Terms and Conditions). Ten numbered sections. {%- endcomment -%}
+        <p><em>Terms content to be added.</em></p>
+      {%- endif -%}
+    </div>
+
+    <p class="fyxx-bct-back">
+      <a href="/pages/bar-catering">&larr; Back to Bar Catering</a>
+    </p>
+  </div>
+</div>
+
+<style>
+  {%- comment -%} FYXX CUSTOM: scoped under .fyxx-bct. No shared/global CSS touched. {%- endcomment -%}
+  .fyxx-bct{
+    --bct-black:#000000;
+    --bct-pink:#f0b09e;
+    --bct-ink:#141414;
+    --bct-muted:#5f5f5f;
+    --bct-line:#e6e6e6;
+    --bct-serif:'Baskervville', Georgia, 'Times New Roman', serif;
+    --bct-syne:'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --bct-sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background:#fff; color:var(--bct-ink); font-family:var(--bct-sans);
+    -webkit-font-smoothing:antialiased; line-height:1.7;
+  }
+  .fyxx-bct *{ box-sizing:border-box; }
+  .fyxx-bct-wrap{ max-width:760px; margin:0 auto; padding:36px 20px 72px; }
+
+  .fyxx-bct-head{ margin-bottom:26px; padding-bottom:22px; border-bottom:1px solid var(--bct-line); }
+  .fyxx-bct-eyebrow{
+    display:flex; align-items:center; gap:12px; margin:0 0 12px;
+    font-family:var(--bct-syne); font-weight:800; font-size:12px;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--bct-black);
+  }
+  .fyxx-bct-eyebrow-rule{ display:inline-block; width:34px; height:2px; background:var(--bct-pink); }
+  .fyxx-bct-h1{
+    margin:0; font-family:var(--bct-serif); font-weight:400;
+    font-size:38px; line-height:1.08; letter-spacing:-0.01em; color:var(--bct-black);
+  }
+
+  /* body content (renders page.content) */
+  .fyxx-bct-body{ font-size:16px; color:var(--bct-ink); }
+  .fyxx-bct-body h2, .fyxx-bct-body h3{
+    font-family:var(--bct-serif); font-weight:400; color:var(--bct-black);
+    line-height:1.2; margin:30px 0 10px;
+  }
+  .fyxx-bct-body h2{ font-size:24px; }
+  .fyxx-bct-body h3{ font-size:20px; }
+  .fyxx-bct-body p{ margin:0 0 15px; color:#333; }
+  .fyxx-bct-body ol{ margin:0 0 18px; padding-left:22px; }
+  .fyxx-bct-body ol > li{ margin:0 0 14px; padding-left:6px; }
+  .fyxx-bct-body ul{ margin:0 0 15px; padding-left:22px; }
+  .fyxx-bct-body li{ margin:0 0 8px; }
+  .fyxx-bct-body a{ color:var(--bct-black); text-decoration:underline; }
+  .fyxx-bct-body strong{ font-weight:600; }
+
+  .fyxx-bct-back{ margin:36px 0 0; padding-top:22px; border-top:1px solid var(--bct-line); }
+  .fyxx-bct-back a{
+    font-family:var(--bct-syne); font-weight:700; font-size:14px;
+    color:var(--bct-black); text-decoration:none;
+    border-bottom:2px solid var(--bct-pink); padding-bottom:2px;
+  }
+
+  @media only screen and (min-width:600px){
+    .fyxx-bct-wrap{ padding:56px 28px 88px; }
+    .fyxx-bct-h1{ font-size:46px; }
+    .fyxx-bct-body{ font-size:17px; }
+    .fyxx-bct-body h2{ font-size:26px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Bar Catering Terms",
+  "settings": [],
+  "blocks": []
+}
+{% endschema %}

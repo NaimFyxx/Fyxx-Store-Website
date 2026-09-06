@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "bar-catering-terms",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
