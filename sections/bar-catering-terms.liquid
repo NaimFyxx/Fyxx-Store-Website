@@ -1,4 +1,4 @@
-{% comment %} ===== FYXX CUSTOM: Bar Service Terms & Conditions (/pages/bar-catering-terms). Renders the page body ({{ page.content }}) so Naím can edit the numbered sections in Shopify admin without a code change. Scoped under .fyxx-bct. Keep. ===== {% endcomment %}
+{% comment %} ===== FYXX CUSTOM: Bar Catering Terms & Conditions (/pages/bar-catering-terms). Renders the page body ({{ page.content }}) so Naím can paste the 10 numbered sections in Shopify admin without a code change. Scoped under .fyxx-bct. Keep. ===== {% endcomment %}
 
 {%- comment -%} FYXX CUSTOM: brand fonts, scoped load (stylesheet only, no scripts) {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,21 +8,21 @@
 <div class="fyxx-bct">
   <div class="fyxx-bct-wrap">
     <header class="fyxx-bct-head">
-      <p class="fyxx-bct-eyebrow"><span class="fyxx-bct-eyebrow-rule"></span>Bar Service</p>
-      <h1 class="fyxx-bct-h1">{{ page.title | default: 'Bar Service Terms and Conditions' }}</h1>
+      <p class="fyxx-bct-eyebrow"><span class="fyxx-bct-eyebrow-rule"></span>Bar Catering</p>
+      <h1 class="fyxx-bct-h1">{{ page.title | default: 'Bar Catering Terms and Conditions' }}</h1>
     </header>
 
     <div class="fyxx-bct-body rte">
       {%- if page.content != blank -%}
         {{ page.content }}
       {%- else -%}
-        {%- comment -%} FYXX CUSTOM: placeholder scaffold. Replace by editing the page Content in Shopify admin (Online Store > Pages > Bar Service Terms and Conditions). Numbered sections. {%- endcomment -%}
+        {%- comment -%} FYXX CUSTOM: placeholder scaffold. Replace by editing the page Content in Shopify admin (Online Store > Pages > Bar Catering Terms and Conditions). Ten numbered sections. {%- endcomment -%}
         <p><em>Terms content to be added.</em></p>
       {%- endif -%}
     </div>
 
     <p class="fyxx-bct-back">
-      <a href="/pages/bar-catering">&larr; Back to Fyxx Bar Service</a>
+      <a href="/pages/bar-catering">&larr; Back to Bar Catering</a>
     </p>
   </div>
 </div>
@@ -89,7 +89,7 @@
 
 {% schema %}
 {
-  "name": "Bar Service Terms",
+  "name": "Bar Catering Terms",
   "settings": [],
   "blocks": []
 }

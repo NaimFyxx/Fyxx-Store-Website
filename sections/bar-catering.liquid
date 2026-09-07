@@ -1,82 +1,48 @@
-{% comment %} ===== FYXX CUSTOM: Fyxx Bar Service landing (/pages/bar-catering). Revision 2 — full bar service, bartender is the last link in the chain. Self-contained, scoped under .fyxx-bc. No shared sections or global CSS touched. Keep. ===== {% endcomment %}
+{% comment %} ===== FYXX CUSTOM: Bar Catering landing (/pages/bar-catering). Self-contained, scoped under .fyxx-bc. No shared sections or global CSS touched. Keep. ===== {% endcomment %}
 
-{%- comment -%} FYXX CUSTOM: brand fonts, scoped load (stylesheet only, no scripts). Baskervville = display/headings, Syne = buttons/labels/eyebrow, Inter = body/form. {%- endcomment -%}
+{%- comment -%} FYXX CUSTOM: brand fonts, scoped load (stylesheet only, no scripts) {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville&family=Inter:wght@400;500;600&family=Syne:wght@600;700;800&display=swap">
 
 <div class="fyxx-bc">
+  <div class="fyxx-bc-wrap">
 
-  {%- comment -%} ===== HERO (full-bleed, Fyxx black, optional image behind at low opacity + dark overlay) ===== {%- endcomment -%}
-  <header class="fyxx-bc-hero">
-    <div class="fyxx-bc-hero-media" aria-hidden="true">
-      {%- if section.settings.hero_image != blank -%}
-        <img class="fyxx-bc-hero-img"
-             src="{{ section.settings.hero_image | image_url: width: 2400 }}"
-             srcset="{{ section.settings.hero_image | image_url: width: 900 }} 900w, {{ section.settings.hero_image | image_url: width: 1600 }} 1600w, {{ section.settings.hero_image | image_url: width: 2400 }} 2400w"
-             sizes="100vw"
-             alt=""
-             loading="eager"
-             width="{{ section.settings.hero_image.width }}"
-             height="{{ section.settings.hero_image.height }}">
-      {%- endif -%}
-      <span class="fyxx-bc-hero-overlay"></span>
-    </div>
-
-    <div class="fyxx-bc-hero-inner">
-      <p class="fyxx-bc-eyebrow"><span class="fyxx-bc-eyebrow-rule"></span>New service</p>
-      <h1 class="fyxx-bc-h1">Fyxx Bar Service</h1>
+    {%- comment -%} ===== HERO ===== {%- endcomment -%}
+    <header class="fyxx-bc-hero">
+      <h1 class="fyxx-bc-h1">Bar Catering</h1>
       <p class="fyxx-bc-lead">The bar comes to you.</p>
-      <p class="fyxx-bc-intro">We handle the whole bar. We source the drinks, tell you how much you need, price it in bulk, take back what you do not open, and send the bartenders to pour it.</p>
-      <div class="fyxx-bc-cta">
-        <a class="fyxx-bc-btn fyxx-bc-btn--primary" href="#bc-form">Request a quote</a>
-        <a class="fyxx-bc-btn fyxx-bc-btn--secondary" href="tel:0791111332">Call us</a>
-      </div>
-    </div>
-  </header>
+      <p class="fyxx-bc-intro">Tell us about your event and we will build the bar around it. Weddings, private parties, corporate evenings, and everything in between.</p>
+    </header>
 
-  {%- comment -%} ===== PILLARS + BARTENDER BLOCK (contained) ===== {%- endcomment -%}
-  <section class="fyxx-bc-section fyxx-bc-pillars-wrap">
-    <ol class="fyxx-bc-pillars">
-      <li class="fyxx-bc-pillar">
-        <span class="fyxx-bc-pillar-num">01</span>
-        <h2 class="fyxx-bc-pillar-title">We source the drinks</h2>
-        <p class="fyxx-bc-pillar-body">Every bottle comes from Fyxx. Quality, safety and compliance are covered, and you are not chasing suppliers the week of your event.</p>
+    {%- comment -%} ===== FEATURES ===== {%- endcomment -%}
+    <ul class="fyxx-bc-features">
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">01</span>
+        <h2 class="fyxx-bc-feature-title">Matched to your event</h2>
+        <p class="fyxx-bc-feature-body">Tell us the occasion, the guest count and the setting. We assign the bartender who fits.</p>
       </li>
-      <li class="fyxx-bc-pillar">
-        <span class="fyxx-bc-pillar-num">02</span>
-        <h2 class="fyxx-bc-pillar-title">We tell you how much you need</h2>
-        <p class="fyxx-bc-pillar-body">Give us the guest count, the length of the event and the crowd, and we will recommend quantities so you are not short and not overstocked.</p>
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">02</span>
+        <h2 class="fyxx-bc-feature-title">Seven days notice</h2>
+        <p class="fyxx-bc-feature-body">Send your request at least seven days before the event so we can confirm availability. Shorter notice is welcome but cannot be guaranteed.</p>
       </li>
-      <li class="fyxx-bc-pillar">
-        <span class="fyxx-bc-pillar-num">03</span>
-        <h2 class="fyxx-bc-pillar-title">Bulk pricing, and points on every order</h2>
-        <p class="fyxx-bc-pillar-body">Larger orders are priced in bulk, and your order earns Fyxx Rewards points like any other purchase.</p>
+      <li class="fyxx-bc-feature">
+        <span class="fyxx-bc-feature-rule" aria-hidden="true"></span>
+        <span class="fyxx-bc-feature-num">03</span>
+        <h2 class="fyxx-bc-feature-title">Drinks sourced through Fyxx</h2>
+        <p class="fyxx-bc-feature-body">Every bottle served comes from Fyxx, so quality, safety and compliance are covered.</p>
       </li>
-      <li class="fyxx-bc-pillar">
-        <span class="fyxx-bc-pillar-num">04</span>
-        <h2 class="fyxx-bc-pillar-title">Return what you do not open</h2>
-        <p class="fyxx-bc-pillar-body">Unopened bottles in resalable condition can be returned after the event. You only pay for what your guests actually drink.</p>
-      </li>
-    </ol>
+    </ul>
 
-    <div class="fyxx-bc-bartenders">
-      <h2 class="fyxx-bc-bartenders-title">And we bring the bartenders</h2>
-      <p class="fyxx-bc-bartenders-body">Professional bartenders arrive with the equipment agreed at booking. Tell us the occasion, the guest count and the setting, and we assign the team that fits.</p>
-      <div class="fyxx-bc-cta">
-        <a class="fyxx-bc-btn fyxx-bc-btn--primary" href="#bc-form">Request a quote</a>
-        <a class="fyxx-bc-btn fyxx-bc-btn--secondary" href="tel:0791111332">Call us</a>
-      </div>
-    </div>
-  </section>
-
-  {%- comment -%} ===== FORM (full-bleed light band, reads as a distinct step) ===== {%- endcomment -%}
-  <section class="fyxx-bc-formband" id="bc-form">
-    <div class="fyxx-bc-formband-inner">
+    {%- comment -%} ===== FORM / SUCCESS ===== {%- endcomment -%}
+    <section class="fyxx-bc-formwrap" id="bc-form-top">
       {%- if form.posted_successfully? -%}
         <div class="fyxx-bc-confirm" id="bc-confirm" tabindex="-1" role="status" aria-live="polite">
           <h2 class="fyxx-bc-confirm-title">Request received.</h2>
-          <p class="fyxx-bc-confirm-body">Our team will contact you within one business day with availability, recommended quantities and pricing.</p>
+          <p class="fyxx-bc-confirm-body">Our team will contact you within one business day to confirm availability and pricing.</p>
         </div>
         <script>
           (function(){
@@ -88,8 +54,8 @@
         </script>
       {%- else -%}
         <div class="fyxx-bc-formhead">
-          <h2 class="fyxx-bc-h2">Request a quote</h2>
-          <p class="fyxx-bc-sub">Send us your details and our team will come back to you with availability, recommended quantities and pricing.</p>
+          <h2 class="fyxx-bc-h2">Request a bartender</h2>
+          <p class="fyxx-bc-sub">Send us your details and our team will come back to you with availability and pricing.</p>
         </div>
 
         {%- if form.errors -%}
@@ -181,16 +147,6 @@
           </div>
 
           <div class="fyxx-bc-field">
-            <label class="fyxx-bc-label" for="bc-drinks">Do you want us to recommend quantities? <span class="fyxx-bc-req">*</span></label>
-            <select class="fyxx-bc-input fyxx-bc-select" id="bc-drinks" name="contact[Drinks help]" required data-req data-label="Drinks recommendation">
-              <option value="" selected disabled>Select one</option>
-              <option value="Yes please">Yes please</option>
-              <option value="No I have a list">No I have a list</option>
-            </select>
-            <span class="fyxx-bc-err" aria-live="polite"></span>
-          </div>
-
-          <div class="fyxx-bc-field">
             <label class="fyxx-bc-label" for="bc-body">Notes or requests</label>
             <textarea class="fyxx-bc-input fyxx-bc-textarea" id="bc-body" name="contact[body]" rows="4" data-label="Notes or requests"></textarea>
             <span class="fyxx-bc-err" aria-live="polite"></span>
@@ -199,28 +155,28 @@
           <div class="fyxx-bc-field fyxx-bc-field--check">
             <label class="fyxx-bc-check" for="bc-terms">
               <input type="checkbox" id="bc-terms" name="contact[Terms accepted]" value="Yes" required data-req data-type="check" data-label="Terms accepted">
-              <span>I have read and accept the <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Service Terms and Conditions</a> <span class="fyxx-bc-req">*</span></span>
+              <span>I have read and accept the <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Catering Terms and Conditions</a> <span class="fyxx-bc-req">*</span></span>
             </label>
             <span class="fyxx-bc-err" aria-live="polite"></span>
           </div>
 
-          <button type="submit" class="fyxx-bc-btn fyxx-bc-btn--primary fyxx-bc-submit">Send request</button>
+          <button type="submit" class="fyxx-bc-btn">Send request</button>
 
           <p class="fyxx-bc-fineprint">
             Bookings are confirmed once payment is arranged with our team. Please read the
-            <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Service Terms and Conditions</a>
+            <a href="/pages/bar-catering-terms" target="_blank" rel="noopener">Bar Catering Terms and Conditions</a>
             before submitting.
           </p>
         {%- endform -%}
       {%- endif -%}
-    </div>
-  </section>
+    </section>
 
-  {%- comment -%} ===== CONTACT STRIP ===== {%- endcomment -%}
-  <aside class="fyxx-bc-contact">
-    <span>Prefer to talk it through?</span> <a href="tel:0791111332">Call 0791111332</a>
-  </aside>
+    {%- comment -%} ===== CONTACT STRIP ===== {%- endcomment -%}
+    <aside class="fyxx-bc-contact">
+      <span>Questions?</span> <a href="tel:0791111332">Call 0791111332</a>
+    </aside>
 
+  </div>
 </div>
 
 <style>
@@ -228,12 +184,10 @@
   .fyxx-bc{
     --bc-black:#000000;
     --bc-pink:#f0b09e;
-    --bc-pink-deep:#e79f89;
     --bc-ink:#141414;
     --bc-muted:#6b6b6b;
     --bc-line:#e6e6e6;
     --bc-bg:#ffffff;
-    --bc-light:#f5f0ec;
     --bc-err:#c0392b;
     --bc-serif:'Baskervville', Georgia, 'Times New Roman', serif;
     --bc-syne:'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -245,133 +199,67 @@
     line-height:1.6;
   }
   .fyxx-bc *{ box-sizing:border-box; }
-
-  {%- comment -%} full-bleed helper: breaks out of the theme content column to viewport width {%- endcomment -%}
-  .fyxx-bc-hero,
-  .fyxx-bc-formband{
-    position:relative;
-    width:100vw;
-    margin-left:calc(50% - 50vw);
-    margin-right:calc(50% - 50vw);
+  .fyxx-bc-wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:36px 20px 64px;
   }
 
-  /* ===== HERO ===== */
-  .fyxx-bc-hero{
-    background:var(--bc-black);
-    overflow:hidden;
-    color:#fff;
-  }
-  .fyxx-bc-hero-media{ position:absolute; inset:0; z-index:0; }
-  .fyxx-bc-hero-img{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; opacity:0.34; filter:grayscale(12%);
-  }
-  .fyxx-bc-hero-overlay{
-    position:absolute; inset:0;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.75) 100%),
-      radial-gradient(120% 120% at 15% 0%, rgba(240,176,158,0.14) 0%, rgba(0,0,0,0) 55%);
-  }
-  .fyxx-bc-hero-inner{
-    position:relative; z-index:1;
-    max-width:1080px; margin:0 auto;
-    padding:72px 20px 76px;
-  }
+  /* HERO */
+  .fyxx-bc-hero{ padding:8px 0 28px; }
   .fyxx-bc-eyebrow{
-    display:flex; align-items:center; gap:12px; margin:0 0 18px;
+    display:flex; align-items:center; gap:12px;
+    margin:0 0 14px;
     font-family:var(--bc-syne); font-weight:800;
-    font-size:12px; letter-spacing:.24em; text-transform:uppercase;
-    color:var(--bc-pink);
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--bc-black);
   }
   .fyxx-bc-eyebrow-rule{ display:inline-block; width:34px; height:2px; background:var(--bc-pink); }
   .fyxx-bc-h1{
-    margin:0 0 14px;
+    margin:0 0 10px;
     font-family:var(--bc-serif); font-weight:400;
-    font-size:44px; line-height:1.03; letter-spacing:-0.01em;
-    color:#fff;
+    font-size:42px; line-height:1.05; letter-spacing:-0.01em;
+    color:var(--bc-black);
   }
   .fyxx-bc-lead{
-    margin:0 0 20px;
+    margin:0 0 18px;
     font-family:var(--bc-serif); font-weight:400;
-    font-size:23px; line-height:1.3; color:rgba(255,255,255,0.92);
+    font-size:22px; line-height:1.3; color:var(--bc-ink);
   }
   .fyxx-bc-intro{
     margin:0; max-width:56ch;
-    font-size:16px; color:rgba(255,255,255,0.74);
+    font-size:16px; color:var(--bc-muted);
   }
 
-  /* ===== BUTTONS ===== */
-  .fyxx-bc-cta{ display:flex; flex-direction:column; gap:12px; margin-top:30px; }
-  .fyxx-bc-btn{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:100%; padding:15px 26px;
-    border:1.5px solid transparent; border-radius:999px;
-    font-family:var(--bc-syne); font-weight:700;
-    font-size:14px; letter-spacing:.08em; text-transform:uppercase;
-    text-decoration:none; cursor:pointer;
-    transition:background-color .15s ease, color .15s ease, border-color .15s ease, transform .12s ease;
+  /* FEATURES */
+  .fyxx-bc-features{
+    list-style:none; margin:8px 0 40px; padding:0;
+    display:grid; grid-template-columns:1fr; gap:26px;
+    border-top:1px solid var(--bc-line); padding-top:34px;
   }
-  .fyxx-bc-btn:active{ transform:translateY(1px); }
-  .fyxx-bc-btn--primary{ background:var(--bc-pink); color:var(--bc-black); border-color:var(--bc-pink); }
-  .fyxx-bc-btn--primary:hover{ background:var(--bc-pink-deep); border-color:var(--bc-pink-deep); color:var(--bc-black); }
-  .fyxx-bc-btn--secondary{ background:transparent; color:var(--bc-black); border-color:var(--bc-black); }
-  .fyxx-bc-btn--secondary:hover{ background:var(--bc-black); color:#fff; border-color:var(--bc-black); }
-  {%- comment -%} secondary sits on the dark hero — give it a light hairline so it stays legible {%- endcomment -%}
-  .fyxx-bc-hero .fyxx-bc-btn--secondary{ color:#fff; border-color:rgba(255,255,255,0.55); }
-  .fyxx-bc-hero .fyxx-bc-btn--secondary:hover{ background:#fff; color:var(--bc-black); border-color:#fff; }
-
-  /* ===== SECTION SHELL ===== */
-  .fyxx-bc-pillars-wrap{
-    max-width:1080px; margin:0 auto;
-    padding:56px 20px;
+  .fyxx-bc-feature-rule{ display:block; width:40px; height:2px; background:var(--bc-pink); margin-bottom:14px; }
+  .fyxx-bc-feature-num{
+    display:block; font-family:var(--bc-syne); font-weight:700;
+    font-size:13px; letter-spacing:.1em; color:var(--bc-muted); margin-bottom:6px;
   }
-
-  /* ===== PILLARS ===== */
-  .fyxx-bc-pillars{
-    list-style:none; margin:0; padding:0;
-    display:grid; grid-template-columns:1fr;
-  }
-  .fyxx-bc-pillar{
-    padding:26px 0;
-    border-top:1px solid var(--bc-line);
-  }
-  .fyxx-bc-pillar-num{
-    display:block; font-family:var(--bc-serif); font-weight:400;
-    font-size:44px; line-height:1; color:var(--bc-pink); margin-bottom:12px;
-  }
-  .fyxx-bc-pillar-title{
+  .fyxx-bc-feature-title{
     margin:0 0 8px; font-family:var(--bc-serif); font-weight:400;
-    font-size:23px; line-height:1.2; color:var(--bc-black);
+    font-size:22px; line-height:1.2; color:var(--bc-black);
   }
-  .fyxx-bc-pillar-body{ margin:0; font-size:15px; color:var(--bc-muted); max-width:46ch; }
+  .fyxx-bc-feature-body{ margin:0; font-size:15px; color:var(--bc-muted); }
 
-  /* ===== BARTENDER BLOCK ===== */
-  .fyxx-bc-bartenders{
-    margin-top:48px; padding-top:34px;
-    border-top:2px solid var(--bc-black);
-  }
-  .fyxx-bc-bartenders-title{
-    margin:0 0 10px; font-family:var(--bc-serif); font-weight:400;
-    font-size:26px; line-height:1.15; color:var(--bc-black);
-  }
-  .fyxx-bc-bartenders-body{ margin:0; font-size:16px; color:var(--bc-muted); max-width:60ch; }
-  .fyxx-bc-bartenders .fyxx-bc-cta{ margin-top:26px; }
-
-  /* ===== FORM BAND ===== */
-  .fyxx-bc-formband{
-    background:var(--bc-light);
+  /* FORM */
+  .fyxx-bc-formwrap{
+    border:1px solid var(--bc-line); border-radius:16px;
+    padding:26px 20px; background:#fff;
     scroll-margin-top:24px;
   }
-  .fyxx-bc-formband-inner{
-    max-width:720px; margin:0 auto;
-    padding:56px 20px;
-  }
-  .fyxx-bc-formhead{ margin-bottom:22px; }
+  .fyxx-bc-formhead{ margin-bottom:20px; }
   .fyxx-bc-h2{
     margin:0 0 8px; font-family:var(--bc-serif); font-weight:400;
     font-size:30px; line-height:1.1; color:var(--bc-black);
   }
-  .fyxx-bc-sub{ margin:0; font-size:15px; color:var(--bc-muted); max-width:52ch; }
+  .fyxx-bc-sub{ margin:0; font-size:15px; color:var(--bc-muted); }
 
   .fyxx-bc-formerrors{
     margin:0 0 18px; padding:12px 14px; border-radius:10px;
@@ -387,7 +275,7 @@
     font-family:var(--bc-syne); font-weight:700;
     font-size:13px; letter-spacing:.02em; color:var(--bc-black);
   }
-  .fyxx-bc-req{ color:var(--bc-pink-deep); font-weight:700; }
+  .fyxx-bc-req{ color:var(--bc-pink); font-weight:700; }
 
   .fyxx-bc-input{
     width:100%; padding:13px 14px;
@@ -421,8 +309,17 @@
   .fyxx-bc-check input{ width:20px; height:20px; margin:1px 0 0; flex:0 0 auto; accent-color:var(--bc-black); }
   .fyxx-bc-check a{ color:var(--bc-black); text-decoration:underline; }
 
-  /* submit */
-  .fyxx-bc-submit{ width:100%; margin-top:6px; }
+  /* button */
+  .fyxx-bc-btn{
+    display:inline-block; width:100%; margin-top:6px;
+    padding:15px 22px; border:2px solid var(--bc-black); border-radius:999px;
+    background:var(--bc-black); color:#fff; cursor:pointer;
+    font-family:var(--bc-syne); font-weight:700;
+    font-size:14px; letter-spacing:.08em; text-transform:uppercase;
+    transition:background-color .15s ease, color .15s ease, transform .12s ease;
+  }
+  .fyxx-bc-btn:hover{ background:var(--bc-pink); color:var(--bc-black); border-color:var(--bc-pink); }
+  .fyxx-bc-btn:active{ transform:translateY(1px); }
 
   .fyxx-bc-fineprint{ margin:16px 0 0; font-size:13px; color:var(--bc-muted); }
   .fyxx-bc-fineprint a{ color:var(--bc-black); text-decoration:underline; }
@@ -430,12 +327,11 @@
   /* confirmation */
   .fyxx-bc-confirm{ text-align:center; padding:24px 8px; scroll-margin-top:24px; outline:none; }
   .fyxx-bc-confirm-title{ margin:0 0 12px; font-family:var(--bc-serif); font-weight:400; font-size:30px; color:var(--bc-black); }
-  .fyxx-bc-confirm-body{ margin:0 auto; max-width:48ch; font-size:16px; color:var(--bc-muted); }
+  .fyxx-bc-confirm-body{ margin:0 auto; max-width:46ch; font-size:16px; color:var(--bc-muted); }
 
   /* contact strip */
   .fyxx-bc-contact{
-    max-width:1080px; margin:0 auto;
-    padding:34px 20px 8px; border-top:1px solid var(--bc-line);
+    margin-top:28px; padding-top:22px; border-top:1px solid var(--bc-line);
     text-align:center; font-size:15px; color:var(--bc-muted);
   }
   .fyxx-bc-contact a{ font-family:var(--bc-syne); font-weight:700; color:var(--bc-black); text-decoration:none; border-bottom:2px solid var(--bc-pink); }
@@ -445,35 +341,19 @@
 
   /* ===== >=600px ===== */
   @media only screen and (min-width:600px){
-    .fyxx-bc-cta{ flex-direction:row; flex-wrap:wrap; }
-    .fyxx-bc-btn{ width:auto; min-width:210px; }
-    .fyxx-bc-submit{ width:auto; min-width:240px; }
-    .fyxx-bc-row{ grid-template-columns:1fr 1fr; }
-  }
-
-  /* ===== >=700px : two-column pillar grid, larger display type, generous spacing ===== */
-  @media only screen and (min-width:700px){
-    .fyxx-bc-hero-inner{ padding:104px 28px 108px; }
-    .fyxx-bc-h1{ font-size:60px; }
-    .fyxx-bc-lead{ font-size:27px; }
+    .fyxx-bc-wrap{ padding:52px 28px 80px; }
+    .fyxx-bc-h1{ font-size:56px; }
+    .fyxx-bc-lead{ font-size:26px; }
     .fyxx-bc-intro{ font-size:17px; }
-
-    .fyxx-bc-pillars-wrap{ padding:96px 28px; }
-    .fyxx-bc-pillars{ grid-template-columns:1fr 1fr; column-gap:56px; }
-    .fyxx-bc-pillar{ padding:34px 0; }
-    .fyxx-bc-pillar-num{ font-size:58px; }
-    .fyxx-bc-pillar-title{ font-size:25px; }
-
-    .fyxx-bc-bartenders{ margin-top:64px; padding-top:44px; }
-    .fyxx-bc-bartenders-title{ font-size:30px; }
-
-    .fyxx-bc-formband-inner{ padding:96px 28px; }
+    .fyxx-bc-features{ grid-template-columns:repeat(3,1fr); gap:30px; }
+    .fyxx-bc-row{ grid-template-columns:1fr 1fr; }
+    .fyxx-bc-formwrap{ padding:36px 34px; }
     .fyxx-bc-h2{ font-size:34px; }
-
-    .fyxx-bc-contact{ padding:48px 28px 8px; }
+    .fyxx-bc-btn{ width:auto; min-width:240px; }
   }
-  @media only screen and (min-width:1000px){
-    .fyxx-bc-h1{ font-size:68px; }
+  @media only screen and (min-width:900px){
+    .fyxx-bc-wrap{ padding:64px 28px 96px; }
+    .fyxx-bc-h1{ font-size:64px; }
   }
 </style>
 
@@ -562,15 +442,8 @@
 
 {% schema %}
 {
-  "name": "Fyxx Bar Service",
-  "settings": [
-    {
-      "type": "image_picker",
-      "id": "hero_image",
-      "label": "Hero background image",
-      "info": "Sits behind the hero at low opacity over the black background. Optional — leave empty for solid black."
-    }
-  ],
+  "name": "Bar Catering",
+  "settings": [],
   "blocks": []
 }
 {% endschema %}
