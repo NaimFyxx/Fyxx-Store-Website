@@ -1,0 +1,35 @@
+shopify_handle,shopify_title,serve_temp_low_c,serve_temp_high_c,serve_temp_midpoint_c,producer_style,source
+machareus-chardonnay-sauvignon-blanc,"Machareus | Chardonnay, Sauvignon Blanc",8,10,9,,13c.wine
+saint-george-barbera,Saint George | Barbera,14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-cabernet-sauvignon,Saint George | Cabernet Sauvignon,14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-wine-maker-selection-cabernet-sauvignon,Saint George | Cabernet Sauvignon - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-cabernet-sauvignon-cabernet-franc-blend,"Saint George | Cabernet Sauvignon, Cabernet Franc (Blend)",14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-cabernet-sauvignon-pinot-noir,"Saint George | Cabernet Sauvignon, Pinot Noir (Blend)",14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-cabernet-shiraz-blend,Saint George | Cabernet Shiraz (Blend),14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-carmenere-terroir-expression,Saint George | Carmenere - Terroir Expression,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-chardonnay-white-wine,Saint George | Chardonnay,8,10,9,Light and fragrant white,13c.wine
+saint-george-wine-makers-selection-chardonnay,Saint George | Chardonnay - Winemaker's Selection,12,14,13,Complex and buttery white,13c.wine
+saint-george-gewurztraminer,Saint George | Gewürztraminer,8,10,9,Light and fragrant white,13c.wine
+saint-george-malbec-wine-makers-selection,Saint George | Malbec - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-merlot,Saint George | Merlot,14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-merlot-barbera-wine-maker-selection,Saint George | Merlot Barbera - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-muscat,Saint George | Muscat,8,10,9,Light and fragrant white,13c.wine
+saint-george-nero-d-avola-winemakers-selection,Saint George | Nero d'Avola - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-pinot-grigio-terroir-expression,Saint George | Pinot Grigio - Terroir Expression,10,12,11,Dry and flinty white,13c.wine
+saint-george-pinot-noir,Saint George | Pinot Noir,14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-pinot-noir-winemakers-selection,Saint George | Pinot Noir - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-red-blend,Saint George | Red Blend,14,16,15,Medium-bodied and savory red,13c.wine
+saint-george-reserve-cabernet-sauvignon,Saint George | Reserve Cabernet Sauvignon,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-reserve-petit-syrah,Saint George | Reserve Petite Syrah,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-reserve-shiraz,Saint George | Reserve Shiraz,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-rose,Saint George | Rosé,8,10,9,Dry and crisp rosé,13c.wine
+st-g-terroir-expression-sangiovese,Saint George | Sangiovese - Terroir Expression,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-wine-makers-selection-sauvingon-blanc,Saint George | Sauvignon Blanc - Winemaker's Selection,10,12,11,Dry and flinty white,13c.wine
+saint-george-shiraz,Saint George | Shiraz,14,16,15,Medium-bodied and savory red,13c.wine
+st-g-terroir-expression-shiraz,Saint George | Shiraz - Terroir Expression,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-wine-makers-selection-shiraz,Saint George | Shiraz - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-shiraz-grenache-wine-maker-selection,Saint George | Shiraz Grenache - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-wine-makers-selection-sweet-muscat,Saint George | Sweet Muscat - Winemaker's Selection,4,6,5,Sweet white,inferred
+saint-george-touriga-nacional-wine-maker-selection,Saint George | Touriga Nacional - Winemaker's Selection,16,18,17,Full-bodied and intense red,13c.wine
+saint-george-viognier-winemakers-selection,Saint George | Viognier - Winemaker's Selection,12,14,13,Complex and buttery white,13c.wine
+saint-george-white-blend,Saint George | White Blend,8,10,9,Light and fragrant white,13c.wine
