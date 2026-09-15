@@ -24,8 +24,10 @@
     </div>
 
     <div class="fyxx-bc-hero-inner">
-      <p class="fyxx-bc-eyebrow"><span class="fyxx-bc-eyebrow-rule"></span>New service</p>
-      <h1 class="fyxx-bc-h1">Fyxx Bar Service</h1>
+      <h1 class="fyxx-bc-h1">
+        <img class="fyxx-bc-logo" src="https://cdn.shopify.com/s/files/1/0108/6328/0224/files/Fyxx_Logo_White_fcf94a36-1ae9-4622-8ac7-e476ff44c2b1.svg?v=1782036836" alt="Fyxx" width="275" height="144" loading="eager">
+        <span class="fyxx-bc-h1-word">Bar Service</span>
+      </h1>
       <p class="fyxx-bc-lead">The bar comes to you.</p>
       <p class="fyxx-bc-intro">We handle the whole bar. We source the drinks, tell you how much you need, price it in bulk, take back what you do not open, and send the bartenders to pour it.</p>
       <div class="fyxx-bc-cta">
@@ -277,19 +279,15 @@
     max-width:1080px; margin:0 auto;
     padding:72px 20px 76px;
   }
-  .fyxx-bc-eyebrow{
-    display:flex; align-items:center; gap:12px; margin:0 0 18px;
-    font-family:var(--bc-syne); font-weight:800;
-    font-size:12px; letter-spacing:.24em; text-transform:uppercase;
-    color:var(--bc-pink);
-  }
-  .fyxx-bc-eyebrow-rule{ display:inline-block; width:34px; height:2px; background:var(--bc-pink); }
   .fyxx-bc-h1{
+    display:flex; flex-direction:column; align-items:flex-start; gap:14px;
     margin:0 0 14px;
     font-family:var(--bc-serif); font-weight:400;
     font-size:44px; line-height:1.03; letter-spacing:-0.01em;
     color:#fff;
   }
+  .fyxx-bc-logo{ display:block; width:auto; height:40px; max-width:100%; }
+  .fyxx-bc-h1-word{ display:block; }
   .fyxx-bc-lead{
     margin:0 0 20px;
     font-family:var(--bc-serif); font-weight:400;
@@ -455,6 +453,7 @@
   @media only screen and (min-width:700px){
     .fyxx-bc-hero-inner{ padding:104px 28px 108px; }
     .fyxx-bc-h1{ font-size:60px; }
+    .fyxx-bc-logo{ height:54px; }
     .fyxx-bc-lead{ font-size:27px; }
     .fyxx-bc-intro{ font-size:17px; }
 
@@ -474,6 +473,7 @@
   }
   @media only screen and (min-width:1000px){
     .fyxx-bc-h1{ font-size:68px; }
+    .fyxx-bc-logo{ height:60px; }
   }
 </style>
 
