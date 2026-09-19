@@ -38,7 +38,7 @@
       assign kh_detail = 'They can be ordered from 9 AM to 10 PM, daily.'
     when 'pizza'
       assign kh_title = 'The kitchen is closed for pizza right now'
-      assign kh_detail = 'Last orders are 10 PM, daily.'
+      assign kh_detail = 'Pizza is available 12 PM to 10 PM, daily.'
   endcase
 -%}
 
@@ -82,7 +82,7 @@
       var SCHED = {
         greenroom: {0:[1020,1380],1:[1020,1380],2:[1020,1380],3:[1020,1380],4:[720,1410],5:[720,1410],6:[720,1410]},
         cheese:    {0:[540,1320],1:[540,1320],2:[540,1320],3:[540,1320],4:[540,1320],5:[540,1320],6:[540,1320]},
-        pizza:     {0:[0,1330],1:[0,1330],2:[0,1330],3:[0,1330],4:[0,1330],5:[0,1330],6:[0,1330]}
+        pizza:     {0:[720,1320],1:[720,1320],2:[720,1320],3:[720,1320],4:[720,1320],5:[720,1320],6:[720,1320]}
       };
       var sched = SCHED[GROUP];
       if(!sched) return;
