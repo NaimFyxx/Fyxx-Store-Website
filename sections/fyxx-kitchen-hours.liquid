@@ -1,0 +1,142 @@
+{% comment %}
+  ===== FYXX CUSTOM: Kitchen availability =====
+  Website-only. On a gated product's page, disables Add to Cart (and the
+  dynamic/Shop Pay buttons) and shows a note when that product's kitchen is
+  closed, using Asia/Amman time. No hiding, no sales-channel changes, no
+  scheduler. Membership is decided by rule (vendor / type / title), so new
+  items are covered automatically. Scoped under .fyxx-kh. Renders nothing on
+  non-gated products. Does NOT affect the mobile app (app renders separately).
+{% endcomment %}
+
+{%- liquid
+  assign group = ''
+  assign v = product.vendor
+  assign t = product.type
+
+  if v == 'Fyxx | The Green Room' and t == 'Fyxx Food'
+    assign group = 'greenroom'
+  elsif v == 'Select Food Shoppe' or t == 'Bundle | Wine & Cheese'
+    assign group = 'cheese'
+  elsif t == 'Pizza'
+    assign group = 'pizza'
+  elsif product.title contains 'Pizza' and v == 'Fyxx Bundles'
+    assign group = 'pizza'
+  elsif product.title contains 'Pizza' and v == 'Fyxx x UMG Bundles'
+    assign group = 'pizza'
+  endif
+
+  case group
+    when 'greenroom'
+      assign kh_title = 'The Green Room kitchen is closed right now'
+      assign kh_detail = 'Food is available Sun–Wed 5–11 PM, and Thu–Sat 12 PM–11:30 PM.'
+    when 'cheese'
+      assign kh_title = 'Cheese platters aren’t available right now'
+      assign kh_detail = 'They can be ordered from 10 AM to 10 PM, daily.'
+    when 'pizza'
+      assign kh_title = 'The kitchen is closed for pizza right now'
+      assign kh_detail = 'Last orders are 10 PM, daily.'
+  endcase
+-%}
+
+{%- if group != blank -%}
+  <div class="fyxx-kh" data-fyxx-kh data-group="{{ group }}">
+    <div class="fyxx-kh-note" role="status" aria-live="polite" hidden>
+      <span class="fyxx-kh-note__title">{{ kh_title }}</span>
+      <span class="fyxx-kh-note__detail">{{ kh_detail }}</span>
+    </div>
+  </div>
+
+  <style>
+    .fyxx-kh{ margin:0; }
+    .fyxx-kh-note{
+      display:block; margin:12px 0 0; padding:12px 14px;
+      border:1px solid #f0d5cb; border-left:3px solid #f0b09e; border-radius:10px;
+      background:#fdf4f0; color:#3a2a24;
+      font-size:14px; line-height:1.45;
+    }
+    .fyxx-kh-note__title{ display:block; font-weight:600; }
+    .fyxx-kh-note__detail{ display:block; margin-top:2px; color:#6b544c; font-size:13px; }
+    /* when closed, make the disabled buy button read as unavailable */
+    block-buy-buttons .add-to-cart[data-fyxx-closed]{ opacity:.55; cursor:not-allowed; }
+  </style>
+
+  <script>
+    (function(){
+      var GROUP = {{ group | json }};
+      var SCHED = {
+        greenroom: {0:[1020,1380],1:[1020,1380],2:[1020,1380],3:[1020,1380],4:[720,1410],5:[720,1410],6:[720,1410]},
+        cheese:    {0:[600,1320],1:[600,1320],2:[600,1320],3:[600,1320],4:[600,1320],5:[600,1320],6:[600,1320]},
+        pizza:     {0:[0,1330],1:[0,1330],2:[0,1330],3:[0,1330],4:[0,1330],5:[0,1330],6:[0,1330]}
+      };
+      var sched = SCHED[GROUP];
+      if(!sched) return;
+
+      var wrap = document.querySelector('.fyxx-kh[data-group="'+GROUP+'"]');
+      var note = wrap ? wrap.querySelector('.fyxx-kh-note') : null;
+
+      function ammanNow(){
+        try{
+          var parts = new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Amman',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+          var days={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}, wd=0,h=0,m=0;
+          parts.forEach(function(p){ if(p.type==='weekday')wd=days[p.value]; else if(p.type==='hour')h=parseInt(p.value,10)%24; else if(p.type==='minute')m=parseInt(p.value,10); });
+          return {day:wd, min:h*60+m};
+        }catch(e){ return null; }
+      }
+      function isOpen(){
+        var q=(location.search||'');
+        if(q.indexOf('kh=closed')>-1) return false; /* test override */
+        if(q.indexOf('kh=open')>-1) return true;     /* test override */
+        var a=ammanNow(); if(!a) return true; /* fail open: never block on error */
+        var w=sched[a.day]; return !!w && a.min>=w[0] && a.min<w[1];
+      }
+
+      function host(){ return document.querySelector('block-buy-buttons'); }
+
+      function apply(){
+        var open=isOpen();
+        var root=host();
+        if(root){
+          /* relocate the note next to the buy button, once */
+          if(note && note.getAttribute('data-placed')!=='1'){ root.appendChild(note); note.setAttribute('data-placed','1'); }
+          var btns=root.querySelectorAll('.add-to-cart, button[name="add"], [type="submit"]');
+          for(var i=0;i<btns.length;i++){
+            var b=btns[i];
+            if(!open){
+              if(!b.disabled){ b.setAttribute('data-fyxx-closed',''); b.disabled=true; b.setAttribute('aria-disabled','true'); }
+            } else if(b.hasAttribute('data-fyxx-closed')){
+              b.removeAttribute('data-fyxx-closed'); b.disabled=false; b.removeAttribute('aria-disabled');
+            }
+          }
+          var pay=root.querySelectorAll('.shopify-payment-button, shopify-accelerated-checkout, .shopify-payment-button__button');
+          for(var j=0;j<pay.length;j++){ pay[j].style.display = open ? '' : 'none'; }
+        }
+        if(note){ note.hidden = open; }
+      }
+
+      /* safety net: block the add-to-cart form submit while closed */
+      document.addEventListener('submit', function(e){
+        var f=e.target;
+        if(f && f.matches && f.matches('block-buy-buttons form') && !isOpen()){ e.preventDefault(); e.stopPropagation(); }
+      }, true);
+
+      function start(){
+        apply();
+        setInterval(apply, 30000);
+        var root=host();
+        if(root && window.MutationObserver){
+          var mo=new MutationObserver(function(){ apply(); });
+          mo.observe(root, {childList:true, subtree:true, attributes:true, attributeFilter:['disabled','class','style']});
+        }
+      }
+      if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', start); } else { start(); }
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Kitchen availability",
+  "settings": [],
+  "blocks": []
+}
+{% endschema %}

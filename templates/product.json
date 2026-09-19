@@ -350,10 +350,15 @@
         "full_width": false,
         "space_around": true
       }
+    },
+    "fyxx_kitchen_hours": {
+      "type": "fyxx-kitchen-hours",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "fyxx_kitchen_hours",
     "1763296732f9fd8c65",
     "sub",
     "1782585585263248e5",
