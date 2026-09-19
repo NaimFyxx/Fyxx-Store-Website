@@ -1,11 +1,15 @@
 {% comment %}
   ===== FYXX CUSTOM: Kitchen availability =====
   Website-only. On a gated product's page, disables Add to Cart (and the
-  dynamic/Shop Pay buttons) and shows a note when that product's kitchen is
-  closed, using Asia/Amman time. No hiding, no sales-channel changes, no
-  scheduler. Membership is decided by rule (vendor / type / title), so new
-  items are covered automatically. Scoped under .fyxx-kh. Renders nothing on
-  non-gated products. Does NOT affect the mobile app (app renders separately).
+  dynamic / Shop Pay / express buttons) and shows a note when that product's
+  kitchen is closed, using Asia/Amman time. No hiding, no sales-channel
+  changes, no scheduler. Membership is decided by rule (vendor / type /
+  title), so new items are covered automatically. Scoped under .fyxx-kh.
+  Renders nothing on non-gated products. Does NOT affect the mobile app.
+
+  Disabling is CSS-driven via an html.fyxx-kh-closed class so it wins over the
+  theme's own button re-renders; a capture-phase click/submit block is the
+  safety net for the AJAX add-to-cart and express buttons.
 {% endcomment %}
 
 {%- liquid
@@ -51,13 +55,24 @@
     .fyxx-kh-note{
       display:block; margin:12px 0 0; padding:12px 14px;
       border:1px solid #f0d5cb; border-left:3px solid #f0b09e; border-radius:10px;
-      background:#fdf4f0; color:#3a2a24;
-      font-size:14px; line-height:1.45;
+      background:#fdf4f0; color:#3a2a24; font-size:14px; line-height:1.45;
     }
     .fyxx-kh-note__title{ display:block; font-weight:600; }
     .fyxx-kh-note__detail{ display:block; margin-top:2px; color:#6b544c; font-size:13px; }
-    /* when closed, make the disabled buy button read as unavailable */
-    block-buy-buttons .add-to-cart[data-fyxx-closed]{ opacity:.55; cursor:not-allowed; }
+
+    /* When closed, hard-disable the MAIN product's buy + express buttons.
+       Scoped to block-buy-buttons (the PDP main form only), so recommendation
+       cards etc. are untouched. pointer-events:none wins over theme re-renders. */
+    html.fyxx-kh-closed block-buy-buttons .add-to-cart,
+    html.fyxx-kh-closed block-buy-buttons button[name="add"],
+    html.fyxx-kh-closed block-buy-buttons button[type="submit"]{
+      pointer-events:none !important; opacity:.5 !important; cursor:not-allowed !important;
+    }
+    html.fyxx-kh-closed block-buy-buttons .shopify-payment-button,
+    html.fyxx-kh-closed block-buy-buttons .element-button--shopify-payment-wrapper,
+    html.fyxx-kh-closed block-buy-buttons shopify-accelerated-checkout{
+      display:none !important;
+    }
   </style>
 
   <script>
@@ -90,44 +105,30 @@
         var w=sched[a.day]; return !!w && a.min>=w[0] && a.min<w[1];
       }
 
-      function host(){ return document.querySelector('block-buy-buttons'); }
-
+      function place(){
+        var root=document.querySelector('block-buy-buttons');
+        if(root && note && note.parentNode!==root){ root.appendChild(note); }
+      }
       function apply(){
         var open=isOpen();
-        var root=host();
-        if(root){
-          /* relocate the note next to the buy button, once */
-          if(note && note.getAttribute('data-placed')!=='1'){ root.appendChild(note); note.setAttribute('data-placed','1'); }
-          var btns=root.querySelectorAll('.add-to-cart, button[name="add"], [type="submit"]');
-          for(var i=0;i<btns.length;i++){
-            var b=btns[i];
-            if(!open){
-              if(!b.disabled){ b.setAttribute('data-fyxx-closed',''); b.disabled=true; b.setAttribute('aria-disabled','true'); }
-            } else if(b.hasAttribute('data-fyxx-closed')){
-              b.removeAttribute('data-fyxx-closed'); b.disabled=false; b.removeAttribute('aria-disabled');
-            }
-          }
-          var pay=root.querySelectorAll('.shopify-payment-button, shopify-accelerated-checkout, .shopify-payment-button__button');
-          for(var j=0;j<pay.length;j++){ pay[j].style.display = open ? '' : 'none'; }
-        }
+        document.documentElement.classList.toggle('fyxx-kh-closed', !open);
+        place();
         if(note){ note.hidden = open; }
       }
 
-      /* safety net: block the add-to-cart form submit while closed */
+      /* Safety net: swallow clicks + submits on the main buy area while closed.
+         Capture phase + stopImmediatePropagation beats the theme's AJAX handlers. */
+      document.addEventListener('click', function(e){
+        if(isOpen()) return;
+        var t = (e.target && e.target.closest) ? e.target.closest('block-buy-buttons') : null;
+        if(t){ e.preventDefault(); e.stopImmediatePropagation(); }
+      }, true);
       document.addEventListener('submit', function(e){
         var f=e.target;
-        if(f && f.matches && f.matches('block-buy-buttons form') && !isOpen()){ e.preventDefault(); e.stopPropagation(); }
+        if(f && f.closest && f.closest('block-buy-buttons') && !isOpen()){ e.preventDefault(); e.stopImmediatePropagation(); }
       }, true);
 
-      function start(){
-        apply();
-        setInterval(apply, 30000);
-        var root=host();
-        if(root && window.MutationObserver){
-          var mo=new MutationObserver(function(){ apply(); });
-          mo.observe(root, {childList:true, subtree:true, attributes:true, attributeFilter:['disabled','class','style']});
-        }
-      }
+      function start(){ apply(); setInterval(apply, 30000); }
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', start); } else { start(); }
     })();
   </script>
