@@ -13,10 +13,10 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "text_g3nzYP": {
-          "type": "text",
+        "custom_dish_category": {
+          "type": "custom",
           "settings": {
-            "text": "{{ product.metafields.custom.tgr_dish_category.value }}"
+            "code": "{%- if product.metafields.custom.tgr_dish_category.value != blank -%}\n  <p class=\"tgr-dish-category\">{{ product.metafields.custom.tgr_dish_category.value }}</p>\n  <style>\n    .tgr-dish-category { font-family: 'Dunbar Text', sans-serif; color: #80AA96; font-size: 32px; font-weight: 800; letter-spacing: 8px; text-transform: uppercase; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; margin: 0 0 8px 0; }\n    @media (max-width: 520px) { .tgr-dish-category { font-size: 28px; letter-spacing: 6px; } }\n  </style>\n{%- endif -%}"
           }
         },
         "title_q3UQHF": {
@@ -66,7 +66,7 @@
         }
       },
       "block_order": [
-        "text_g3nzYP",
+        "custom_dish_category",
         "title_q3UQHF",
         "separator_pkfUci",
         "description_zpccnB",
