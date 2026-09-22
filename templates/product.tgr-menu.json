@@ -59,8 +59,14 @@
           "type": "buy_buttons",
           "settings": {
             "show_dynamic_checkout": true,
-            "surface_pickup_enable": true,
+            "surface_pickup_enable": false,
             "show_gift_card_recipient": true
+          }
+        },
+        "custom_delivery_offers": {
+          "type": "custom",
+          "settings": {
+            "code": "{%- assign _tal_logo = '46DFE7FE-588A-4ECD-A727-DC64960F52E7_Background_Removed.png' | file_url -%}\n{%- assign _car_logo = 'Careem_Logo_Smile.svg' | file_url -%}\n<link href=\"https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap\" rel=\"stylesheet\">\n<div class=\"fyxx-offers\">\n  <p class=\"fyxx-offers__heading\">See Today's Offers</p>\n  <div class=\"fyxx-offers__row\">\n    <a class=\"fyxx-offers__btn fyxx-offers__btn--talabat\" href=\"https://www.talabat.com/jordan/the-green-room\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Order on Talabat\" data-platform=\"talabat\">\n      <img class=\"fyxx-offers__logo\" src=\"{{ _tal_logo }}\" alt=\"\" aria-hidden=\"true\" decoding=\"async\">\n      <span>Talabat</span>\n    </a>\n    <a class=\"fyxx-offers__btn fyxx-offers__btn--careem\" href=\"https://careem.go.link/1j0U8\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Order on Careem\" data-platform=\"careem\">\n      <img class=\"fyxx-offers__logo\" src=\"{{ _car_logo }}\" alt=\"\" aria-hidden=\"true\" decoding=\"async\">\n      <span>Careem</span>\n    </a>\n  </div>\n</div>\n<style>\n  .fyxx-offers{ margin: 20px 0 0; }\n  html.fyxx-kh-closed .fyxx-offers{ display: none !important; }\n  .fyxx-offers__heading{\n    display: flex; align-items: center; gap: 12px;\n    margin: 0 0 12px; text-align: center;\n    font-family: inherit; font-weight: 600; font-size: 14px; color: #0f3c39;\n  }\n  .fyxx-offers__heading::before,\n  .fyxx-offers__heading::after{ content: \"\"; flex: 1; height: 1px; background: rgba(15,60,57,.25); }\n  .fyxx-offers__row{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }\n  .fyxx-offers__btn{\n    display: flex; align-items: center; justify-content: center; gap: 8px;\n    min-height: 50px; padding: 10px; border-radius: 8px; text-decoration: none;\n    font-family: 'Syne', system-ui, sans-serif; font-weight: 700; font-size: 14px;\n    text-transform: uppercase; letter-spacing: 1px; line-height: 1.1;\n    transition: filter .15s ease;\n  }\n  .fyxx-offers__btn:hover{ filter: brightness(1.04); }\n  .fyxx-offers__btn:focus-visible{ outline: 2px solid #0f3c39; outline-offset: 2px; }\n  .fyxx-offers__btn--talabat{ background: #FF5A00; color: #FFFFFF; }\n  .fyxx-offers__btn--careem{ background: #00E784; color: #00493E; }\n  .fyxx-offers__logo{ display: block; height: 19px; width: auto; flex: 0 0 auto; }\n  @media (prefers-reduced-motion: reduce){ .fyxx-offers__btn{ transition: none; } }\n</style>\n<script>\n  (function(){\n    try{\n      var handle = {{ product.handle | json }};\n      var links = document.querySelectorAll('.fyxx-offers__btn[data-platform]');\n      for(var i=0;i<links.length;i++){\n        links[i].addEventListener('click', function(){\n          var platform = this.getAttribute('data-platform');\n          try{ if(window.dataLayer && typeof window.dataLayer.push==='function'){ window.dataLayer.push({event:'delivery_click', platform:platform, source:'product_page', product_handle:handle}); } }catch(e){}\n          try{ if(typeof window.gtag==='function'){ window.gtag('event','delivery_click',{platform:platform, source:'product_page', product_handle:handle}); } }catch(e){}\n        });\n      }\n    }catch(e){}\n  })();\n</script>"
           }
         }
       },
@@ -72,6 +78,7 @@
         "price",
         "quantity_selector",
         "buy_buttons",
+        "custom_delivery_offers",
         "custom_GWyMDK",
         "custom_bg_block"
       ],
@@ -331,25 +338,11 @@
     "fyxx_kitchen_hours": {
       "type": "fyxx-kitchen-hours",
       "settings": {}
-    },
-    "fyxx_delivery_apps": {
-      "type": "fyxx-delivery-apps",
-      "settings": {
-        "heading": "See Today's Offers",
-        "subheading": "Order The Green Room on your favourite delivery app.",
-        "heading_font": "libre_baskerville_n7",
-        "background_color": "#f5f0e8",
-        "talabat_label": "Order on Talabat",
-        "talabat_url": "https://www.talabat.com/jordan/the-green-room",
-        "careem_label": "Order on Careem",
-        "careem_url": "https://careem.go.link/1j0U8"
-      }
     }
   },
   "order": [
     "main",
     "fyxx_kitchen_hours",
-    "fyxx_delivery_apps",
     "176047257125b72652",
     "recommendations",
     "17599492562ecda3de",
