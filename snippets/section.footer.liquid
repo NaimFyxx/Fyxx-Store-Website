@@ -160,6 +160,45 @@
       text-underline-offset: 2px;
     }
   }
+
+  /* FYXX CUSTOM: keep the Arabic legal name rendering right-to-left and
+     isolated from the surrounding Latin text/punctuation. */
+  .fyxx-legal-line [lang='ar'] {
+    direction: rtl;
+    unicode-bidi: isolate;
+  }
+
+  /* FYXX CUSTOM: centre the footer content on mobile. */
+  @media only screen and (max-width: 768px) {
+    .site-footer .footer__block,
+    .site-footer .footer__block--mobile,
+    .site-footer .footer__title,
+    .site-footer .footer__menu,
+    .site-footer .footer__base-links,
+    .site-footer .fyxx-legal-line {
+      text-align: center;
+    }
+
+    /* the base bar is forced left on mobile by small--text-left; re-centre it */
+    .site-footer .page-width.small--text-left {
+      text-align: center;
+    }
+
+    /* centre any flex rows (social icons, menus rendered as flex) */
+    .site-footer .footer__menu,
+    .site-footer .inline-list,
+    .site-footer .list-social {
+      justify-content: center;
+    }
+
+    /* base-links items carry an asymmetric right padding; make it symmetric
+       so the centred row sits true */
+    .site-footer .footer__base-links a,
+    .site-footer .footer__base-links span {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
 {% endstylesheet %}
 
 {%- liquid
