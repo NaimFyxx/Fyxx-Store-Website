@@ -1,0 +1,118 @@
+{%- comment -%}
+  FYXX CUSTOM: The Green Room delivery-app handoff band.
+  Reusable section. Two outlined buttons (Talabat / Careem) that link out to the
+  delivery apps in a new tab, each with its brand logo. TGR palette, kept visually
+  secondary to the product's Add to Cart button. Delivery hours are intentionally
+  omitted here (they are shown elsewhere on the page). All CSS is scoped under
+  .fyxx-delivery-apps so nothing leaks when the section is reused.
+
+  Logos are pulled straight from Content > Files by filename (no theme-editor step
+  needed); the labels and URLs are editable in the theme editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign talabat_url = section.settings.talabat_url | default: 'https://www.talabat.com/jordan/the-green-room'
+  assign careem_url = section.settings.careem_url | default: 'https://careem.go.link/1j0U8'
+  assign talabat_logo = 'files/46DFE7FE-588A-4ECD-A727-DC64960F52E7_Background_Removed.png' | remove: 'files/' | file_url
+  assign careem_logo = 'files/Careem_Logo_Smile.svg' | remove: 'files/' | file_url
+-%}
+
+{{ section.settings.heading_font | font_face: font_display: 'swap' }}
+
+<style>
+  .fyxx-delivery-apps{
+    background: {{ section.settings.background_color | default: '#f5f0e8' }};
+    padding: 44px 24px calc(44px + env(safe-area-inset-bottom));
+  }
+  .fyxx-delivery-apps, .fyxx-delivery-apps *{ box-sizing:border-box; }
+  .fyxx-delivery-apps__inner{
+    width:100%; max-width:720px; margin:0 auto; text-align:center;
+  }
+  .fyxx-delivery-apps__heading{
+    font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    font-style: {{ section.settings.heading_font.style }};
+    font-weight: {{ section.settings.heading_font.weight }};
+    color:#0f3c39; font-size:28px; line-height:1.15; margin:0 0 8px;
+  }
+  .fyxx-delivery-apps__subheading{
+    font-family:inherit; color:#0f3c39;
+    font-size:16px; line-height:1.5; margin:0 auto 24px; max-width:36em; opacity:.85;
+  }
+  .fyxx-delivery-apps__buttons{
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:center;
+  }
+  .fyxx-delivery-apps__btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    flex:1 1 220px; max-width:300px; min-height:54px; padding:12px 22px;
+    border:2px solid #0f3c39; border-radius:8px; background:transparent;
+    color:#0f3c39; text-decoration:none;
+    font-family:inherit; font-weight:600; font-size:15px; letter-spacing:.3px;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .fyxx-delivery-apps__btn:hover,
+  .fyxx-delivery-apps__btn:focus-visible{
+    background:#80aa96; border-color:#80aa96; color:#0f3c39; outline:none;
+  }
+  .fyxx-delivery-apps__btn:focus-visible{ box-shadow:0 0 0 3px rgba(15,60,57,.25); }
+  .fyxx-delivery-apps__btn-logo{
+    display:block; height:20px; width:auto; flex:0 0 auto;
+  }
+  @media (max-width: 599px){
+    .fyxx-delivery-apps__buttons{ flex-direction:column; }
+    .fyxx-delivery-apps__btn{ max-width:none; width:100%; flex:1 1 auto; }
+    .fyxx-delivery-apps__heading{ font-size:24px; }
+  }
+</style>
+
+<div class="fyxx-delivery-apps">
+  <div class="fyxx-delivery-apps__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="fyxx-delivery-apps__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="fyxx-delivery-apps__subheading">{{ section.settings.subheading | escape }}</p>
+    {%- endif -%}
+
+    <div class="fyxx-delivery-apps__buttons">
+      {%- if talabat_url != blank -%}
+        <a class="fyxx-delivery-apps__btn" href="{{ talabat_url }}" target="_blank" rel="noopener" data-platform="talabat">
+          {%- if talabat_logo != blank -%}
+            <img class="fyxx-delivery-apps__btn-logo" src="{{ talabat_logo }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          {%- endif -%}
+          <span>{{ section.settings.talabat_label | default: 'Order on Talabat' | escape }}</span>
+        </a>
+      {%- endif -%}
+
+      {%- if careem_url != blank -%}
+        <a class="fyxx-delivery-apps__btn" href="{{ careem_url }}" target="_blank" rel="noopener" data-platform="careem">
+          {%- if careem_logo != blank -%}
+            <img class="fyxx-delivery-apps__btn-logo" src="{{ careem_logo }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          {%- endif -%}
+          <span>{{ section.settings.careem_label | default: 'Order on Careem' | escape }}</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "TGR delivery apps",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "See Today's Offers" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Order The Green Room on your favourite delivery app." },
+    { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "libre_baskerville_n7" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#f5f0e8" },
+    { "type": "header", "content": "Talabat" },
+    { "type": "text", "id": "talabat_label", "label": "Talabat button label", "default": "Order on Talabat" },
+    { "type": "url", "id": "talabat_url", "label": "Talabat URL", "info": "Pre-filled with the Green Room Talabat listing. Blank hides the button." },
+    { "type": "header", "content": "Careem" },
+    { "type": "text", "id": "careem_label", "label": "Careem button label", "default": "Order on Careem" },
+    { "type": "url", "id": "careem_url", "label": "Careem URL", "info": "Pre-filled with the Green Room Careem link. Blank hides the button." }
+  ],
+  "presets": [
+    { "name": "TGR delivery apps" }
+  ]
+}
+{% endschema %}

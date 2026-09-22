@@ -265,7 +265,7 @@
         "ai_gen_block_ec9a622_7hqUzk": {
           "type": "ai_gen_block_ec9a622",
           "settings": {
-            "title": "Opening Hours",
+            "title": "Dine-in Opening Hours",
             "weekday_label": "Sunday – Wednesday",
             "weekday_hours": "5:00 PM – 12:00 AM",
             "weekend_label": "Thursday – Saturday",
@@ -332,11 +332,25 @@
     "fyxx_kitchen_hours": {
       "type": "fyxx-kitchen-hours",
       "settings": {}
+    },
+    "fyxx_delivery_apps": {
+      "type": "fyxx-delivery-apps",
+      "settings": {
+        "heading": "See Today's Offers",
+        "subheading": "Order The Green Room on your favourite delivery app.",
+        "heading_font": "libre_baskerville_n7",
+        "background_color": "#f5f0e8",
+        "talabat_label": "Order on Talabat",
+        "talabat_url": "https://www.talabat.com/jordan/the-green-room",
+        "careem_label": "Order on Careem",
+        "careem_url": "https://careem.go.link/1j0U8"
+      }
     }
   },
   "order": [
     "main",
     "fyxx_kitchen_hours",
+    "fyxx_delivery_apps",
     "176047257125b72652",
     "recommendations",
     "17599492562ecda3de",
