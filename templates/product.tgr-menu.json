@@ -58,8 +58,9 @@
         "custom_bg_block"
       ],
       "custom_css": [
-        ".product__title,.product-single__title {font-family: \"Dunbar Text\", sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #0f3c39;}",
-        ".product__description,.product__description *,.product-single__description,.product-single__description *,.rte,.rte * {font-family: \"Dunbar Text\", sans-serif; font-weight: 400; font-size: 16px; color: #0f3c39; line-height: 1.4;}"
+        ".element-text--heading-xl {font-family: \"Dunbar Text\", sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #0f3c39;}",
+        ".element-text--rte, .element-text--rte * {font-family: \"Dunbar Text\", sans-serif; color: #0f3c39 !important; line-height: 1.4;}",
+        ".element-text--rte em {color: #80aa96 !important;}"
       ],
       "settings": {
         "image_position": "left",
