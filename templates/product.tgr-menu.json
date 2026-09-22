@@ -47,6 +47,22 @@
           "settings": {
             "code": "<style>body { background-color: #f5f0e8 !important; }</style>"
           }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "surface_pickup_enable": true,
+            "show_gift_card_recipient": true
+          }
         }
       },
       "block_order": [
@@ -54,6 +70,9 @@
         "title_q3UQHF",
         "separator_pkfUci",
         "description_zpccnB",
+        "price",
+        "quantity_selector",
+        "buy_buttons",
         "custom_GWyMDK",
         "custom_bg_block"
       ],
@@ -309,10 +328,15 @@
       "settings": {
         "color_scheme": "2"
       }
+    },
+    "fyxx_kitchen_hours": {
+      "type": "fyxx-kitchen-hours",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "fyxx_kitchen_hours",
     "176047257125b72652",
     "recommendations",
     "17599492562ecda3de",
