@@ -260,6 +260,24 @@
       for (var i = 0; i < links.length; i++) {
         links[i].addEventListener('click', function () {
           var platform = this.getAttribute('data-platform');
+          var LABEL = { talabat: 'Talabat', careem: 'Careem' };
+          var pl = LABEL[platform] || platform;
+          // a) Klaviyo (identified visitors only)
+          try {
+            var kp = { platform: pl, source: 'Delivery Page' };
+            if (window.klaviyo && typeof window.klaviyo.track === 'function') {
+              window.klaviyo.track('Clicked Delivery App', kp);
+            } else if (window._learnq && typeof window._learnq.push === 'function') {
+              window._learnq.push(['track', 'Clicked Delivery App', kp]);
+            }
+          } catch (e) {}
+          // b) Microsoft Clarity
+          try {
+            if (typeof window.clarity === 'function') {
+              window.clarity('event', 'delivery_click_' + platform);
+            }
+          } catch (e) {}
+          // c) Google (dataLayer / gtag)
           try {
             if (typeof window.dataLayer !== 'undefined' && typeof window.dataLayer.push === 'function') {
               window.dataLayer.push({ event: 'delivery_click', platform: platform });
@@ -268,6 +286,18 @@
           try {
             if (typeof window.gtag === 'function') {
               window.gtag('event', 'delivery_click', { platform: platform });
+            }
+          } catch (e) {}
+          // d) Meta Pixel
+          try {
+            if (typeof window.fbq === 'function') {
+              window.fbq('trackCustom', 'DeliveryAppClick', { platform: pl, source: 'Delivery Page' });
+            }
+          } catch (e) {}
+          // e) Shopify Customer Events (for sandboxed pixels)
+          try {
+            if (window.Shopify && window.Shopify.analytics && typeof window.Shopify.analytics.publish === 'function') {
+              window.Shopify.analytics.publish('delivery_app_click', { platform: pl, source: 'Delivery Page' });
             }
           } catch (e) {}
           // Never preventDefault: the anchor navigates normally so iOS/Android
