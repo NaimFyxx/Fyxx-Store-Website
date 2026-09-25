@@ -1085,6 +1085,13 @@
         "label": "Free-delivery threshold (JOD)",
         "info": "Free delivery unlocks when the cart subtotal is over this amount. Default 25.",
         "default": 25
+      },
+      {
+        "type": "number",
+        "id": "fyxx_freedel_topup_within",
+        "label": "Show Top Up suggestions within (JOD)",
+        "info": "Only show the 'Top Up' add-ons once the cart is within this much of free delivery. Keeps cart quantity changes fast and avoids suggesting cheap items when far from the threshold. Default 10.",
+        "default": 10
       }
     ]
   }
