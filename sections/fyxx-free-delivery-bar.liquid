@@ -1,0 +1,71 @@
+{% comment %}
+  ===== FYXX CUSTOM: Free-delivery bar on the cart page =====
+  Thin section wrapper that renders snippets/fyxx-free-delivery-bar.liquid on the
+  cart page and refreshes it when the cart changes. Placed above the cart items
+  via templates/cart.json. The drawer renders the same snippet independently.
+{% endcomment %}
+
+<div data-fyxx-fdb-section="{{ section.id }}">
+  {%- render 'fyxx-free-delivery-bar', layout: 'page' -%}
+</div>
+
+{% stylesheet %}
+  .fyxx-fdb--page { max-width: 1080px; margin: 0 auto 10px; padding: 0 var(--page-width-padding, 16px); }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var wrap = document.currentScript.closest('[data-fyxx-fdb-section]');
+    if (!wrap || wrap.dataset.fdbInit) return;
+    wrap.dataset.fdbInit = '1';
+
+    var sectionId = wrap.getAttribute('data-fyxx-fdb-section');
+    var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
+
+    // Re-render this section from the Section Rendering API (recomputes the gap + suggestions).
+    function refresh() {
+      fetch(root + '?sections=' + encodeURIComponent(sectionId), { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data[sectionId]) {
+            var doc = new DOMParser().parseFromString(data[sectionId], 'text/html');
+            var fresh = doc.querySelector('[data-fyxx-fdb-section]');
+            if (fresh) wrap.innerHTML = fresh.innerHTML;
+          }
+        })
+        .catch(function () {});
+    }
+
+    // The cart drawer's fetch hook broadcasts this for any add/change/update/clear.
+    document.addEventListener('fyxx-cart:mutated', refresh);
+    // Belt-and-suspenders for theme-native cart events.
+    ['cart:updated', 'cart:refresh', 'cart:build'].forEach(function (ev) {
+      document.addEventListener(ev, refresh);
+    });
+
+    // Top-up add on the cart page: add, then reload so the cart line items update too.
+    wrap.addEventListener('click', function (e) {
+      var add = e.target.closest('[data-fdb-add]');
+      if (!add) return;
+      e.preventDefault();
+      var vid = add.getAttribute('data-variant-id');
+      if (!vid) return;
+      add.disabled = true;
+      fetch(root + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: [{ id: vid, quantity: 1 }] })
+      })
+        .then(function () { window.location.reload(); })
+        .catch(function () { add.disabled = false; });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Fyxx free-delivery bar",
+  "settings": [],
+  "templates": ["cart"]
+}
+{% endschema %}

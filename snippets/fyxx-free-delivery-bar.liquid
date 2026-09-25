@@ -1,0 +1,151 @@
+{% comment %}
+  ===== FYXX CUSTOM: Free-delivery progress bar + "Top Up" upsell =====
+  Shows how far the cart is from free delivery and suggests items from the
+  'top-up' collection that help close the gap.
+
+  - Free delivery unlocks when the cart subtotal is STRICTLY OVER the threshold
+    (25.00 JD = still charged, 25.01 JD = free), matching the Amman delivery rule.
+  - Rendered server-side, so inside the cart drawer it auto-refreshes with the
+    drawer's Section Rendering swap. On the cart page the section wrapper
+    (sections/fyxx-free-delivery-bar.liquid) refreshes it on cart changes.
+
+  Params:
+    layout  - 'drawer' | 'page' (styling hook only)
+
+  Theme settings (Theme editor > Theme settings > Fyxx — Free delivery):
+    settings.fyxx_freedel_enabled    (checkbox, on/off kill-switch)
+    settings.fyxx_freedel_threshold  (number, JOD; default 25)
+
+  Add buttons carry data-fdb-add + data-variant-id; the host (drawer script /
+  section script) does the AJAX /cart/add.js.
+{% endcomment %}
+
+{%- liquid
+  assign fdb_enabled = settings.fyxx_freedel_enabled
+  assign fdb_threshold = settings.fyxx_freedel_threshold | default: 25
+  assign fdb_layout = layout | default: 'page'
+-%}
+
+{%- if fdb_enabled and cart.item_count > 0 -%}
+  {%- liquid
+    # cart.total_price is in the shop's minor units (JOD = fils, 1000 per dinar)
+    assign fdb_target = fdb_threshold | times: 1000
+    assign fdb_remaining = fdb_target | minus: cart.total_price
+    assign fdb_unlocked = false
+    if cart.total_price > fdb_target
+      assign fdb_unlocked = true
+    endif
+    if fdb_remaining < 0
+      assign fdb_remaining = 0
+    endif
+    assign fdb_pct = cart.total_price | times: 100 | divided_by: fdb_target
+    if fdb_pct > 100
+      assign fdb_pct = 100
+    endif
+  -%}
+
+  <div class="fyxx-fdb fyxx-fdb--{{ fdb_layout }}{% if fdb_unlocked %} is-unlocked{% endif %}" data-fyxx-fdb>
+    <style>
+      .fyxx-fdb{ font-family:var(--element-text-font-family--body,'Figtree',system-ui,sans-serif); }
+      .fyxx-fdb *{ box-sizing:border-box; }
+      .fyxx-fdb__bar{ background:#eef4f0; border:1px solid #dce8e1; border-radius:12px; padding:12px 14px; }
+      .fyxx-fdb__row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+      .fyxx-fdb__msg{ font-size:14px; font-weight:600; line-height:1.3; color:#0f3c39; }
+      .fyxx-fdb__msg strong{ font-weight:700; }
+      .fyxx-fdb__amt{ font-variant-numeric:tabular-nums; }
+      .fyxx-fdb__sub{ font-size:12px; color:#5c726a; white-space:nowrap; font-variant-numeric:tabular-nums; }
+      .fyxx-fdb__track{ height:8px; border-radius:999px; background:rgba(15,60,57,.14); margin-top:9px; overflow:hidden; }
+      .fyxx-fdb__fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#80aa96,#0f3c39); transition:width .5s cubic-bezier(.2,.8,.2,1); }
+      .fyxx-fdb.is-unlocked .fyxx-fdb__fill{ background:linear-gradient(90deg,#4bbd86,#0f3c39); }
+
+      .fyxx-fdb__topup{ margin-top:14px; }
+      .fyxx-fdb__topup-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin:0 0 9px; }
+      .fyxx-fdb__topup-title{ font-size:13px; font-weight:700; color:#0f3c39; }
+      .fyxx-fdb__topup-hint{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
+      .fyxx-fdb__grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; }
+      .fyxx-fdb--drawer .fyxx-fdb__grid{ grid-template-columns:1fr 1fr; }
+      .fyxx-fdb__card{ display:flex; gap:9px; align-items:center; background:#fff; border:1px solid #e7ded1; border-radius:11px; padding:8px; }
+      .fyxx-fdb__card-media{ flex:0 0 auto; width:42px; height:42px; border-radius:7px; overflow:hidden; background:#f5f0e8; display:flex; align-items:center; justify-content:center; }
+      .fyxx-fdb__card-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+      .fyxx-fdb__card-body{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:1px; }
+      .fyxx-fdb__card-name{ font-size:12px; font-weight:600; color:#231f20; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .fyxx-fdb__card-price{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
+      .fyxx-fdb__badge{ align-self:flex-start; font-size:9.5px; font-weight:700; color:#1f7a4d; background:rgba(31,122,77,.12); border-radius:999px; padding:1px 6px; margin-top:1px; }
+      .fyxx-fdb__add{ margin-top:6px; align-self:flex-start; border:1.5px solid #0f3c39; background:transparent; color:#0f3c39; border-radius:8px; padding:5px 12px; font-family:inherit; font-weight:700; font-size:11.5px; cursor:pointer; transition:background-color .14s ease,color .14s ease,border-color .14s ease; }
+      .fyxx-fdb__add:hover,.fyxx-fdb__add:focus-visible{ background:#80aa96; border-color:#80aa96; color:#0f3c39; outline:none; }
+      .fyxx-fdb__add[disabled]{ opacity:.5; cursor:default; }
+      @media (prefers-reduced-motion: reduce){ .fyxx-fdb__fill,.fyxx-fdb__add{ transition:none; } }
+    </style>
+
+    <div class="fyxx-fdb__bar">
+      <div class="fyxx-fdb__row">
+        {%- if fdb_unlocked -%}
+          <span class="fyxx-fdb__msg">&#127881; You&rsquo;ve unlocked <strong>free delivery</strong></span>
+        {%- else -%}
+          <span class="fyxx-fdb__msg">Add <span class="fyxx-fdb__amt">{{ fdb_remaining | money }}</span> more for <strong>free delivery</strong></span>
+        {%- endif -%}
+        <span class="fyxx-fdb__sub">{{ cart.total_price | money }} / {{ fdb_target | money }}</span>
+      </div>
+      <div class="fyxx-fdb__track"><div class="fyxx-fdb__fill" style="width: {{ fdb_pct }}%;"></div></div>
+    </div>
+
+    {%- unless fdb_unlocked -%}
+      {%- assign fdb_col = collections['top-up'] -%}
+      {%- if fdb_col != blank and fdb_col.products_count > 0 -%}
+        <div class="fyxx-fdb__topup">
+          <div class="fyxx-fdb__topup-head">
+            <span class="fyxx-fdb__topup-title">Top up to free delivery</span>
+            <span class="fyxx-fdb__topup-hint">{{ fdb_remaining | money }} to go</span>
+          </div>
+          <div class="fyxx-fdb__grid">
+            {%- assign fdb_shown = '' -%}
+            {%- assign fdb_n = 0 -%}
+            {%- comment -%} 1) smallest items that already cross the gap {%- endcomment -%}
+            {%- for p in fdb_col.products -%}
+              {%- if fdb_n >= 5 -%}{%- break -%}{%- endif -%}
+              {%- assign v = p.selected_or_first_available_variant -%}
+              {%- if v != blank and v.price >= fdb_remaining -%}
+                {%- unless fdb_shown contains p.id -%}
+                  <div class="fyxx-fdb__card">
+                    <a class="fyxx-fdb__card-media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+                      {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 120 }}" alt="" width="42" height="42" loading="lazy">{%- endif -%}
+                    </a>
+                    <div class="fyxx-fdb__card-body">
+                      <span class="fyxx-fdb__card-name" title="{{ p.title | escape }}">{{ p.title }}</span>
+                      <span class="fyxx-fdb__card-price">{{ v.price | money }}</span>
+                      <span class="fyxx-fdb__badge">Unlocks free delivery</span>
+                      <button class="fyxx-fdb__add" type="button" data-fdb-add data-variant-id="{{ v.id }}">Add</button>
+                    </div>
+                  </div>
+                  {%- assign fdb_shown = fdb_shown | append: p.id | append: ',' -%}
+                  {%- assign fdb_n = fdb_n | plus: 1 -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- comment -%} 2) fill remaining slots with the biggest-dent items {%- endcomment -%}
+            {%- for p in fdb_col.products reversed -%}
+              {%- if fdb_n >= 5 -%}{%- break -%}{%- endif -%}
+              {%- assign v = p.selected_or_first_available_variant -%}
+              {%- if v != blank -%}
+                {%- unless fdb_shown contains p.id -%}
+                  <div class="fyxx-fdb__card">
+                    <a class="fyxx-fdb__card-media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+                      {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 120 }}" alt="" width="42" height="42" loading="lazy">{%- endif -%}
+                    </a>
+                    <div class="fyxx-fdb__card-body">
+                      <span class="fyxx-fdb__card-name" title="{{ p.title | escape }}">{{ p.title }}</span>
+                      <span class="fyxx-fdb__card-price">{{ v.price | money }}</span>
+                      <button class="fyxx-fdb__add" type="button" data-fdb-add data-variant-id="{{ v.id }}">Add</button>
+                    </div>
+                  </div>
+                  {%- assign fdb_shown = fdb_shown | append: p.id | append: ',' -%}
+                  {%- assign fdb_n = fdb_n | plus: 1 -%}
+                {%- endunless -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
+  </div>
+{%- endif -%}

@@ -43,6 +43,7 @@ mostly unknown; where known it's noted.
 | Brand typography (Dunbar Text) | theme assets/settings | |
 | Rewards page | `templates/page.fyxx-rewards.json` | (The `?r=` reward deep-link was added later with Claude — Aug 2026.) |
 | Klaviyo birthday-flow pages | `sections/birthday-gift.liquid`, `templates/page.birthday-gift.json` | Live Klaviyo flow; display later corrected with Claude (Sep 2026). |
+| Loyalty points-earned display on product pages | LoyaltyLion widget / theme markup on the product template | Built by Naím's brother. Being redesigned with Claude (Sep 2026). |
 | Third-party app templates & integrations | see §3 "classify" list and §4 app embeds | Shogun, Fordeer, events, Judge.me, LoyaltyLion, Klaviyo, Smile/rewards, Odoo, gift/upsell/preorder apps, etc. |
 
 > These dates are approximate. The intent is the ordering (pre-collaboration vs. from 28 Jun 2026),
@@ -63,6 +64,7 @@ These files do not exist in stock Expanse. On migration, copy them into the new 
 | `fyxx-kitchen-hours.liquid` | Kitchen-availability gating — disables Add to Cart + shows a note outside opening hours (Green Room food / cheese / pizza), Asia/Amman time. **Wired into `templates/product.json` and `templates/product.tgr-menu.json`.** |
 | `fyxx-reward-deeplink.liquid` | `?r=<LoyaltyLion reward id>` deep-link on the rewards page + return-to-rewards after login/join. |
 | `fyxx-delivery-apps.liquid` | "See Today's Offers" Talabat/Careem band. **Built, but currently not in any template's order** (superseded by the in-buy-area buttons on tgr-menu). Kept for reuse. |
+| `fyxx-free-delivery-bar.liquid` | Cart-page wrapper for the free-delivery bar snippet (renders + refreshes it). Wired into `templates/cart.json`. |
 | `tgr-delivery-links.liquid` | The Green Room delivery handoff section for `/pages/tgr-food-delivery` (Talabat/Careem + delivery-click tracking). |
 | `tgr-menu-section.liquid` | Renders the TGR food menu (category headings `.section-title`, menu items). |
 | `tgr-cocktail-menu-section.liquid` | Renders the TGR cocktail menu. |
@@ -80,6 +82,7 @@ These files do not exist in stock Expanse. On migration, copy them into the new 
 |---|---|
 | `custom.secondary-menu-header.liquid` | Quick-links secondary nav + slim desktop menu. Rendered by the modified `section.header.liquid` (see §2). |
 | `custom.product-available-in-shop.liquid` | "Available in shop" label for products in stock in-store but not online. |
+| `fyxx-free-delivery-bar.liquid` | Free-delivery progress bar + "Top Up" upsell. Rendered in the cart drawer and by `sections/fyxx-free-delivery-bar.liquid` on the cart page. Reads the `top-up` collection + theme settings `fyxx_freedel_enabled` / `fyxx_freedel_threshold`. |
 
 ### Assets (`assets/`)
 | File | What it is |
@@ -108,6 +111,9 @@ same file.
 | `snippets/form.predictive-search.liquid` | Stop the results-panel scroll from chaining into the page. |
 | `snippets/block.product-variant-picker.button.liquid` | Safari variant-picker fix. |
 | `sections/footer-group.json` | App Download banner intentionally hidden on TGR templates (embedded `custom_liquid` block keyed on template suffix `tgr-menu` / `tgr-cocktails` / `tgr-cocktail`). |
+| `sections/fyxx-cart-drawer.liquid` | (Custom section, §1.) Also renders the free-delivery bar + Top Up add handler. |
+| `templates/cart.json` | Adds the `fyxx-free-delivery-bar` section above `main-cart`. |
+| `config/settings_schema.json` | Adds the "Fyxx — Free delivery" settings group (`fyxx_freedel_enabled`, `fyxx_freedel_threshold`). |
 
 ---
 
