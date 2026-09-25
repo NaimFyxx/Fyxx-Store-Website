@@ -64,7 +64,9 @@
       .fyxx-fdb__topup-title{ font-size:13px; font-weight:700; color:#0f3c39; }
       .fyxx-fdb__topup-hint{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
       .fyxx-fdb__grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; }
-      .fyxx-fdb--drawer .fyxx-fdb__grid{ grid-template-columns:1fr 1fr; }
+      /* FYXX CUSTOM: in the drawer the add-ons scroll sideways instead of stacking */
+      .fyxx-fdb--drawer .fyxx-fdb__grid{ display:flex; gap:9px; overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; padding-bottom:4px; scroll-snap-type:x proximity; scrollbar-width:thin; }
+      .fyxx-fdb--drawer .fyxx-fdb__card{ flex:0 0 auto; width:158px; scroll-snap-align:start; }
       .fyxx-fdb__card{ display:flex; gap:9px; align-items:center; background:#fff; border:1px solid #e7ded1; border-radius:11px; padding:8px; }
       .fyxx-fdb__card-media{ flex:0 0 auto; width:42px; height:42px; border-radius:7px; overflow:hidden; background:#f5f0e8; display:flex; align-items:center; justify-content:center; }
       .fyxx-fdb__card-media img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -93,6 +95,13 @@
     {%- unless fdb_unlocked -%}
       {%- assign fdb_col = collections['top-up'] -%}
       {%- if fdb_col != blank and fdb_col.products_count > 0 -%}
+        {%- comment -%} FYXX CUSTOM: only suggest when a single add-on can realistically close the gap,
+             so we don't push cheap items when the cart is far from the threshold. {%- endcomment -%}
+        {%- assign fdb_reach = 0 -%}
+        {%- for p in fdb_col.products -%}
+          {%- if p.price > fdb_reach -%}{%- assign fdb_reach = p.price -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if fdb_remaining <= fdb_reach -%}
         <div class="fyxx-fdb__topup">
           <div class="fyxx-fdb__topup-head">
             <span class="fyxx-fdb__topup-title">Top up to free delivery</span>
@@ -146,6 +155,7 @@
             {%- endfor -%}
           </div>
         </div>
+        {%- endif -%}
       {%- endif -%}
     {%- endunless -%}
   </div>
