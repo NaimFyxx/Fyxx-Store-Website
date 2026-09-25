@@ -32,6 +32,10 @@
   assign fdb_enabled = settings.fyxx_freedel_enabled
   assign fdb_threshold = settings.fyxx_freedel_threshold | default: 25
   assign fdb_layout = layout | default: 'page'
+  # FYXX CUSTOM: Top Up suggestions are temporarily hidden (drawer + cart page)
+  # while we rework them into smarter, cart-aware complements. Flip to true to
+  # re-enable the suggestion row; all the rendering logic below is kept intact.
+  assign fdb_show_topup = false
 -%}
 
 {%- if fdb_enabled and cart.item_count > 0 -%}
@@ -117,6 +121,7 @@
       <div class="fyxx-fdb__track"><div class="fyxx-fdb__fill" style="width: {{ fdb_pct }}%;"></div></div>
     </div>
 
+    {%- if fdb_show_topup -%}
     {%- unless fdb_unlocked -%}
       {%- comment -%} FYXX CUSTOM: only load + show Top Up when the cart is within reach of free
            delivery (settings.fyxx_freedel_topup_within JOD). Skipping the collection lookup when the
@@ -182,5 +187,6 @@
         {%- endif -%}
       {%- endif -%}
     {%- endunless -%}
+    {%- endif -%}
   </div>
 {%- endif -%}
