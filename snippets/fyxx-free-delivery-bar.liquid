@@ -28,8 +28,9 @@
 
 {%- if fdb_enabled and cart.item_count > 0 -%}
   {%- liquid
-    # cart.total_price is in the shop's minor units (JOD = fils, 1000 per dinar)
-    assign fdb_target = fdb_threshold | times: 1000
+    # cart.total_price and variant prices are in the money filter's integer units
+    # (this shop: 100 per JOD — verified against {{ ... | money }} output).
+    assign fdb_target = fdb_threshold | times: 100
     assign fdb_remaining = fdb_target | minus: cart.total_price
     assign fdb_unlocked = false
     if cart.total_price > fdb_target
