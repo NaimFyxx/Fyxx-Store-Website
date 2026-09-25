@@ -63,18 +63,16 @@
       .fyxx-fdb__topup-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin:0 0 9px; }
       .fyxx-fdb__topup-title{ font-size:13px; font-weight:700; color:#0f3c39; }
       .fyxx-fdb__topup-hint{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
-      .fyxx-fdb__grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; }
-      /* FYXX CUSTOM: in the drawer the add-ons scroll sideways instead of stacking */
-      .fyxx-fdb--drawer .fyxx-fdb__grid{ display:flex; gap:9px; overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; padding-bottom:4px; scroll-snap-type:x proximity; scrollbar-width:thin; }
-      .fyxx-fdb--drawer .fyxx-fdb__card{ flex:0 0 auto; width:158px; scroll-snap-align:start; }
-      .fyxx-fdb__card{ display:flex; gap:9px; align-items:center; background:#fff; border:1px solid #e7ded1; border-radius:11px; padding:8px; }
-      .fyxx-fdb__card-media{ flex:0 0 auto; width:42px; height:42px; border-radius:7px; overflow:hidden; background:#f5f0e8; display:flex; align-items:center; justify-content:center; }
-      .fyxx-fdb__card-media img{ width:100%; height:100%; object-fit:cover; display:block; }
-      .fyxx-fdb__card-body{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:1px; }
-      .fyxx-fdb__card-name{ font-size:12px; font-weight:600; color:#231f20; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-      .fyxx-fdb__card-price{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
-      .fyxx-fdb__badge{ align-self:flex-start; font-size:9.5px; font-weight:700; color:#1f7a4d; background:rgba(31,122,77,.12); border-radius:999px; padding:1px 6px; margin-top:1px; }
-      .fyxx-fdb__add{ margin-top:6px; align-self:flex-start; border:1.5px solid #0f3c39; background:transparent; color:#0f3c39; border-radius:8px; padding:5px 12px; font-family:inherit; font-weight:700; font-size:11.5px; cursor:pointer; transition:background-color .14s ease,color .14s ease,border-color .14s ease; }
+      /* FYXX CUSTOM: add-ons as a horizontal scroll row of uniform vertical cards */
+      .fyxx-fdb__grid{ display:flex; align-items:stretch; gap:10px; overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; padding:2px 0 6px; scroll-snap-type:x proximity; scrollbar-width:thin; }
+      .fyxx-fdb__card{ flex:0 0 auto; width:130px; scroll-snap-align:start; display:flex; flex-direction:column; background:#fff; border:1px solid #e7ded1; border-radius:11px; padding:8px; }
+      .fyxx-fdb__card-media{ display:flex; align-items:center; justify-content:center; width:100%; height:66px; border-radius:7px; overflow:hidden; background:#f5f0e8; margin-bottom:7px; }
+      .fyxx-fdb__card-media img{ max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+      .fyxx-fdb__card-body{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; }
+      .fyxx-fdb__card-name{ font-size:12px; font-weight:600; color:#231f20; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.5em; }
+      .fyxx-fdb__card-price{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; margin-top:2px; }
+      .fyxx-fdb__badge{ display:inline-block; align-self:flex-start; font-size:9.5px; font-weight:700; color:#1f7a4d; background:rgba(31,122,77,.12); border-radius:999px; padding:1px 6px; margin-top:4px; }
+      .fyxx-fdb__add{ margin-top:auto; padding-top:9px; width:100%; text-align:center; border:1.5px solid #0f3c39; background:transparent; color:#0f3c39; border-radius:8px; padding:6px 8px; font-family:inherit; font-weight:700; font-size:11.5px; cursor:pointer; transition:background-color .14s ease,color .14s ease,border-color .14s ease; }
       .fyxx-fdb__add:hover,.fyxx-fdb__add:focus-visible{ background:#80aa96; border-color:#80aa96; color:#0f3c39; outline:none; }
       .fyxx-fdb__add[disabled]{ opacity:.5; cursor:default; }
       @media (prefers-reduced-motion: reduce){ .fyxx-fdb__fill,.fyxx-fdb__add{ transition:none; } }
@@ -93,15 +91,14 @@
     </div>
 
     {%- unless fdb_unlocked -%}
-      {%- assign fdb_col = collections['top-up'] -%}
-      {%- if fdb_col != blank and fdb_col.products_count > 0 -%}
-        {%- comment -%} FYXX CUSTOM: only suggest when a single add-on can realistically close the gap,
-             so we don't push cheap items when the cart is far from the threshold. {%- endcomment -%}
-        {%- assign fdb_reach = 0 -%}
-        {%- for p in fdb_col.products -%}
-          {%- if p.price > fdb_reach -%}{%- assign fdb_reach = p.price -%}{%- endif -%}
-        {%- endfor -%}
-        {%- if fdb_remaining <= fdb_reach -%}
+      {%- comment -%} FYXX CUSTOM: only load + show Top Up when the cart is within reach of free
+           delivery (settings.fyxx_freedel_topup_within JOD). Skipping the collection lookup when the
+           cart is far from the threshold keeps quantity changes in the drawer fast, and avoids
+           suggesting cheap add-ons for a big gap. {%- endcomment -%}
+      {%- assign fdb_within = settings.fyxx_freedel_topup_within | default: 10 | times: 100 -%}
+      {%- if fdb_remaining <= fdb_within -%}
+        {%- assign fdb_col = collections['top-up'] -%}
+        {%- if fdb_col != blank and fdb_col.products_count > 0 -%}
         <div class="fyxx-fdb__topup">
           <div class="fyxx-fdb__topup-head">
             <span class="fyxx-fdb__topup-title">Top up to free delivery</span>
