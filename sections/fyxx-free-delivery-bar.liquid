@@ -11,9 +11,12 @@
 
 {% stylesheet %}
   /* FYXX CUSTOM: breathing room above the bar so it isn't stuck to the header/
-     nav divider line on the cart page. */
-  .fyxx-fdb--page { max-width: 1080px; margin: 28px auto 14px; padding: 0 var(--page-width-padding, 16px); }
-  @media (max-width: 768px) { .fyxx-fdb--page { margin-top: 20px; } }
+     nav divider line on the cart page. Padding lives on the section wrapper —
+     a top MARGIN here collapses up through the .shopify-section wrappers and
+     produces no visible gap, so we use padding instead. */
+  [data-fyxx-fdb-section] { padding-top: 32px; }
+  .fyxx-fdb--page { max-width: 1080px; margin: 0 auto 14px; padding: 0 var(--page-width-padding, 16px); }
+  @media (max-width: 768px) { [data-fyxx-fdb-section] { padding-top: 22px; } }
 {% endstylesheet %}
 
 <script>
