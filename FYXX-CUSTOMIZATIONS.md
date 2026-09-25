@@ -16,6 +16,40 @@ _Last audited: 2026-09-25._
 
 ---
 
+## 0. Provenance / timeline
+
+The first customizations recorded in this collaboration (Naím + Claude Code) date to
+**28 Jun 2026** — that's the start of the "Website Updates & Improvements" changelog. The dated
+record of everything built **from 28 Jun 2026 onward** lives in that changelog (see `CLAUDE.md`).
+
+Everything below in this doc is the file map regardless of who authored it. The items in this
+section pre-date the collaboration; exact dates and authors aren't recorded, so they're grouped
+as **"before 28 Jun 2026."**
+
+### Before 28 Jun 2026 — pre-existing customizations (earlier Fyxx team)
+Built before this collaboration by the earlier Fyxx team / previous developers. Attribution is
+mostly unknown; where known it's noted.
+
+| Customization | Files | Note |
+|---|---|---|
+| **The Green Room page** | `templates/page.the-green-room.json` | Built by **Lori** (per Naím). |
+| Custom navigation & floating header | `sections/fyxx-header.liquid`, `snippets/custom.secondary-menu-header.liquid`, `snippets/section.header.liquid` (edit) | Brand header, two-level nav, slide-in drawer, quick links. |
+| Slide-in cart drawer | `sections/fyxx-cart-drawer.liquid` | Replaces the default cart. |
+| Out-of-stock hiding on grids | `snippets/section.main-collection.liquid`, `snippets/section.featured-collection.liquid` (edits) | `oos-hidden` tag filtering. (Search-suggestion filtering was refined with Claude, Jun 2026.) |
+| Predictive-search scroll containment | `snippets/form.predictive-search.liquid` (edit) | |
+| Safari variant-picker fix | `snippets/block.product-variant-picker.button.liquid` (edit) | |
+| App-download prompts | `layout/theme.liquid` (edit) | Apple Smart App Banner + Android "Download the App" floater. |
+| SEO metas, domain verification, Microsoft Clarity | `layout/theme.liquid` (edit) | "Carried from previous theme." |
+| Brand typography (Dunbar Text) | theme assets/settings | |
+| Rewards page | `templates/page.fyxx-rewards.json` | (The `?r=` reward deep-link was added later with Claude — Aug 2026.) |
+| Klaviyo birthday-flow pages | `sections/birthday-gift.liquid`, `templates/page.birthday-gift.json` | Live Klaviyo flow; display later corrected with Claude (Sep 2026). |
+| Third-party app templates & integrations | see §3 "classify" list and §4 app embeds | Shogun, Fordeer, events, Judge.me, LoyaltyLion, Klaviyo, Smile/rewards, Odoo, gift/upsell/preorder apps, etc. |
+
+> These dates are approximate. The intent is the ordering (pre-collaboration vs. from 28 Jun 2026),
+> not exact history. If we learn a real date/author for any item, update the row.
+
+---
+
 ## 1. New custom files — copy over wholesale
 
 These files do not exist in stock Expanse. On migration, copy them into the new theme as-is
