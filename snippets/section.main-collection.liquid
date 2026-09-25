@@ -72,8 +72,11 @@
     else
       paginate collection.products by paginate_by
         for item in collection.products
-          # FYXX CUSTOM: hide products tagged oos-hidden from the collection grid
-          unless item.tags contains 'oos-hidden'
+          # FYXX CUSTOM: hide sold-out products from the collection grid.
+          # Hides anything explicitly tagged oos-hidden OR genuinely unavailable
+          # (no purchasable variant), so hiding stays correct without relying on
+          # the oos-hidden tag being applied. Sold-out items still appear in search.
+          unless item.tags contains 'oos-hidden' or item.available == false
             render 'list.product-card', product: item, product_grid_content_align: product_grid_content_align
           endunless
           # END FYXX CUSTOM

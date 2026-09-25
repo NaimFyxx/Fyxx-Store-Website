@@ -214,8 +214,8 @@
           <div class="featured-collection__carousel-grid-items">
             {% if collection != blank %}
               {% for product in collection.products limit: count %}
-                {% comment %} FYXX CUSTOM: hide products tagged oos-hidden {% endcomment %}
-                {% unless product.tags contains 'oos-hidden' %}
+                {% comment %} FYXX CUSTOM: hide products tagged oos-hidden OR genuinely sold out {% endcomment %}
+                {% unless product.tags contains 'oos-hidden' or product.available == false %}
                 {% render 'list.product-card',
                   product: product,
                   collection: collection,

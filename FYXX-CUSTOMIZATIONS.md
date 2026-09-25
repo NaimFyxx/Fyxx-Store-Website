@@ -104,9 +104,9 @@ same file.
 | `snippets/section.header.liquid` | Renders the inline quick-links secondary nav / slim desktop menu (`custom.secondary-menu-header`). |
 | `snippets/section.footer.liquid` | (a) Bilingual legal entity line (English + Arabic, `dir="rtl"`) + registered address; (b) mobile centering + Arabic RTL isolation. |
 | `snippets/section.main-account.liquid` | Odoo Connector (Webkul) invoice-download column in order history. |
-| `snippets/section.main-collection.liquid` | Hide products tagged `oos-hidden` from the collection grid. |
+| `snippets/section.main-collection.liquid` | Hide products tagged `oos-hidden` **or genuinely sold out** (no purchasable variant) from the collection grid. |
 | `snippets/section.search-results.liquid` | Hide `oos-hidden` products from the predictive-search suggestions dropdown (still shown on full results). |
-| `snippets/section.featured-collection.liquid` | Hide `oos-hidden` products from featured-collection grids. |
+| `snippets/section.featured-collection.liquid` | Hide `oos-hidden` **or sold-out** products from featured-collection grids. |
 | `snippets/section.slideshow.liquid` | Per-slide "Open link in a new tab" toggle (`block.settings.open_new_tab`). |
 | `snippets/form.predictive-search.liquid` | Stop the results-panel scroll from chaining into the page. |
 | `snippets/block.product-variant-picker.button.liquid` | Safari variant-picker fix. |
