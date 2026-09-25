@@ -1065,5 +1065,27 @@
         "default": "customer-account-main-menu"
       }
     ]
+  },
+  {
+    "name": "Fyxx — Free delivery",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "FYXX CUSTOM: the free-delivery progress bar shown in the cart drawer and on the cart page."
+      },
+      {
+        "type": "checkbox",
+        "id": "fyxx_freedel_enabled",
+        "label": "Show the free-delivery bar",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "fyxx_freedel_threshold",
+        "label": "Free-delivery threshold (JOD)",
+        "info": "Free delivery unlocks when the cart subtotal is over this amount. Default 25.",
+        "default": 25
+      }
+    ]
   }
 ]

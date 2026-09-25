@@ -1,1 +1,17 @@
-{"sections":{"main":{"type":"main-cart","settings":{}},"recently-viewed":{"type":"recently-viewed","settings":{}}},"order":["main","recently-viewed"]}
+{
+  "sections": {
+    "fyxx_freedel": {
+      "type": "fyxx-free-delivery-bar",
+      "settings": {}
+    },
+    "main": {
+      "type": "main-cart",
+      "settings": {}
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {}
+    }
+  },
+  "order": ["fyxx_freedel", "main", "recently-viewed"]
+}
