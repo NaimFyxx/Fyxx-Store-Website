@@ -9,12 +9,20 @@
     drawer's Section Rendering swap. On the cart page the section wrapper
     (sections/fyxx-free-delivery-bar.liquid) refreshes it on cart changes.
 
+  DESIGN: borrows the cart drawer's design system so it never reads as a bolt-on.
+  It inherits the drawer's own CSS custom properties (--cd-*: white surface, ink
+  #231F20, pink accent #f0b09e, Libre Baskerville serif headings, hairline
+  borders, 12px radius) when rendered INSIDE the drawer, and falls back to the
+  theme's heading/body fonts + the same brand values on the cart page. No more
+  off-brand green/sage band.
+
   Params:
     layout  - 'drawer' | 'page' (styling hook only)
 
   Theme settings (Theme editor > Theme settings > Fyxx — Free delivery):
-    settings.fyxx_freedel_enabled    (checkbox, on/off kill-switch)
-    settings.fyxx_freedel_threshold  (number, JOD; default 25)
+    settings.fyxx_freedel_enabled       (checkbox, on/off kill-switch)
+    settings.fyxx_freedel_threshold     (number, JOD; default 25)
+    settings.fyxx_freedel_topup_within  (number, JOD; default 10)
 
   Add buttons carry data-fdb-add + data-variant-id; the host (drawer script /
   section script) does the AJAX /cart/add.js.
@@ -24,6 +32,10 @@
   assign fdb_enabled = settings.fyxx_freedel_enabled
   assign fdb_threshold = settings.fyxx_freedel_threshold | default: 25
   assign fdb_layout = layout | default: 'page'
+  # FYXX CUSTOM: Top Up suggestions are temporarily hidden (drawer + cart page)
+  # while we rework them into smarter, cart-aware complements. Flip to true to
+  # re-enable the suggestion row; all the rendering logic below is kept intact.
+  assign fdb_show_topup = false
 -%}
 
 {%- if fdb_enabled and cart.item_count > 0 -%}
@@ -47,34 +59,53 @@
 
   <div class="fyxx-fdb fyxx-fdb--{{ fdb_layout }}{% if fdb_unlocked %} is-unlocked{% endif %}" data-fyxx-fdb>
     <style>
-      .fyxx-fdb{ font-family:var(--element-text-font-family--body,'Figtree',system-ui,sans-serif); }
+      /* FYXX CUSTOM: inherit the cart drawer's design tokens (--cd-*) when inside
+         the drawer; fall back to the same brand values + theme fonts on the cart page. */
+      .fyxx-fdb{
+        --fdb-fg:          var(--cd-fg, #231F20);
+        --fdb-muted:       var(--cd-muted, rgba(0,0,0,.55));
+        --fdb-hairline:    var(--cd-hairline, rgba(0,0,0,.12));
+        --fdb-soft:        var(--cd-soft, rgba(0,0,0,.04));
+        --fdb-accent:      var(--cd-accent, #f0b09e);
+        --fdb-accent-deep: var(--cd-accent-deep, #e39c86);
+        --fdb-ink:         var(--cd-btn-bg, #231F20);
+        --fdb-radius:      var(--cd-radius, 12px);
+        --fdb-serif:       var(--cd-serif, var(--element-text-font-family--heading), Georgia, 'Times New Roman', serif);
+        --fdb-body:        var(--cd-ui-font, var(--element-text-font-family--body), system-ui, sans-serif);
+        font-family:var(--fdb-body);
+      }
       .fyxx-fdb *{ box-sizing:border-box; }
-      .fyxx-fdb__bar{ background:#eef4f0; border:1px solid #dce8e1; border-radius:12px; padding:12px 14px; }
-      .fyxx-fdb__row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-      .fyxx-fdb__msg{ font-size:14px; font-weight:600; line-height:1.3; color:#0f3c39; }
-      .fyxx-fdb__msg strong{ font-weight:700; }
-      .fyxx-fdb__amt{ font-variant-numeric:tabular-nums; }
-      .fyxx-fdb__sub{ font-size:12px; color:#5c726a; white-space:nowrap; font-variant-numeric:tabular-nums; }
-      .fyxx-fdb__track{ height:8px; border-radius:999px; background:rgba(15,60,57,.14); margin-top:9px; overflow:hidden; }
-      .fyxx-fdb__fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#80aa96,#0f3c39); transition:width .5s cubic-bezier(.2,.8,.2,1); }
-      .fyxx-fdb.is-unlocked .fyxx-fdb__fill{ background:linear-gradient(90deg,#4bbd86,#0f3c39); }
 
-      .fyxx-fdb__topup{ margin-top:14px; }
-      .fyxx-fdb__topup-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin:0 0 9px; }
-      .fyxx-fdb__topup-title{ font-size:13px; font-weight:700; color:#0f3c39; }
-      .fyxx-fdb__topup-hint{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; }
-      /* FYXX CUSTOM: add-ons as a horizontal scroll row of uniform vertical cards */
+      /* progress card — soft tint on the drawer's white surface */
+      .fyxx-fdb__bar{ background:var(--fdb-soft); border:1px solid var(--fdb-hairline); border-radius:var(--fdb-radius); padding:13px 15px; }
+      .fyxx-fdb__row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+      .fyxx-fdb__msg{ font-size:14px; font-weight:600; line-height:1.3; color:var(--fdb-fg); }
+      .fyxx-fdb__msg strong{ font-weight:700; color:var(--fdb-accent-deep); }
+      .fyxx-fdb__amt{ font-variant-numeric:tabular-nums; font-weight:700; }
+      .fyxx-fdb__sub{ font-size:12px; color:var(--fdb-muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
+      .fyxx-fdb__track{ height:7px; border-radius:999px; background:var(--fdb-hairline); margin-top:10px; overflow:hidden; }
+      .fyxx-fdb__fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,var(--fdb-accent),var(--fdb-accent-deep)); transition:width .5s cubic-bezier(.2,.8,.2,1); }
+      .fyxx-fdb.is-unlocked .fyxx-fdb__fill{ background:var(--fdb-accent-deep); }
+
+      /* top up */
+      .fyxx-fdb__topup{ margin-top:15px; }
+      .fyxx-fdb__topup-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin:0 0 10px; }
+      .fyxx-fdb__topup-title{ font-family:var(--fdb-serif); font-size:15px; font-weight:700; letter-spacing:.01em; color:var(--fdb-fg); }
+      .fyxx-fdb__topup-hint{ font-size:12px; color:var(--fdb-muted); font-variant-numeric:tabular-nums; }
+      /* add-ons as a horizontal scroll row of uniform vertical cards */
       .fyxx-fdb__grid{ display:flex; align-items:stretch; gap:10px; overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; padding:2px 0 6px; scroll-snap-type:x proximity; scrollbar-width:thin; }
-      .fyxx-fdb__card{ flex:0 0 auto; width:130px; scroll-snap-align:start; display:flex; flex-direction:column; background:#fff; border:1px solid #e7ded1; border-radius:11px; padding:8px; }
-      .fyxx-fdb__card-media{ display:flex; align-items:center; justify-content:center; width:100%; height:66px; border-radius:7px; overflow:hidden; background:#f5f0e8; margin-bottom:7px; }
+      .fyxx-fdb__card{ flex:0 0 auto; width:130px; scroll-snap-align:start; display:flex; flex-direction:column; background:#fff; border:1px solid var(--fdb-hairline); border-radius:10px; padding:8px; }
+      .fyxx-fdb__card-media{ display:flex; align-items:center; justify-content:center; width:100%; height:66px; border-radius:8px; overflow:hidden; background:#fff; margin-bottom:7px; }
       .fyxx-fdb__card-media img{ max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
       .fyxx-fdb__card-body{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; }
-      .fyxx-fdb__card-name{ font-size:12px; font-weight:600; color:#231f20; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.5em; }
-      .fyxx-fdb__card-price{ font-size:12px; color:#5c726a; font-variant-numeric:tabular-nums; margin-top:2px; }
-      .fyxx-fdb__badge{ display:inline-block; align-self:flex-start; font-size:9.5px; font-weight:700; color:#1f7a4d; background:rgba(31,122,77,.12); border-radius:999px; padding:1px 6px; margin-top:4px; }
-      .fyxx-fdb__add{ margin-top:auto; padding-top:9px; width:100%; text-align:center; border:1.5px solid #0f3c39; background:transparent; color:#0f3c39; border-radius:8px; padding:6px 8px; font-family:inherit; font-weight:700; font-size:11.5px; cursor:pointer; transition:background-color .14s ease,color .14s ease,border-color .14s ease; }
-      .fyxx-fdb__add:hover,.fyxx-fdb__add:focus-visible{ background:#80aa96; border-color:#80aa96; color:#0f3c39; outline:none; }
+      .fyxx-fdb__card-name{ font-size:12px; font-weight:600; color:var(--fdb-fg); line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.5em; }
+      .fyxx-fdb__card-price{ font-size:12px; color:var(--fdb-muted); font-variant-numeric:tabular-nums; margin-top:2px; }
+      .fyxx-fdb__badge{ display:inline-block; align-self:flex-start; font-size:9.5px; font-weight:700; letter-spacing:.02em; color:var(--fdb-accent-deep); background:rgba(240,176,158,.20); border-radius:999px; padding:2px 7px; margin-top:5px; }
+      /* Add button mirrors the drawer's ink buttons (checkout / continue): ink fill, pink on hover */
+      .fyxx-fdb__add{ margin-top:auto; width:100%; text-align:center; border:0; background:var(--fdb-ink); color:#fff; border-radius:8px; padding:8px 8px; font-family:var(--fdb-body); font-weight:700; font-size:11px; letter-spacing:.05em; text-transform:uppercase; cursor:pointer; transition:background-color .15s ease,color .15s ease; }
+      .fyxx-fdb__add:hover,.fyxx-fdb__add:focus-visible{ background:var(--fdb-accent); color:var(--fdb-fg); outline:none; }
       .fyxx-fdb__add[disabled]{ opacity:.5; cursor:default; }
+      .fyxx-fdb__card .fyxx-fdb__add{ margin-top:9px; }
       @media (prefers-reduced-motion: reduce){ .fyxx-fdb__fill,.fyxx-fdb__add{ transition:none; } }
     </style>
 
@@ -90,6 +121,7 @@
       <div class="fyxx-fdb__track"><div class="fyxx-fdb__fill" style="width: {{ fdb_pct }}%;"></div></div>
     </div>
 
+    {%- if fdb_show_topup -%}
     {%- unless fdb_unlocked -%}
       {%- comment -%} FYXX CUSTOM: only load + show Top Up when the cart is within reach of free
            delivery (settings.fyxx_freedel_topup_within JOD). Skipping the collection lookup when the
@@ -155,5 +187,6 @@
         {%- endif -%}
       {%- endif -%}
     {%- endunless -%}
+    {%- endif -%}
   </div>
 {%- endif -%}
