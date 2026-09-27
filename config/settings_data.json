@@ -118,11 +118,6 @@
         "disabled": false,
         "settings": {}
       },
-      "2326812024290925837": {
-        "type": "shopify://apps/llea-ai-fyxx/blocks/analytics-embed/0199e32f-beb2-7181-9b75-75f082d96d31",
-        "disabled": false,
-        "settings": {}
-      },
       "17676059084223943535": {
         "type": "shopify://apps/triplewhale/blocks/triple_pixel_snippet/483d496b-3f1a-4609-aea7-8eee3b6b7a2a",
         "disabled": false,
@@ -189,11 +184,6 @@
       },
       "17992116214976573926": {
         "type": "shopify://apps/seo-manager-venntov/blocks/seomanager/c54c366f-d4bb-4d52-8d2f-dd61ce8e7e12",
-        "disabled": false,
-        "settings": {}
-      },
-      "6569434243247677665": {
-        "type": "shopify://apps/stockiq-out-of-stock-manager/blocks/test/8d873c7c-f119-4584-8618-caba287d162c",
         "disabled": false,
         "settings": {}
       },
@@ -273,6 +263,11 @@
       },
       "13768625480086291342": {
         "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
+        "disabled": false,
+        "settings": {}
+      },
+      "260908246434737815": {
+        "type": "shopify://apps/thoughtmetric/blocks/tm/5a9f9e10-3a9f-41b1-8250-d2eab3bd19a4",
         "disabled": false,
         "settings": {}
       }
