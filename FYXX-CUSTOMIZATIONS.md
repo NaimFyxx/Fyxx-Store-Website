@@ -126,7 +126,7 @@ section **types and block schemas they reference still exist** in the new Expans
 | Template | Notes |
 |---|---|
 | `templates/product.tgr-menu.json` | TGR food product template. Custom `main` blocks: `custom_dish_category` (dish label), purchase blocks (`price`/`quantity_selector`/`buy_buttons` with pickup **off**), `custom_delivery_offers` (Talabat/Careem buttons + full click tracking), `custom_GWyMDK` (Book a Table), `custom_bg_block` (cream bg); `custom_css` for title/description styling. Order includes the `fyxx-kitchen-hours` section. |
-| `templates/product.tgr-cocktail.json` | TGR cocktail product template (mirrors several tgr-menu blocks). |
+| `templates/product.tgr-cocktail.json` | TGR cocktail product template. Custom `main` blocks: `custom_dish_category` (styled `.tgr-dish-category` label — metafield currently unset on cocktails), `custom_GWyMDK` (Book a Table), `custom_bg_block` (cream bg); `custom_css` for title/description styling (same `.element-text--heading-xl` / `.element-text--rte` selectors as tgr-menu). **Dine-in by design: no price/quantity/buy-buttons/delivery-offers blocks** (unlike tgr-menu). |
 | `templates/product.json` | **Default product template, MODIFIED** — its order includes the `fyxx-kitchen-hours` section. (Re-add after update.) |
 | `templates/page.tgr-menu.json` | TGR menu page (App Download banner hidden via footer-group). |
 | `templates/page.tgr-cocktails.json` | TGR cocktails page (App Download banner hidden). |
