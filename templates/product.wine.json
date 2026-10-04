@@ -277,7 +277,7 @@
       "type": "taste-characteristics",
       "settings": {
         "heading": "Taste Characteristics",
-        "padding_top": 40,
+        "padding_top": 24,
         "padding_bottom": 16
       }
     },
