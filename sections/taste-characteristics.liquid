@@ -76,7 +76,7 @@
 
 {%- if filled >= 4 -%}
 <div class="fx-taste" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-  <div class="fx-taste__inner">
+  <div class="fx-taste__inner page-width page-width--narrow">
 
     <h2 class="fx-taste__title">{{ section.settings.heading }}</h2>
 
@@ -146,11 +146,6 @@
     --fx-grey: #6e6e6e;
     --fx-line: #e6e6e6;
     --fx-track: #ededed;
-  }
-  .fx-taste__inner {
-    max-width: 62rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
   }
   .fx-taste__title {
     font-weight: 400;
@@ -235,10 +230,16 @@
     color: var(--fx-grey);
     margin: 1rem 0 0;
   }
-  @media screen and (max-width: 749px) {
-    .fx-taste__inner {
-      padding: 0 1rem;
+  /* Mirror the theme: .product-full-width drops its narrow cap below 769px and
+     goes full width. This section is not inside .product-full-width, so match
+     that here, otherwise the block would stay capped and narrower than the
+     Description on phones. */
+  @media screen and (max-width: 768px) {
+    .fx-taste__inner.page-width--narrow {
+      max-width: none;
     }
+  }
+  @media screen and (max-width: 749px) {
     .fx-taste__title {
       font-size: 1.5rem;
     }
