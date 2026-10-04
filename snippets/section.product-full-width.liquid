@@ -16,7 +16,17 @@
 -%}
 
 {%- if section.blocks.size > 0 -%}
-  <div class="page-width{% if max_width %} page-width--narrow{% endif %}">
+  {%- comment -%} Fyxx: on the wine template the sub content is left aligned to the buy column instead of centred; every other template keeps the original centred container, byte for byte. Stepping stone, not a permanent special case: when this layout rolls out to the other templates, make the left aligned wrapper the default and drop this conditional. {%- endcomment -%}
+  {%- if template.suffix == 'wine' -%}
+    <div class="page-width">
+      <div class="fx-sub-inner">
+        <style>
+          .fx-sub-inner { max-width: var(--page-narrow); }
+          @media screen and (max-width: 768px) { .fx-sub-inner { max-width: none; } }
+        </style>
+  {%- else -%}
+    <div class="page-width{% if max_width %} page-width--narrow{% endif %}">
+  {%- endif -%}
     {%- for block in section.blocks -%}
       {%- case block.type -%}
         {%- when '@app' -%}
@@ -47,5 +57,10 @@
           </div>
       {%- endcase -%}
     {%- endfor -%}
+  {%- if template.suffix == 'wine' -%}
+      </div>
+    </div>
+  {%- else -%}
   </div>
+  {%- endif -%}
 {%- endif -%}
