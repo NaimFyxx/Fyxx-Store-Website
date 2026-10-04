@@ -41,12 +41,15 @@
 
 {%- if lead != blank -%}
   <div class="wine-lead" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="wine-lead__inner page-width page-width--narrow">
-      {{ lead }}
+    <div class="page-width">
+      <div class="wine-lead__inner">
+        {{ lead }}
+      </div>
     </div>
   </div>
 
   <style>
+    .wine-lead__inner { max-width: var(--page-narrow); }
     .wine-lead__inner,
     .wine-lead__inner p,
     .wine-lead__inner em {
@@ -57,7 +60,7 @@
     }
     .wine-lead__inner p { margin: 0; }
     @media screen and (max-width: 768px) {
-      .wine-lead__inner.page-width--narrow { max-width: none; }
+      .wine-lead__inner { max-width: none; }
       .wine-lead__inner,
       .wine-lead__inner p,
       .wine-lead__inner em { font-size: 15px; }
