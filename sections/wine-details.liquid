@@ -1,0 +1,331 @@
+{%- comment -%}
+  Fyxx: Wine details
+  Splits a structured wine description into placed parts, below the taste block.
+
+  The description stays the single source of truth in product.description. The
+  six-part template is: an opening <em> paragraph (rendered by wine-lead), then
+  Tasting Notes, Quick Facts, Food Pairing, Serving and About the Producer, each
+  introduced by a <p><strong>Heading</strong> line.
+
+  Two heading-body shapes exist in the catalogue and both are handled:
+    1. br-joined:   <p><strong>Tasting Notes</strong><br>text here</p>
+    2. separate <p>: <p><strong>Tasting Notes</strong></p><p>text here</p>
+  For each part we take everything from the heading up to the next heading
+  (the next "<p><strong>"), drop a leading "</p>" (shape 2) or leading "<br>"
+  (shape 1), and ensure the body is wrapped in a paragraph. This captures the
+  whole body even if a part ever spans more than one paragraph, so nothing is
+  truncated.
+
+  Render decision (fail safe):
+    - Three or more of the five headings present: render the parts below. Any
+      individual missing part is skipped, no empty heading.
+    - Fewer than three: render the WHOLE description plainly. The Description
+      accordion is removed from this template, so rendering nothing would drop
+      the content. This branch is the safety net; 0 of 680 wines hit it today.
+
+  No font-family declarations: headings are <h2>/<h3> and inherit the theme
+  heading font, body text inherits the body font, matching taste-characteristics.
+  Container is the theme's page-width page-width--narrow, as the taste section.
+{%- endcomment -%}
+
+{%- liquid
+  assign desc = product.description
+
+  assign hcount = 0
+  if desc contains '<strong>Tasting Notes</strong>'
+    assign hcount = hcount | plus: 1
+  endif
+  if desc contains '<strong>Quick Facts</strong>'
+    assign hcount = hcount | plus: 1
+  endif
+  if desc contains '<strong>Food Pairing</strong>'
+    assign hcount = hcount | plus: 1
+  endif
+  if desc contains '<strong>Serving</strong>'
+    assign hcount = hcount | plus: 1
+  endif
+  if desc contains '<strong>About the Producer</strong>'
+    assign hcount = hcount | plus: 1
+  endif
+-%}
+
+{%- if hcount >= 3 -%}
+  {%- liquid
+    # ---- Tasting Notes: body from heading to next heading, as HTML ----
+    assign tasting = ''
+    if desc contains '<strong>Tasting Notes</strong>'
+      assign tn = desc | split: '<strong>Tasting Notes</strong>' | last | split: '<p><strong>' | first | strip
+      assign tn4 = tn | slice: 0, 4
+      if tn4 == '</p>'
+        assign tn = tn | remove_first: '</p>' | strip
+      endif
+      assign tn = tn | remove_first: '<br>' | remove_first: '<br/>' | remove_first: '<br />' | strip
+      assign tn2 = tn | slice: 0, 2
+      if tn2 != '<p'
+        assign tn = tn | prepend: '<p>'
+      endif
+      assign tasting = tn
+    endif
+
+    # ---- Food Pairing (Goes with) ----
+    assign pairing = ''
+    if desc contains '<strong>Food Pairing</strong>'
+      assign fp = desc | split: '<strong>Food Pairing</strong>' | last | split: '<p><strong>' | first | strip
+      assign fp4 = fp | slice: 0, 4
+      if fp4 == '</p>'
+        assign fp = fp | remove_first: '</p>' | strip
+      endif
+      assign fp = fp | remove_first: '<br>' | remove_first: '<br/>' | remove_first: '<br />' | strip
+      assign fp2 = fp | slice: 0, 2
+      if fp2 != '<p'
+        assign fp = fp | prepend: '<p>'
+      endif
+      assign pairing = fp
+    endif
+
+    # ---- About the Producer ----
+    assign about = ''
+    if desc contains '<strong>About the Producer</strong>'
+      assign ab = desc | split: '<strong>About the Producer</strong>' | last | split: '<p><strong>' | first | strip
+      assign ab4 = ab | slice: 0, 4
+      if ab4 == '</p>'
+        assign ab = ab | remove_first: '</p>' | strip
+      endif
+      assign ab = ab | remove_first: '<br>' | remove_first: '<br/>' | remove_first: '<br />' | strip
+      assign ab2 = ab | slice: 0, 2
+      if ab2 != '<p'
+        assign ab = ab | prepend: '<p>'
+      endif
+      assign about = ab
+    endif
+
+    # ---- Serving: plain text, trim the leading temperature sentence only ----
+    assign serving_out = ''
+    if desc contains '<strong>Serving</strong>'
+      assign sv = desc | split: '<strong>Serving</strong>' | last | split: '<p><strong>' | first | strip_html | strip
+      assign sv8 = sv | slice: 0, 8
+      if sv8 == 'Serve at'
+        if sv contains '. '
+          assign first_sentence = sv | split: '. ' | first
+          assign serving_out = sv | remove_first: first_sentence | remove_first: '. ' | strip
+        else
+          assign after_temp = sv | split: '°C' | last | replace: '.', '' | replace: ',', '' | strip
+          if after_temp == blank
+            assign serving_out = ''
+          else
+            assign serving_out = sv
+          endif
+        endif
+      else
+        assign serving_out = sv
+      endif
+    endif
+
+    # ---- Quick Facts: the <li> items inside the FIRST <ul> after the heading ----
+    assign qf_raw = ''
+    if desc contains '<strong>Quick Facts</strong>'
+      assign qf_after = desc | split: '<strong>Quick Facts</strong>' | last
+      assign qf_parts = qf_after | split: '<ul>'
+      if qf_parts.size > 1
+        assign qf_raw = qf_parts[1] | split: '</ul>' | first
+      endif
+    endif
+  -%}
+
+  <div class="wine-details" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
+    <div class="wine-details__inner page-width page-width--narrow">
+
+      {%- if serving_out != blank -%}
+        <p class="wine-details__serving">{{ serving_out }}</p>
+      {%- endif -%}
+
+      {%- if tasting != blank -%}
+        <section class="wine-details__block">
+          <h2 class="wine-details__h">Tasting Notes</h2>
+          <div class="wine-details__text">{{ tasting }}</div>
+        </section>
+      {%- endif -%}
+
+      {%- if pairing != blank or qf_raw != blank -%}
+        <div class="wine-details__cols">
+          {%- if pairing != blank -%}
+            <section class="wine-details__col">
+              <h3 class="wine-details__h wine-details__h--sm">Goes with</h3>
+              <div class="wine-details__text">{{ pairing }}</div>
+            </section>
+          {%- endif -%}
+          {%- if qf_raw != blank -%}
+            <section class="wine-details__col">
+              <h3 class="wine-details__h wine-details__h--sm">The facts</h3>
+              <dl class="wine-facts">
+                {%- assign qf_items = qf_raw | split: '<li>' -%}
+                {%- for item in qf_items -%}
+                  {%- assign li = item | split: '</li>' | first | strip_html | strip -%}
+                  {%- if li != blank -%}
+                    {%- if li contains ':' -%}
+                      {%- assign lbl = li | split: ':' | first | strip -%}
+                      {%- assign val = li | remove_first: lbl | remove_first: ':' | strip -%}
+                      <div class="wine-facts__row">
+                        <dt>{{ lbl }}</dt>
+                        <dd>{{ val }}</dd>
+                      </div>
+                    {%- else -%}
+                      <div class="wine-facts__row wine-facts__row--full">
+                        <dd>{{ li }}</dd>
+                      </div>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </dl>
+            </section>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if about != blank -%}
+        <details class="wine-details__about">
+          <summary class="wine-details__about-summary">About the producer</summary>
+          <div class="wine-details__text wine-details__about-body">{{ about }}</div>
+        </details>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  <style>
+    .wine-details__serving {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: #6e6e6e;
+      margin: 0 0 1.5rem;
+    }
+    .wine-details__block { margin: 0 0 2rem; }
+    .wine-details__h {
+      font-weight: 400;
+      font-size: 1.375rem;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: #231f20;
+      margin: 0 0 0.75rem;
+    }
+    .wine-details__h--sm { font-size: 1.125rem; }
+    .wine-details__text {
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: #2b2b2b;
+    }
+    .wine-details__text p { margin: 0 0 0.75rem; }
+    .wine-details__text p:last-child { margin-bottom: 0; }
+    .wine-details__cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 0 0 2rem;
+    }
+    .wine-facts { margin: 0; }
+    .wine-facts__row {
+      display: grid;
+      grid-template-columns: 8rem 1fr;
+      gap: 0.25rem 1rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #ece2d7;
+    }
+    .wine-facts__row:last-child { border-bottom: 0; }
+    .wine-facts__row--full { grid-template-columns: 1fr; }
+    .wine-facts dt {
+      font-size: 0.8125rem;
+      color: #6e6e6e;
+      margin: 0;
+    }
+    .wine-facts dd {
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: #2b2b2b;
+      margin: 0;
+    }
+    .wine-details__about {
+      border-top: 1px solid #ece2d7;
+      padding-top: 1rem;
+    }
+    .wine-details__about-summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #231f20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.25rem 0;
+    }
+    .wine-details__about-summary::-webkit-details-marker { display: none; }
+    .wine-details__about-summary::after {
+      content: "+";
+      font-size: 1.25rem;
+      line-height: 1;
+      color: #6e6e6e;
+    }
+    .wine-details__about[open] .wine-details__about-summary::after { content: "\2212"; }
+    .wine-details__about-body { margin-top: 0.75rem; }
+
+    @media screen and (max-width: 768px) {
+      .wine-details__inner.page-width--narrow { max-width: none; }
+      .wine-details__cols { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+  </style>
+
+{%- else -%}
+
+  {%- comment -%} Fewer than three headings: render the whole description plainly, nothing dropped. {%- endcomment -%}
+  <div class="wine-details wine-details--fallback" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
+    <div class="wine-details__inner page-width page-width--narrow">
+      {{ product.description }}
+    </div>
+  </div>
+  <style>
+    @media screen and (max-width: 768px) {
+      .wine-details__inner.page-width--narrow { max-width: none; }
+    }
+  </style>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Wine details",
+  "tag": "section",
+  "class": "section wine-details-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Wine details"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wine details"
+    }
+  ]
+}
+{% endschema %}
