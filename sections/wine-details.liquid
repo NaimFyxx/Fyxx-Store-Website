@@ -23,11 +23,12 @@
       accordion is removed from this template, so rendering nothing would drop
       the content. This branch is the safety net; 0 of 680 wines hit it today.
 
-  No font-family name is declared. Section headings are small uppercase
-  eyebrows in the inherited theme body font. Tasting Notes and Goes with use
-  the theme heading variable for their serif body. The producer is an open
-  section, not an accordion. Only the brand palette is used: ink #100F0D,
-  blush #F8D3D7, and alpha steps of ink.
+  No font-family name is declared. Tasting notes, Goes with and The facts are
+  serif headings via the theme heading variable; their body text inherits the
+  theme body font. The facts is a ruled table. Hairline rules separate the
+  sections, and the producer opens with a 2px ink rule. The only remaining
+  eyebrow here is The producer, in full ink. Only the brand palette is used:
+  ink #100F0D and alpha steps of ink.
   The outer container is the theme's full page-width; the text is capped at the
   narrow measure (--page-narrow) and left aligned, so its left edge lines up with
   the buy column above rather than being centred.
@@ -147,21 +148,21 @@
 
       {%- if tasting != blank -%}
         <section class="wine-details__block wine-details__block--tasting">
-          <h2 class="fx-eyebrow">Tasting Notes</h2>
-          <div class="wine-details__serif">{{ tasting }}</div>
+          <h2 class="wine-details__heading">Tasting notes</h2>
+          <div class="wine-details__body">{{ tasting }}</div>
         </section>
       {%- endif -%}
 
       {%- if pairing != blank -%}
         <section class="wine-details__block wine-details__block--goes">
-          <h3 class="fx-eyebrow">Goes with</h3>
-          <div class="wine-details__serif">{{ pairing }}</div>
+          <h3 class="wine-details__heading">Goes with</h3>
+          <div class="wine-details__body">{{ pairing }}</div>
         </section>
       {%- endif -%}
 
       {%- if qf_raw != blank -%}
         <section class="wine-details__block wine-details__block--facts">
-          <h3 class="fx-eyebrow">The facts</h3>
+          <h3 class="wine-details__heading">The facts</h3>
           <dl class="wine-facts">
             {%- assign qf_items = qf_raw | split: '<li>' -%}
             {%- for item in qf_items -%}
@@ -170,12 +171,14 @@
                 {%- if li contains ':' -%}
                   {%- assign lbl = li | split: ':' | first | strip -%}
                   {%- assign val = li | remove_first: lbl | remove_first: ':' | strip -%}
-                  <div class="wine-facts__pair">
-                    <dt class="wine-facts__label">{{ lbl }}</dt>
+                  {%- assign lbl_display = lbl -%}
+                  {%- if lbl == 'Winemaking' -%}{%- assign lbl_display = 'Making' -%}{%- endif -%}
+                  <div class="wine-facts__row">
+                    <dt class="wine-facts__label">{{ lbl_display }}</dt>
                     <dd class="wine-facts__value">{{ val }}</dd>
                   </div>
                 {%- else -%}
-                  <div class="wine-facts__pair">
+                  <div class="wine-facts__row wine-facts__row--full">
                     <dd class="wine-facts__value">{{ li }}</dd>
                   </div>
                 {%- endif -%}
@@ -206,7 +209,7 @@
       font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(16, 15, 13, 0.72);
+      color: #100F0D;
     }
 
     .wine-details__serving {
@@ -216,33 +219,49 @@
       margin: 0;
     }
 
-    .wine-details__serif {
+    .wine-details__heading {
       font-family: var(--element-text-font-family--heading);
-      font-size: 16px;
-      line-height: 1.75;
+      font-size: 21px;
       font-weight: 400;
-      font-style: normal;
+      line-height: 1.25;
+      color: #100F0D;
+      margin: 0 0 12px;
+    }
+
+    .wine-details__body {
+      font-size: 15px;
+      line-height: 1.65;
       color: rgba(16, 15, 13, 0.88);
     }
-    .wine-details__serif p { margin: 0 0 0.75rem; }
-    .wine-details__serif p:last-child { margin-bottom: 0; }
+    .wine-details__body p { margin: 0 0 0.75rem; }
+    .wine-details__body p:last-child { margin-bottom: 0; }
 
-    .wine-details__block--tasting { margin-top: 56px; }
-    .wine-details__block--goes { margin-top: 48px; }
-    .wine-details__block--tasting .fx-eyebrow,
-    .wine-details__block--goes .fx-eyebrow { margin-bottom: 16px; }
-
-    .wine-details__block--facts { margin-top: 48px; }
-    .wine-details__block--facts .fx-eyebrow { margin-bottom: 18px; }
-    .wine-facts {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+    /* Hairline-ruled sections: a full-width rule above each block. */
+    .wine-details__block--tasting,
+    .wine-details__block--goes,
+    .wine-details__block--facts {
+      border-top: 1px solid rgba(16, 15, 13, 0.15);
+      padding-top: 28px;
     }
-    .wine-facts__pair { margin: 0; }
+    .wine-details__block--tasting { margin-top: 32px; }
+    .wine-details__block--goes { margin-top: 28px; }
+    .wine-details__block--facts { margin-top: 28px; }
+    .wine-details__block--facts .wine-details__heading { margin-bottom: 14px; }
+
+    /* The facts: ruled table, label column beside value at all widths. */
+    .wine-facts { margin: 0; }
+    .wine-facts__row {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(16, 15, 13, 0.15);
+    }
+    .wine-facts__row:last-child { border-bottom: 0; }
+    .wine-facts__row--full { grid-template-columns: 1fr; }
     .wine-facts__label {
-      margin: 0 0 3px;
+      margin: 0;
+      padding-top: 3px;
       font-size: 10.5px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -251,18 +270,19 @@
     }
     .wine-facts__value {
       margin: 0;
-      font-size: 15px;
+      font-size: 14.5px;
       line-height: 1.5;
       color: #100F0D;
     }
 
-    .wine-details__block--producer { margin-top: 56px; }
+    /* The producer: a 2px ink rule, then the eyebrow, then the prose. */
+    .wine-details__block--producer { margin-top: 34px; }
     .wine-details__rule {
-      width: 56px;
-      height: 3px;
-      background: #F8D3D7;
+      width: 100%;
+      height: 2px;
+      background: #100F0D;
       border: 0;
-      margin: 0 0 20px;
+      margin: 0 0 18px;
     }
     .wine-details__block--producer .fx-eyebrow { margin-bottom: 16px; }
     .wine-details__producer-body {
