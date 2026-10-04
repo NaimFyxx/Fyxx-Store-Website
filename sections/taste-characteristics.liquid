@@ -1,0 +1,321 @@
+{%- comment -%}
+  Fyxx: Taste Characteristics
+  Reads product.metafields.taste.*
+  Renders nothing unless all four scale values (1-5) are present.
+{%- endcomment -%}
+
+{%- liquid
+  assign m = product.metafields.taste
+  assign body = m.body.value
+  assign structure = m.structure.value
+  assign sweetness = m.sweetness.value
+  assign acidity = m.acidity.value
+  assign temp = m.serve_temp_c.value
+  assign temp_high = m.serve_temp_high_c.value
+  assign summary = m.summary.value
+  assign scale_set = m.scale_set.value | default: 'red' | downcase
+
+  assign filled = 0
+  if body > 0 and body <= 5
+    assign filled = filled | plus: 1
+  endif
+  if structure > 0 and structure <= 5
+    assign filled = filled | plus: 1
+  endif
+  if sweetness > 0 and sweetness <= 5
+    assign filled = filled | plus: 1
+  endif
+  if acidity > 0 and acidity <= 5
+    assign filled = filled | plus: 1
+  endif
+
+  assign l1 = 'Light'
+  assign r1 = 'Full'
+  assign l2 = 'Smooth'
+  assign r2 = 'Tannic'
+  assign l3 = 'Dry'
+  assign r3 = 'Sweet'
+  assign l4 = 'Soft'
+  assign r4 = 'Fresh'
+
+  case scale_set
+    when 'white' or 'rose'
+      assign l1 = 'Light'
+      assign r1 = 'Bold'
+      assign l2 = 'Delicate'
+      assign r2 = 'Aromatic'
+      assign l3 = 'Dry'
+      assign r3 = 'Sweet'
+      assign l4 = 'Soft'
+      assign r4 = 'Acidic'
+    when 'sparkling'
+      assign l1 = 'Light'
+      assign r1 = 'Full'
+      assign l2 = 'Fine'
+      assign r2 = 'Vigorous'
+      assign l3 = 'Dry'
+      assign r3 = 'Sweet'
+      assign l4 = 'Soft'
+      assign r4 = 'Fresh'
+    when 'spirit'
+      assign l1 = 'Light'
+      assign r1 = 'Rich'
+      assign l2 = 'Gentle'
+      assign r2 = 'Fiery'
+      assign l3 = 'Dry'
+      assign r3 = 'Sweet'
+      assign l4 = 'Clean'
+      assign r4 = 'Smoky'
+  endcase
+
+  assign chill_test = temp
+  if temp_high > 0
+    assign chill_test = temp_high
+  endif
+
+  assign show_chill = false
+  if scale_set == 'red' and chill_test > 0 and chill_test <= 14
+    assign show_chill = true
+  endif
+-%}
+
+{%- if filled >= 4 -%}
+<div class="fx-taste" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
+  <div class="fx-taste__inner">
+
+    <h2 class="fx-taste__title">{{ section.settings.heading }}</h2>
+
+    <div class="fx-taste__grid">
+
+      {%- assign rows = 'body,structure,sweetness,acidity' | split: ',' -%}
+      {%- for row in rows -%}
+        {%- liquid
+          case row
+            when 'body'
+              assign v = body
+              assign lo = l1
+              assign hi = r1
+            when 'structure'
+              assign v = structure
+              assign lo = l2
+              assign hi = r2
+            when 'sweetness'
+              assign v = sweetness
+              assign lo = l3
+              assign hi = r3
+            when 'acidity'
+              assign v = acidity
+              assign lo = l4
+              assign hi = r4
+          endcase
+          assign offset = v | minus: 1 | times: 20
+        -%}
+        <div class="fx-taste__row">
+          <span class="fx-taste__label fx-taste__label--lo">{{ lo }}</span>
+          <div class="fx-taste__track" role="img" aria-label="{{ lo }} to {{ hi }}: {{ v }} out of 5">
+            <span class="fx-taste__fill" style="left:{{ offset }}%;width:20%;"></span>
+          </div>
+          <span class="fx-taste__label fx-taste__label--hi">{{ hi }}</span>
+        </div>
+      {%- endfor -%}
+
+    </div>
+
+    {%- if temp > 0 -%}
+      <div class="fx-taste__serve">
+        <span class="fx-taste__serve-label">Serve at</span>
+        <span class="fx-taste__serve-temp">
+          {%- if temp_high > 0 and temp_high != temp -%}
+            {{ temp }} to {{ temp_high }}&deg;C
+          {%- else -%}
+            {{ temp }}&deg;C
+          {%- endif -%}
+        </span>
+        {%- if show_chill -%}
+          <span class="fx-taste__chip">Chill this red</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if summary != blank -%}
+      <p class="fx-taste__summary">{{ summary }}</p>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .fx-taste {
+    --fx-black: #000;
+    --fx-pink: #f0b09e;
+    --fx-grey: #6e6e6e;
+    --fx-line: #e6e6e6;
+    --fx-track: #ededed;
+  }
+  .fx-taste__inner {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .fx-taste__title {
+    font-family: 'Baskervville', Georgia, serif;
+    font-weight: 400;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: var(--fx-black);
+    margin: 0 0 1.75rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--fx-line);
+  }
+  .fx-taste__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+  }
+  .fx-taste__row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr 6.5rem;
+    align-items: center;
+    gap: 1rem;
+  }
+  .fx-taste__label {
+    font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fx-grey);
+    white-space: nowrap;
+  }
+  .fx-taste__label--hi {
+    text-align: right;
+  }
+  .fx-taste__track {
+    position: relative;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--fx-track);
+    overflow: hidden;
+  }
+  .fx-taste__fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--fx-black);
+    border-radius: 3px;
+  }
+  .fx-taste__serve {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-top: 1.875rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--fx-line);
+  }
+  .fx-taste__serve-label {
+    font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fx-grey);
+  }
+  .fx-taste__serve-temp {
+    font-family: 'Baskervville', Georgia, serif;
+    font-size: 1.375rem;
+    line-height: 1;
+    color: var(--fx-black);
+  }
+  .fx-taste__chip {
+    font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fx-black);
+    background: var(--fx-pink);
+    border-radius: 999px;
+    padding: 0.375rem 0.75rem;
+  }
+  .fx-taste__summary {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--fx-grey);
+    margin: 1rem 0 0;
+  }
+  @media screen and (max-width: 749px) {
+    .fx-taste__inner {
+      padding: 0 1rem;
+    }
+    .fx-taste__title {
+      font-size: 1.5rem;
+    }
+    .fx-taste__row {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.375rem 1rem;
+    }
+    .fx-taste__label--lo {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .fx-taste__label--hi {
+      grid-column: 2;
+      grid-row: 1;
+      text-align: right;
+    }
+    .fx-taste__track {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fx-taste__fill {
+      transition: none;
+    }
+  }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Taste Characteristics",
+  "tag": "section",
+  "class": "section fx-taste-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Taste Characteristics"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Taste Characteristics"
+    }
+  ]
+}
+{% endschema %}
