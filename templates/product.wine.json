@@ -197,12 +197,6 @@
     "sub": {
       "type": "product-full-width",
       "blocks": {
-        "description": {
-          "type": "description",
-          "settings": {
-            "is_tab": true
-          }
-        },
         "tab": {
           "type": "tab",
           "settings": {
@@ -220,7 +214,6 @@
         }
       },
       "block_order": [
-        "description",
         "tab",
         "contact"
       ],
@@ -286,11 +279,21 @@
         "padding_top": 40,
         "padding_bottom": 40
       }
+    },
+    "wine_lead": {
+      "type": "wine-lead",
+      "settings": {}
+    },
+    "wine_details": {
+      "type": "wine-details",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "wine_lead",
     "taste_characteristics",
+    "wine_details",
     "fyxx_kitchen_hours",
     "sub",
     "1782585585263248e5",
