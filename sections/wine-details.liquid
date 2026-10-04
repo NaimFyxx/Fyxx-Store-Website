@@ -25,7 +25,10 @@
 
   No font-family declarations: headings are <h2>/<h3> and inherit the theme
   heading font, body text inherits the body font, matching taste-characteristics.
-  Container is the theme's page-width page-width--narrow, as the taste section.
+  The outer container is the theme's full page-width; the text is capped at the
+  narrow measure (--page-narrow) and left aligned, so its left edge lines up with
+  the buy column above rather than being centred. About the producer reuses the
+  theme's own accordion component (element.accordion) for the chevron.
 {%- endcomment -%}
 
 {%- liquid
@@ -133,7 +136,8 @@
   -%}
 
   <div class="wine-details" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="wine-details__inner page-width page-width--narrow">
+    <div class="page-width">
+      <div class="wine-details__inner">
 
       {%- if serving_out != blank -%}
         <p class="wine-details__serving">{{ serving_out }}</p>
@@ -183,16 +187,15 @@
       {%- endif -%}
 
       {%- if about != blank -%}
-        <details class="wine-details__about">
-          <summary class="wine-details__about-summary">About the producer</summary>
-          <div class="wine-details__text wine-details__about-body">{{ about }}</div>
-        </details>
+        {%- render 'element.accordion', title: 'About the producer', slot: about -%}
       {%- endif -%}
 
+      </div>
     </div>
   </div>
 
   <style>
+    .wine-details__inner { max-width: var(--page-narrow); }
     .wine-details__serving {
       font-size: 0.8125rem;
       line-height: 1.5;
@@ -243,32 +246,8 @@
       color: #2b2b2b;
       margin: 0;
     }
-    .wine-details__about {
-      border-top: 1px solid #ece2d7;
-      padding-top: 1rem;
-    }
-    .wine-details__about-summary {
-      list-style: none;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #231f20;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.25rem 0;
-    }
-    .wine-details__about-summary::-webkit-details-marker { display: none; }
-    .wine-details__about-summary::after {
-      content: "+";
-      font-size: 1.25rem;
-      line-height: 1;
-      color: #6e6e6e;
-    }
-    .wine-details__about[open] .wine-details__about-summary::after { content: "\2212"; }
-    .wine-details__about-body { margin-top: 0.75rem; }
-
     @media screen and (max-width: 768px) {
-      .wine-details__inner.page-width--narrow { max-width: none; }
+      .wine-details__inner { max-width: none; }
       .wine-details__cols { grid-template-columns: 1fr; gap: 1.5rem; }
     }
   </style>
@@ -277,13 +256,16 @@
 
   {%- comment -%} Fewer than three headings: render the whole description plainly, nothing dropped. {%- endcomment -%}
   <div class="wine-details wine-details--fallback" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="wine-details__inner page-width page-width--narrow">
-      {{ product.description }}
+    <div class="page-width">
+      <div class="wine-details__inner">
+        {{ product.description }}
+      </div>
     </div>
   </div>
   <style>
+    .wine-details__inner { max-width: var(--page-narrow); }
     @media screen and (max-width: 768px) {
-      .wine-details__inner.page-width--narrow { max-width: none; }
+      .wine-details__inner { max-width: none; }
     }
   </style>
 
@@ -309,7 +291,7 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 16
+      "default": 0
     },
     {
       "type": "range",
@@ -319,7 +301,7 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 40
+      "default": 0
     }
   ],
   "presets": [
