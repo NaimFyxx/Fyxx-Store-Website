@@ -23,12 +23,14 @@
       accordion is removed from this template, so rendering nothing would drop
       the content. This branch is the safety net; 0 of 680 wines hit it today.
 
-  No font-family declarations: headings are <h2>/<h3> and inherit the theme
-  heading font, body text inherits the body font, matching taste-characteristics.
+  No font-family name is declared. Section headings are small uppercase
+  eyebrows in the inherited theme body font. Tasting Notes and Goes with use
+  the theme heading variable for their serif body. The producer is an open
+  section, not an accordion. Only the brand palette is used: ink #100F0D,
+  blush #F8D3D7, and alpha steps of ink.
   The outer container is the theme's full page-width; the text is capped at the
   narrow measure (--page-narrow) and left aligned, so its left edge lines up with
-  the buy column above rather than being centred. About the producer reuses the
-  theme's own accordion component (element.accordion) for the chevron.
+  the buy column above rather than being centred.
 {%- endcomment -%}
 
 {%- liquid
@@ -144,50 +146,51 @@
       {%- endif -%}
 
       {%- if tasting != blank -%}
-        <section class="wine-details__block">
-          <h2 class="wine-details__h">Tasting Notes</h2>
-          <div class="wine-details__text">{{ tasting }}</div>
+        <section class="wine-details__block wine-details__block--tasting">
+          <h2 class="fx-eyebrow">Tasting Notes</h2>
+          <div class="wine-details__serif">{{ tasting }}</div>
         </section>
       {%- endif -%}
 
-      {%- if pairing != blank or qf_raw != blank -%}
-        <div class="wine-details__cols">
-          {%- if pairing != blank -%}
-            <section class="wine-details__col">
-              <h3 class="wine-details__h wine-details__h--sm">Goes with</h3>
-              <div class="wine-details__text">{{ pairing }}</div>
-            </section>
-          {%- endif -%}
-          {%- if qf_raw != blank -%}
-            <section class="wine-details__col">
-              <h3 class="wine-details__h wine-details__h--sm">The facts</h3>
-              <dl class="wine-facts">
-                {%- assign qf_items = qf_raw | split: '<li>' -%}
-                {%- for item in qf_items -%}
-                  {%- assign li = item | split: '</li>' | first | strip_html | strip -%}
-                  {%- if li != blank -%}
-                    {%- if li contains ':' -%}
-                      {%- assign lbl = li | split: ':' | first | strip -%}
-                      {%- assign val = li | remove_first: lbl | remove_first: ':' | strip -%}
-                      <div class="wine-facts__row">
-                        <dt>{{ lbl }}</dt>
-                        <dd>{{ val }}</dd>
-                      </div>
-                    {%- else -%}
-                      <div class="wine-facts__row wine-facts__row--full">
-                        <dd>{{ li }}</dd>
-                      </div>
-                    {%- endif -%}
-                  {%- endif -%}
-                {%- endfor -%}
-              </dl>
-            </section>
-          {%- endif -%}
-        </div>
+      {%- if pairing != blank -%}
+        <section class="wine-details__block wine-details__block--goes">
+          <h3 class="fx-eyebrow">Goes with</h3>
+          <div class="wine-details__serif">{{ pairing }}</div>
+        </section>
+      {%- endif -%}
+
+      {%- if qf_raw != blank -%}
+        <section class="wine-details__block wine-details__block--facts">
+          <h3 class="fx-eyebrow">The facts</h3>
+          <dl class="wine-facts">
+            {%- assign qf_items = qf_raw | split: '<li>' -%}
+            {%- for item in qf_items -%}
+              {%- assign li = item | split: '</li>' | first | strip_html | strip -%}
+              {%- if li != blank -%}
+                {%- if li contains ':' -%}
+                  {%- assign lbl = li | split: ':' | first | strip -%}
+                  {%- assign val = li | remove_first: lbl | remove_first: ':' | strip -%}
+                  <div class="wine-facts__pair">
+                    <dt class="wine-facts__label">{{ lbl }}</dt>
+                    <dd class="wine-facts__value">{{ val }}</dd>
+                  </div>
+                {%- else -%}
+                  <div class="wine-facts__pair">
+                    <dd class="wine-facts__value">{{ li }}</dd>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </dl>
+        </section>
       {%- endif -%}
 
       {%- if about != blank -%}
-        {%- render 'element.accordion', title: 'About the producer', slot: about -%}
+        <section class="wine-details__block wine-details__block--producer">
+          <hr class="wine-details__rule" aria-hidden="true">
+          <h3 class="fx-eyebrow">The producer</h3>
+          <div class="wine-details__producer-body">{{ about }}</div>
+        </section>
       {%- endif -%}
 
       </div>
@@ -196,59 +199,82 @@
 
   <style>
     .wine-details__inner { max-width: var(--page-narrow); }
+
+    .fx-eyebrow {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(16, 15, 13, 0.72);
+    }
+
     .wine-details__serving {
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      color: #6e6e6e;
-      margin: 0 0 1.5rem;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: rgba(16, 15, 13, 0.72);
+      margin: 0;
     }
-    .wine-details__block { margin: 0 0 2rem; }
-    .wine-details__h {
+
+    .wine-details__serif {
+      font-family: var(--element-text-font-family--heading);
+      font-size: 16px;
+      line-height: 1.75;
       font-weight: 400;
-      font-size: 1.375rem;
-      line-height: 1.2;
-      letter-spacing: 0.01em;
-      color: #231f20;
-      margin: 0 0 0.75rem;
+      font-style: normal;
+      color: rgba(16, 15, 13, 0.88);
     }
-    .wine-details__h--sm { font-size: 1.125rem; }
-    .wine-details__text {
-      font-size: 0.9375rem;
-      line-height: 1.65;
-      color: #2b2b2b;
-    }
-    .wine-details__text p { margin: 0 0 0.75rem; }
-    .wine-details__text p:last-child { margin-bottom: 0; }
-    .wine-details__cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin: 0 0 2rem;
-    }
-    .wine-facts { margin: 0; }
-    .wine-facts__row {
-      display: grid;
-      grid-template-columns: 8rem 1fr;
-      gap: 0.25rem 1rem;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #ece2d7;
-    }
-    .wine-facts__row:last-child { border-bottom: 0; }
-    .wine-facts__row--full { grid-template-columns: 1fr; }
-    .wine-facts dt {
-      font-size: 0.8125rem;
-      color: #6e6e6e;
+    .wine-details__serif p { margin: 0 0 0.75rem; }
+    .wine-details__serif p:last-child { margin-bottom: 0; }
+
+    .wine-details__block--tasting { margin-top: 56px; }
+    .wine-details__block--goes { margin-top: 48px; }
+    .wine-details__block--tasting .fx-eyebrow,
+    .wine-details__block--goes .fx-eyebrow { margin-bottom: 16px; }
+
+    .wine-details__block--facts { margin-top: 48px; }
+    .wine-details__block--facts .fx-eyebrow { margin-bottom: 18px; }
+    .wine-facts {
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
-    .wine-facts dd {
-      font-size: 0.875rem;
-      line-height: 1.45;
-      color: #2b2b2b;
+    .wine-facts__pair { margin: 0; }
+    .wine-facts__label {
+      margin: 0 0 3px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(16, 15, 13, 0.55);
+    }
+    .wine-facts__value {
       margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #100F0D;
     }
+
+    .wine-details__block--producer { margin-top: 56px; }
+    .wine-details__rule {
+      width: 56px;
+      height: 3px;
+      background: #F8D3D7;
+      border: 0;
+      margin: 0 0 20px;
+    }
+    .wine-details__block--producer .fx-eyebrow { margin-bottom: 16px; }
+    .wine-details__producer-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(16, 15, 13, 0.88);
+    }
+    .wine-details__producer-body p { margin: 0 0 0.75rem; }
+    .wine-details__producer-body p:last-child { margin-bottom: 0; }
+
     @media screen and (max-width: 768px) {
       .wine-details__inner { max-width: none; }
-      .wine-details__cols { grid-template-columns: 1fr; gap: 1.5rem; }
     }
   </style>
 

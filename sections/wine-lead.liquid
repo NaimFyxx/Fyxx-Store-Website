@@ -7,10 +7,10 @@
   lead. Renders nothing otherwise, and nothing if there is no content before
   the first heading. See sections/wine-details.liquid for the matching parse.
 
-  Font: the lead uses the theme's heading font via its token (resolves to Libre
-  Baskerville on this theme), set through the token rather than a hardcoded
-  family name so it tracks any future theme font change. The paragraph is
-  already wrapped in <em> in the data, so italics are not set in CSS.
+  Font: the lead uses the theme's heading font via its token, set through the
+  token rather than a hardcoded family name so it tracks any future theme font
+  change. The paragraph is already wrapped in <em> in the data, so italics are
+  not set in CSS.
 {%- endcomment -%}
 
 {%- liquid
@@ -54,16 +54,18 @@
     .wine-lead__inner p,
     .wine-lead__inner em {
       font-family: var(--element-text-font-family--heading), var(--element-text-font-family-fallback--heading);
-      font-size: 18px;
-      line-height: 1.72;
-      color: #2b2b2b;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #100F0D;
     }
     .wine-lead__inner p { margin: 0; }
-    @media screen and (max-width: 768px) {
-      .wine-lead__inner { max-width: none; }
+    @media screen and (min-width: 768px) {
       .wine-lead__inner,
       .wine-lead__inner p,
-      .wine-lead__inner em { font-size: 15px; }
+      .wine-lead__inner em { font-size: 18px; }
+    }
+    @media screen and (max-width: 768px) {
+      .wine-lead__inner { max-width: none; }
     }
   </style>
 {%- endif -%}
