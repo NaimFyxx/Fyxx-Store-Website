@@ -59,6 +59,22 @@
 
 {% render 'section.main-product', slot: blocks %}
 
+{%- comment -%}
+  Fyxx (wine only): the Judge.me preview badge hides itself at zero reviews by
+  writing an inline style="display:none" on .jdgm-prev-badge. An injected rule
+  ".jdgm-prev-badge { display: block !important }" (not in this theme; it comes
+  from the Judge.me app) overrides that inline style, so the empty badge keeps
+  showing five hollow stars and "No reviews". This more-specific, wine-scoped
+  !important rule re-hides ONLY the zero-review state, so a badge with real
+  reviews still renders normally. Scoped to the wine template; no other
+  template is affected.
+{%- endcomment -%}
+{%- if template.suffix == 'custom-product-wine' -%}
+  <style>
+    .jdgm-prev-badge[data-number-of-reviews='0'] { display: none !important; }
+  </style>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "t:labels.product",

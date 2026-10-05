@@ -164,10 +164,10 @@
         "judge_me_reviews_preview_badge_tAm7Vf",
         "variant_picker",
         "price",
-        "rewards_band",
         "quantity_selector_kbhzXd",
         "custom_LeGbXD",
         "buy_buttons",
+        "rewards_band",
         "sales_point",
         "sales_point2",
         "sales_point3",
@@ -229,7 +229,7 @@
             "review_data": "sample_data",
             "max_width": 1200,
             "show_shop_reviews": false,
-            "empty_state": "other_products_reviews"
+            "empty_state": "empty_widget"
           }
         }
       },

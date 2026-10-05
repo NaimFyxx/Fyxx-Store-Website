@@ -45,12 +45,21 @@
 
 {%- if lead != blank -%}
   <div class="wine-lead" style="padding-top:{{ block.settings.padding_top }}px;padding-bottom:{{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
+    <h2 class="wine-lead__heading">About this wine</h2>
     <div class="wine-lead__inner">
       {{ lead }}
     </div>
   </div>
 
   <style>
+    .wine-lead__heading {
+      font-family: var(--element-text-font-family--heading), var(--element-text-font-family-fallback--heading);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: #100F0D;
+      margin: 0 0 14px;
+    }
     .wine-lead__inner,
     .wine-lead__inner p,
     .wine-lead__inner em {

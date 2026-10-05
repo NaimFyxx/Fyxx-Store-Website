@@ -603,3 +603,16 @@
     </div>
   </div>
 {%- endif -%}
+
+{%- comment -%}
+  Fyxx (wine only): drop the 1px frame around the main product image. The border
+  is defined in this snippet's {% stylesheet %} on .product__main-photos
+  .product-slideshow, which is compiled statically and cannot carry a Liquid
+  conditional, so the wine scope is this appended override instead. Non-wine
+  templates emit nothing here and render exactly as before.
+{%- endcomment -%}
+{%- if template.suffix == 'custom-product-wine' -%}
+  <style>
+    .product__main-photos .product-slideshow { border: 0; }
+  </style>
+{%- endif -%}

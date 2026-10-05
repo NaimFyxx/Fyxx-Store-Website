@@ -1,10 +1,11 @@
 {%- comment -%}
   Fyxx: Brand line (product block)
   Part of the wine-template buy column.
-  Renders product.metafields.custom.brand directly above the <h1>, as a small
-  uppercase letter-spaced muted eyebrow. No link (the title block's vendor link
-  is a separate thing and stays off). Renders nothing if the metafield is blank.
-  No font-family is declared; it inherits the theme body font.
+  Renders product.metafields.custom.brand directly above the <h1> as the lead of
+  the buy column: uppercase, letter-spaced, bold and full ink, so it reads as the
+  producer name rather than a faint eyebrow. Not clickable yet (a link is a later
+  job). Renders nothing if the metafield is blank. No font-family is declared; it
+  inherits the theme body font.
 
   Guard: custom.brand is "#REF!" on most wines, a broken spreadsheet formula
   that was imported into the metafield. Treat that exact string as blank and
@@ -26,9 +27,10 @@
 
   <style>
     .fx-brand__text {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: rgba(16, 15, 13, 0.55);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #100F0D;
     }
   </style>
 {%- endif -%}
