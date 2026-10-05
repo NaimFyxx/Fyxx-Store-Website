@@ -159,6 +159,21 @@
         "judge_me_reviews_review_snippet_widget_DRfBGX": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_snippet_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
+        },
+        "wine_lead": {
+          "type": "wine_lead",
+          "settings": {}
+        },
+        "wine_taste": {
+          "type": "wine_taste",
+          "settings": {
+            "padding_top": 24,
+            "padding_bottom": 16
+          }
+        },
+        "wine_details": {
+          "type": "wine_details",
+          "settings": {}
         }
       },
       "block_order": [
@@ -180,7 +195,10 @@
         "sales_point4",
         "wishlist_plus_wishlist_pdp_button_9DFm9M",
         "judge_me_reviews_preview_badge_tAm7Vf",
-        "judge_me_reviews_review_snippet_widget_DRfBGX"
+        "judge_me_reviews_review_snippet_widget_DRfBGX",
+        "wine_lead",
+        "wine_taste",
+        "wine_details"
       ],
       "settings": {
         "image_position": "right",
@@ -272,29 +290,10 @@
     "fyxx_kitchen_hours": {
       "type": "fyxx-kitchen-hours",
       "settings": {}
-    },
-    "taste_characteristics": {
-      "type": "taste-characteristics",
-      "settings": {
-        "heading": "Taste Characteristics",
-        "padding_top": 24,
-        "padding_bottom": 16
-      }
-    },
-    "wine_lead": {
-      "type": "wine-lead",
-      "settings": {}
-    },
-    "wine_details": {
-      "type": "wine-details",
-      "settings": {}
     }
   },
   "order": [
     "main",
-    "wine_lead",
-    "taste_characteristics",
-    "wine_details",
     "fyxx_kitchen_hours",
     "sub",
     "1782585585263248e5",

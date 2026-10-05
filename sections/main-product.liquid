@@ -40,6 +40,12 @@
           render 'block.product-share', block: block
         when 'loyalty_price'
           render 'block.product-loyalty-points', block: block
+        when 'wine_lead'
+          render 'block.wine-lead', block: block
+        when 'wine_taste'
+          render 'block.wine-taste', block: block
+        when 'wine_details'
+          render 'block.wine-details', block: block
       endcase
     endfor
   endcapture
@@ -586,6 +592,87 @@
         {
           "type": "paragraph",
           "content": "t:info.choose_which_platforms_share_theme_settings"
+        }
+      ]
+    },
+    {
+      "type": "wine_lead",
+      "name": "Wine lead",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 8
+        }
+      ]
+    },
+    {
+      "type": "wine_taste",
+      "name": "Taste Characteristics",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 40
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 40
+        }
+      ]
+    },
+    {
+      "type": "wine_details",
+      "name": "Wine details",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom padding",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "default": 0
         }
       ]
     }

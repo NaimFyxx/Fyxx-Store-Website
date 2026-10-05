@@ -1,11 +1,15 @@
 {%- comment -%}
-  Fyxx: Wine lead
+  Fyxx: Wine lead (product block)
   Renders the opening paragraph of a wine description, meaning the content
   before the first "<p><strong>" heading. It only renders when the description
   is in the structured six-part shape (three or more of the five known
   headings), so an odd description never has its whole body rendered here as a
   lead. Renders nothing otherwise, and nothing if there is no content before
-  the first heading. See sections/wine-details.liquid for the matching parse.
+  the first heading. See snippets/block.wine-details.liquid for the matching parse.
+
+  Mounted as a block inside the product grid's content column, so the grid
+  provides the left edge and measure; there is no page-width wrapper or narrow
+  cap here.
 
   Font: the lead uses the theme's heading font via its token, set through the
   token rather than a hardcoded family name so it tracks any future theme font
@@ -40,16 +44,13 @@
 -%}
 
 {%- if lead != blank -%}
-  <div class="wine-lead" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="page-width">
-      <div class="wine-lead__inner">
-        {{ lead }}
-      </div>
+  <div class="wine-lead" style="padding-top:{{ block.settings.padding_top }}px;padding-bottom:{{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
+    <div class="wine-lead__inner">
+      {{ lead }}
     </div>
   </div>
 
   <style>
-    .wine-lead__inner { max-width: var(--page-narrow); }
     .wine-lead__inner,
     .wine-lead__inner p,
     .wine-lead__inner em {
@@ -64,43 +65,5 @@
       .wine-lead__inner p,
       .wine-lead__inner em { font-size: 18px; }
     }
-    @media screen and (max-width: 768px) {
-      .wine-lead__inner { max-width: none; }
-    }
   </style>
 {%- endif -%}
-
-{% schema %}
-{
-  "name": "Wine lead",
-  "tag": "section",
-  "class": "section wine-lead-section",
-  "settings": [
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 24
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 8
-    }
-  ],
-  "presets": [
-    {
-      "name": "Wine lead"
-    }
-  ]
-}
-{% endschema %}
