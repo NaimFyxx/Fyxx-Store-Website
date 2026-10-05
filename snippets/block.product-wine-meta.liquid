@@ -57,12 +57,12 @@
   <div class="fx-wine-meta" {{ block.shopify_attributes }}>
     {%- render 'element.text', text: line, as: 'p', classlist: 'fx-wine-meta__text' -%}
   </div>
-{%- endif -%}
 
-{%- stylesheet -%}
-  .fx-wine-meta__text {
-    font-size: 13px;
-    line-height: 1.4;
-    color: rgba(16, 15, 13, 0.72);
-  }
-{%- endstylesheet -%}
+  <style>
+    .fx-wine-meta__text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: rgba(16, 15, 13, 0.72);
+    }
+  </style>
+{%- endif -%}
