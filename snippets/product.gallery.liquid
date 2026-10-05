@@ -603,3 +603,24 @@
     </div>
   </div>
 {%- endif -%}
+
+{%- comment -%}
+  Fyxx (wine only): drop the 1px frame around the main product image on mobile
+  only. Desktop keeps the border exactly as today. Two different elements carry
+  this frame at the two breakpoints: on desktop it sits on .product-slideshow
+  (this snippet's {% stylesheet %}); at 768px and below that rule already zeroes
+  the slideshow border and the frame moves to .product-main-slide (set in
+  head.styles.component.misc.liquid). So the mobile removal must target
+  .product-main-slide, not .product-slideshow (which is already borderless on
+  mobile). 768px is the theme's existing breakpoint, so no new number enters the
+  file. Both stylesheets are compiled statically and cannot carry a Liquid
+  conditional, so the wine scope is this appended override. Non-wine templates
+  emit nothing here and render exactly as before.
+{%- endcomment -%}
+{%- if template.suffix == 'custom-product-wine' -%}
+  <style>
+    @media screen and (max-width: 768px) {
+      .product__main-photos .product-main-slide { border: 0; }
+    }
+  </style>
+{%- endif -%}

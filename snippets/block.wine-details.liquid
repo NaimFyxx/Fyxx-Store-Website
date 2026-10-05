@@ -191,6 +191,22 @@
           <hr class="wine-details__rule" aria-hidden="true">
           <h3 class="fx-eyebrow">The producer</h3>
           <div class="wine-details__producer-body">{{ about }}</div>
+          {%- comment -%}
+            Fyxx: links to the existing "Product Website" metafield
+            (custom.product_website, type list.url). The value is a list, so take
+            the first entry and render nothing when the list is empty. Render the
+            link only when the host is NOT shop.lescaves.co.uk, the importer's own
+            shop selling the same bottle, so a customer is never sent to a
+            competing listing. This host condition is temporary, pending a data
+            clean, and can be dropped afterwards.
+          {%- endcomment -%}
+          {%- assign product_website = product.metafields.custom.product_website.value | first -%}
+          {%- if product_website != blank -%}
+            {%- assign pw_host = product_website | split: '//' | last | split: '/' | first -%}
+            {%- if pw_host != 'shop.lescaves.co.uk' -%}
+              <a class="wine-details__producer-link" href="{{ product_website }}">Read more about this wine</a>
+            {%- endif -%}
+          {%- endif -%}
         </section>
       {%- endif -%}
 
@@ -286,6 +302,18 @@
     }
     .wine-details__producer-body p { margin: 0 0 0.75rem; }
     .wine-details__producer-body p:last-child { margin-bottom: 0; }
+
+    .wine-details__producer-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #100F0D;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .wine-details__producer-link:hover { text-decoration: none; }
   </style>
 
 {%- else -%}

@@ -26,6 +26,28 @@
   assign heading_size = heading_size | default: block.settings.heading_size | default: 'xl'
 -%}
 
+{%- comment -%}
+  Fyxx (wine only): some wine titles are stored as "Brand | Name" while the brand
+  is also shown on its own line above the title, which reads as a doubled brand.
+  When the title begins with the custom.brand value followed by " | ", strip that
+  prefix so only the name remains. Safe when brand is blank or the "#REF!"
+  spreadsheet artefact (638 of 681 wines): nothing is stripped. No other template
+  is touched.
+{%- endcomment -%}
+{%- if template.suffix == 'custom-product-wine' -%}
+  {%- liquid
+    assign fx_brand = product.metafields.custom.brand.value
+    if fx_brand != blank and fx_brand != '#REF!'
+      assign fx_prefix = fx_brand | append: ' | '
+      assign fx_plen = fx_prefix | size
+      assign fx_head = title | slice: 0, fx_plen
+      if fx_head == fx_prefix
+        assign title = title | remove_first: fx_prefix
+      endif
+    endif
+  -%}
+{%- endif -%}
+
 {%- capture vendor_and_sku -%}
   {%- if vendor_enable or sku_enable -%}
     {%- if vendor_enable -%}

@@ -84,7 +84,10 @@
   {{ price_attributes }}
   {{ block.shopify_attributes }}
 >
-  {%- render 'element.text', locale: 'labels.price', text: 'Price', classlist: 'label variant__label' -%}
+  {%- comment -%} Fyxx (wine only): the price stands on its own in the wine buy column, so the "Price" label is suppressed. Every other template renders it unchanged. {%- endcomment -%}
+  {%- unless template.suffix == 'custom-product-wine' -%}
+    {%- render 'element.text', locale: 'labels.price', text: 'Price', classlist: 'label variant__label' -%}
+  {%- endunless -%}
 
   {%- capture price -%}
     <div class="block-price__regular">

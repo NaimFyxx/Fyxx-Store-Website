@@ -160,6 +160,9 @@
   assign swatch_style = swatch_style | default: settings.swatch_style | default: 'round'
 -%}
 
+{%- comment -%} Fyxx (wine only): a wine with a single variant shows its size in the meta line under the title instead, so the picker is suppressed here. Wines with more than one variant, and every non-wine template, render the picker exactly as before. {%- endcomment -%}
+{%- if template.suffix == 'custom-product-wine' and product.variants.size == 1 -%}
+{%- else -%}
 {%- unless product.has_only_default_variant -%}
   <block-variant-picker
     class="block-variant-picker"
@@ -196,3 +199,4 @@
     import 'block.product-variant-picker'
   </script>
 {%- endunless -%}
+{%- endif -%}

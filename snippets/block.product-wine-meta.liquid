@@ -51,6 +51,20 @@
     endif
     assign line = line | append: region
   endif
+
+  # Single-variant wines hide the size picker, so the size (variant title) is
+  # shown here instead, as the last part of the meta line. Skipped when the
+  # product has only the default variant (no real size) or more than one variant
+  # (the picker renders and carries the size).
+  if product.variants.size == 1 and product.has_only_default_variant == false
+    assign vtitle = product.variants.first.title | strip
+    if vtitle != blank
+      if line != blank
+        assign line = line | append: ' · '
+      endif
+      assign line = line | append: vtitle
+    endif
+  endif
 -%}
 
 {%- if line != blank -%}
