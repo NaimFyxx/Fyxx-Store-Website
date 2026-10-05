@@ -7,7 +7,6 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
-
 {
   "sections": {
     "main": {
@@ -126,43 +125,41 @@
             "text": "Secure Online Payment"
           }
         },
-        "wishlist_plus_wishlist_pdp_button_9DFm9M": {
-          "type": "shopify://apps/wishlist-plus/blocks/wishlist-pdp-button/80c3b1fc-3a8f-407e-8367-ffdeebb8b612",
-          "settings": {
-            "swym_atw_button_icon": "bookmark",
-            "swym_atw_icon_thickness": 1.5,
-            "swym_atw_display_btn_text": false,
-            "swym_button_position": "add_to_cart_button_right",
-            "swym_atw_button_vertical_offset": 0,
-            "swym_atw_full_width": true,
-            "swym_atw_button_alignment": "center",
-            "swym_add_to_wishlist_color": "#ffffff",
-            "swym_added_to_wishlist_color": "#d75d43",
-            "swym_button_text_color": "#000000",
-            "swym_atw_border_color": "#000000",
-            "swym_atw_border_thickness": 0.5,
-            "swym_atw_button_border_radius": 6,
-            "swym_enable_hover_customization": false,
-            "swym_hover_add_to_wishlist_color": "#000000",
-            "swym_hover_added_to_wishlist_color": "#222222",
-            "swym_hover_button_text_color": "#ffffff",
-            "swym_hover_atw_border_color": "#000000",
-            "swym_hover_atw_border_thickness": 0,
-            "swym_hover_atw_button_border_radius": 0,
-            "swym_custom_css": ""
-          }
-        },
         "judge_me_reviews_preview_badge_tAm7Vf": {
           "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
         },
         "judge_me_reviews_review_snippet_widget_DRfBGX": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_snippet_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
+          "settings": {
+            "reviews_selection": "current_product",
+            "products": [],
+            "filter_pinned": false,
+            "filter_featured": false,
+            "filter_custom_tags": "",
+            "min_star_rating": "inherit",
+            "show_review_media": true,
+            "max_reviews": 5,
+            "review_length": "medium",
+            "text_size": "medium",
+            "max_width": 1100,
+            "max_image_size": "small",
+            "arrows_visibility": "always_shown",
+            "transition_speed": 5,
+            "corner_styling": "inherit",
+            "text_color": "",
+            "card_color": "",
+            "stars_color": "",
+            "arrows_color": "",
+            "arrows_background_color": ""
+          }
         },
         "wine_lead": {
           "type": "wine_lead",
-          "settings": {}
+          "settings": {
+            "padding_top": 24,
+            "padding_bottom": 8
+          }
         },
         "wine_taste": {
           "type": "wine_taste",
@@ -173,7 +170,10 @@
         },
         "wine_details": {
           "type": "wine_details",
-          "settings": {}
+          "settings": {
+            "padding_top": 0,
+            "padding_bottom": 0
+          }
         }
       },
       "block_order": [
@@ -193,7 +193,6 @@
         "sales_point2",
         "sales_point3",
         "sales_point4",
-        "wishlist_plus_wishlist_pdp_button_9DFm9M",
         "judge_me_reviews_preview_badge_tAm7Vf",
         "judge_me_reviews_review_snippet_widget_DRfBGX",
         "wine_lead",
@@ -212,6 +211,10 @@
         "enable_video_looping": true,
         "product_video_style": "muted"
       }
+    },
+    "fyxx_kitchen_hours": {
+      "type": "fyxx-kitchen-hours",
+      "settings": {}
     },
     "sub": {
       "type": "product-full-width",
@@ -249,7 +252,7 @@
             "review_data": "sample_data",
             "max_width": 1200,
             "show_shop_reviews": false,
-            "empty_state": "empty_widget"
+            "empty_state": "other_products_reviews"
           }
         }
       },
@@ -286,10 +289,6 @@
       "settings": {
         "color_scheme": "none"
       }
-    },
-    "fyxx_kitchen_hours": {
-      "type": "fyxx-kitchen-hours",
-      "settings": {}
     }
   },
   "order": [
