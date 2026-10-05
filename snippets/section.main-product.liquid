@@ -82,6 +82,12 @@
       {%- unless image_position == 'left' -%}
         <div class="grid__item {{ product_image_width }} product-single__sticky">
           {{- product_media_gallery | default: product_media_gallery_default -}}
+          {%- comment -%} Fyxx (wine only): desktop mount of the wine utility lines, beneath the image and inside this sticky column so they travel with the bottle. Hidden at 768px and below; the mobile copy renders after the buy column instead. Non-wine templates emit nothing here. {%- endcomment -%}
+          {%- if template.suffix == 'custom-product-wine' -%}
+            <div class="small--hide">
+              {%- render 'block.wine-utility' -%}
+            </div>
+          {%- endif -%}
         </div>
       {%- endunless -%}
     </div>

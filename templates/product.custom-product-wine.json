@@ -99,33 +99,9 @@
             "show_gift_card_recipient": true
           }
         },
-        "sales_point": {
-          "type": "sales_point",
-          "settings": {
-            "icon": "checkmark",
-            "text": "Less than an hour delivery"
-          }
-        },
-        "sales_point2": {
-          "type": "sales_point",
-          "settings": {
-            "icon": "checkmark",
-            "text": "Free 7 day returns"
-          }
-        },
-        "sales_point3": {
-          "type": "sales_point",
-          "settings": {
-            "icon": "checkmark",
-            "text": "Fyxx Points"
-          }
-        },
-        "sales_point4": {
-          "type": "sales_point",
-          "settings": {
-            "icon": "lock",
-            "text": "Secure Online Payment"
-          }
+        "wine_utility": {
+          "type": "wine_utility",
+          "settings": {}
         },
         "judge_me_reviews_preview_badge_tAm7Vf": {
           "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
@@ -168,10 +144,7 @@
         "custom_LeGbXD",
         "buy_buttons",
         "rewards_band",
-        "sales_point",
-        "sales_point2",
-        "sales_point3",
-        "sales_point4",
+        "wine_utility",
         "wine_lead",
         "wine_taste",
         "wine_details"
