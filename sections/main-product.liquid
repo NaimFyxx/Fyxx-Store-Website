@@ -695,7 +695,16 @@
     {
       "type": "rewards_band",
       "name": "Rewards band",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+        {
+          "type": "number",
+          "id": "vat_divisor",
+          "label": "VAT divisor",
+          "info": "Price is divided by this to strip tax before points are calculated. 1.16 for Jordan's 16% VAT.",
+          "default": 1.16
+        }
+      ]
     }
   ]
 }
