@@ -55,7 +55,10 @@
 {%- unless excluded -%}
   {%- liquid
     assign price_jd = product.selected_or_first_available_variant.price | divided_by: 100.0
-    assign vat_divisor = block.settings.vat_divisor | default: 1.16
+    assign vat_divisor = block.settings.vat_divisor | default: '1.16' | plus: 0
+    if vat_divisor <= 0
+      assign vat_divisor = 1.16
+    endif
     assign base_jd = price_jd | divided_by: vat_divisor
 
     assign tier = ''
