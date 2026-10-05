@@ -15,12 +15,12 @@
   <div class="fx-brand" {{ block.shopify_attributes }}>
     {%- render 'element.text', text: brand, as: 'p', text_transform: 'uppercase', classlist: 'fx-brand__text' -%}
   </div>
-
-  {%- stylesheet -%}
-    .fx-brand__text {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: rgba(16, 15, 13, 0.55);
-    }
-  {%- endstylesheet -%}
 {%- endif -%}
+
+{%- stylesheet -%}
+  .fx-brand__text {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: rgba(16, 15, 13, 0.55);
+  }
+{%- endstylesheet -%}
