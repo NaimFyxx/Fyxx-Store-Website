@@ -1,11 +1,11 @@
 {%- comment -%}
-  Fyxx: Wine details
+  Fyxx: Wine details (product block)
   Splits a structured wine description into placed parts, below the taste block.
 
   The description stays the single source of truth in product.description. The
-  six-part template is: an opening <em> paragraph (rendered by wine-lead), then
-  Tasting Notes, Quick Facts, Food Pairing, Serving and About the Producer, each
-  introduced by a <p><strong>Heading</strong> line.
+  six-part template is: an opening <em> paragraph (rendered by block.wine-lead),
+  then Tasting Notes, Quick Facts, Food Pairing, Serving and About the Producer,
+  each introduced by a <p><strong>Heading</strong> line.
 
   Two heading-body shapes exist in the catalogue and both are handled:
     1. br-joined:   <p><strong>Tasting Notes</strong><br>text here</p>
@@ -29,9 +29,9 @@
   sections, and the producer opens with a 2px ink rule. The only remaining
   eyebrow here is The producer, in full ink. Only the brand palette is used:
   ink #100F0D and alpha steps of ink.
-  The outer container is the theme's full page-width; the text is capped at the
-  narrow measure (--page-narrow) and left aligned, so its left edge lines up with
-  the buy column above rather than being centred.
+  Mounted as a block inside the product grid's content column, so the grid
+  provides the left edge and measure; its left edge lines up with the buy
+  column above because they share the same column.
 {%- endcomment -%}
 
 {%- liquid
@@ -138,9 +138,7 @@
     endif
   -%}
 
-  <div class="wine-details" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="page-width">
-      <div class="wine-details__inner">
+  <div class="wine-details" style="padding-top:{{ block.settings.padding_top }}px;padding-bottom:{{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
 
       {%- if serving_out != blank -%}
         <p class="wine-details__serving">{{ serving_out }}</p>
@@ -196,13 +194,9 @@
         </section>
       {%- endif -%}
 
-      </div>
-    </div>
   </div>
 
   <style>
-    .wine-details__inner { max-width: var(--page-narrow); }
-
     .fx-eyebrow {
       margin: 0;
       font-size: 11px;
@@ -292,68 +286,13 @@
     }
     .wine-details__producer-body p { margin: 0 0 0.75rem; }
     .wine-details__producer-body p:last-child { margin-bottom: 0; }
-
-    @media screen and (max-width: 768px) {
-      .wine-details__inner { max-width: none; }
-    }
   </style>
 
 {%- else -%}
 
   {%- comment -%} Fewer than three headings: render the whole description plainly, nothing dropped. {%- endcomment -%}
-  <div class="wine-details wine-details--fallback" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-    <div class="page-width">
-      <div class="wine-details__inner">
-        {{ product.description }}
-      </div>
-    </div>
+  <div class="wine-details wine-details--fallback" style="padding-top:{{ block.settings.padding_top }}px;padding-bottom:{{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
+    {{ product.description }}
   </div>
-  <style>
-    .wine-details__inner { max-width: var(--page-narrow); }
-    @media screen and (max-width: 768px) {
-      .wine-details__inner { max-width: none; }
-    }
-  </style>
 
 {%- endif -%}
-
-{% schema %}
-{
-  "name": "Wine details",
-  "tag": "section",
-  "class": "section wine-details-section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Wine details"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    }
-  ],
-  "presets": [
-    {
-      "name": "Wine details"
-    }
-  ]
-}
-{% endschema %}

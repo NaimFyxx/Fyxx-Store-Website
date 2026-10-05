@@ -1,7 +1,11 @@
 {%- comment -%}
-  Fyxx: Taste Characteristics
+  Fyxx: Taste Characteristics (product block)
   Reads product.metafields.taste.*
   Renders nothing unless all four scale values (1-5) are present.
+
+  Mounted as a block inside the product grid's content column, so the grid
+  provides the left edge and measure; there is no page-width wrapper or narrow
+  cap here.
 {%- endcomment -%}
 
 {%- liquid
@@ -75,9 +79,7 @@
 -%}
 
 {%- if filled >= 4 -%}
-<div class="fx-taste" style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;">
-  <div class="page-width">
-    <div class="fx-taste__inner">
+<div class="fx-taste" style="padding-top:{{ block.settings.padding_top }}px;padding-bottom:{{ block.settings.padding_bottom }}px;" {{ block.shopify_attributes }}>
 
     <hr class="fx-taste__rule" aria-hidden="true">
 
@@ -144,13 +146,9 @@
       <p class="fx-taste__summary">{{ summary }}</p>
     {%- endif -%}
 
-    </div>
-  </div>
 </div>
 
 <style>
-  .fx-taste__inner { max-width: var(--page-narrow); }
-
   .fx-taste__rule {
     width: 100%;
     height: 2px;
@@ -262,15 +260,6 @@
       margin-top: 52px;
     }
   }
-  /* Mirror the theme: .product-full-width drops its narrow cap below 769px and
-     goes full width. This section is not inside .product-full-width, so match
-     that here, otherwise the block would stay capped and narrower than the
-     rest of the column on phones. */
-  @media screen and (max-width: 768px) {
-    .fx-taste__inner {
-      max-width: none;
-    }
-  }
   @media screen and (max-width: 749px) {
     .fx-taste__row {
       grid-template-columns: 1fr 1fr;
@@ -297,38 +286,3 @@
   }
 </style>
 {%- endif -%}
-
-{% schema %}
-{
-  "name": "Taste Characteristics",
-  "tag": "section",
-  "class": "section fx-taste-section",
-  "settings": [
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    }
-  ],
-  "presets": [
-    {
-      "name": "Taste Characteristics"
-    }
-  ]
-}
-{% endschema %}
