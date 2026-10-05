@@ -1,0 +1,67 @@
+{%- comment -%}
+  Fyxx: Wine meta line (product block)
+  One line under the title: colour, country, region, separated by a middot with
+  spaces around it. Replaces the old bare text block that rendered only the
+  colour.
+
+  Sources:
+    colour  - product.metafields.my_fields.wine_color
+    country - the first tag beginning "Country_" (prefix stripped)
+    region  - the first tag beginning "Region_" (prefix stripped)
+
+  A missing part is skipped with no stray separator; one part alone shows no
+  separator. Renders nothing if all three are absent. No font-family declared.
+{%- endcomment -%}
+
+{%- liquid
+  assign color = product.metafields.my_fields.wine_color.value | default: ''
+  assign country = ''
+  assign region = ''
+
+  for tag in product.tags
+    assign t = tag | strip
+    if country == blank
+      assign c8 = t | slice: 0, 8
+      if c8 == 'Country_'
+        assign country = t | remove_first: 'Country_' | strip
+      endif
+    endif
+    if region == blank
+      assign r7 = t | slice: 0, 7
+      if r7 == 'Region_'
+        assign region = t | remove_first: 'Region_' | strip
+      endif
+    endif
+  endfor
+
+  assign line = ''
+  if color != blank
+    assign line = color
+  endif
+  if country != blank
+    if line != blank
+      assign line = line | append: ' · '
+    endif
+    assign line = line | append: country
+  endif
+  if region != blank
+    if line != blank
+      assign line = line | append: ' · '
+    endif
+    assign line = line | append: region
+  endif
+-%}
+
+{%- if line != blank -%}
+  <div class="fx-wine-meta" {{ block.shopify_attributes }}>
+    {%- render 'element.text', text: line, as: 'p', classlist: 'fx-wine-meta__text' -%}
+  </div>
+
+  {%- stylesheet -%}
+    .fx-wine-meta__text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: rgba(16, 15, 13, 0.72);
+    }
+  {%- endstylesheet -%}
+{%- endif -%}

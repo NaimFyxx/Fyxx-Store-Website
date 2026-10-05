@@ -1,0 +1,25 @@
+{%- comment -%}
+  Fyxx: Brand line (product block)
+  Renders product.metafields.custom.brand directly above the <h1>, as a small
+  uppercase letter-spaced muted eyebrow. No link (the title block's vendor link
+  is a separate thing and stays off). Renders nothing if the metafield is blank.
+  No font-family is declared; it inherits the theme body font.
+{%- endcomment -%}
+
+{%- liquid
+  assign brand = product.metafields.custom.brand.value
+-%}
+
+{%- if brand != blank -%}
+  <div class="fx-brand" {{ block.shopify_attributes }}>
+    {%- render 'element.text', text: brand, as: 'p', text_transform: 'uppercase', classlist: 'fx-brand__text' -%}
+  </div>
+
+  {%- stylesheet -%}
+    .fx-brand__text {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: rgba(16, 15, 13, 0.55);
+    }
+  {%- endstylesheet -%}
+{%- endif -%}

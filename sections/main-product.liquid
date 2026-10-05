@@ -46,6 +46,12 @@
           render 'block.wine-taste', block: block
         when 'wine_details'
           render 'block.wine-details', block: block
+        when 'brand'
+          render 'block.product-brand', block: block
+        when 'wine_meta'
+          render 'block.product-wine-meta', block: block
+        when 'rewards_band'
+          render 'block.product-rewards-band', block: block
       endcase
     endfor
   endcapture
@@ -675,6 +681,21 @@
           "default": 0
         }
       ]
+    },
+    {
+      "type": "brand",
+      "name": "Brand line",
+      "limit": 1
+    },
+    {
+      "type": "wine_meta",
+      "name": "Wine meta line",
+      "limit": 1
+    },
+    {
+      "type": "rewards_band",
+      "name": "Rewards band",
+      "limit": 1
     }
   ]
 }
