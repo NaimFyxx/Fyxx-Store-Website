@@ -47,6 +47,10 @@
             "inventory_transfers_enable": true
           }
         },
+        "brand": {
+          "type": "brand",
+          "settings": {}
+        },
         "title_zrUKMx": {
           "type": "title",
           "settings": {
@@ -54,11 +58,9 @@
             "sku_enable": false
           }
         },
-        "text_UV4ABc": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.metafields.my_fields.wine_color.value }}"
-          }
+        "wine_meta": {
+          "type": "wine_meta",
+          "settings": {}
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -73,8 +75,8 @@
           "type": "price",
           "settings": {}
         },
-        "loyalty_price_m6bpFc": {
-          "type": "loyalty_price",
+        "rewards_band": {
+          "type": "rewards_band",
           "settings": {}
         },
         "quantity_selector_kbhzXd": {
@@ -129,31 +131,6 @@
           "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
         },
-        "judge_me_reviews_review_snippet_widget_DRfBGX": {
-          "type": "shopify://apps/judge-me-reviews/blocks/review_snippet_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-            "reviews_selection": "current_product",
-            "products": [],
-            "filter_pinned": false,
-            "filter_featured": false,
-            "filter_custom_tags": "",
-            "min_star_rating": "inherit",
-            "show_review_media": true,
-            "max_reviews": 5,
-            "review_length": "medium",
-            "text_size": "medium",
-            "max_width": 1100,
-            "max_image_size": "small",
-            "arrows_visibility": "always_shown",
-            "transition_speed": 5,
-            "corner_styling": "inherit",
-            "text_color": "",
-            "card_color": "",
-            "stars_color": "",
-            "arrows_color": "",
-            "arrows_background_color": ""
-          }
-        },
         "wine_lead": {
           "type": "wine_lead",
           "settings": {
@@ -181,11 +158,13 @@
         "ldt_gift_wrap_product_gift_option_UaUMzG",
         "automatic_discounts_upsells_theme_widget_eXhmA9",
         "inventory_status",
+        "brand",
         "title_zrUKMx",
-        "text_UV4ABc",
+        "wine_meta",
+        "judge_me_reviews_preview_badge_tAm7Vf",
         "variant_picker",
         "price",
-        "loyalty_price_m6bpFc",
+        "rewards_band",
         "quantity_selector_kbhzXd",
         "custom_LeGbXD",
         "buy_buttons",
@@ -193,8 +172,6 @@
         "sales_point2",
         "sales_point3",
         "sales_point4",
-        "judge_me_reviews_preview_badge_tAm7Vf",
-        "judge_me_reviews_review_snippet_widget_DRfBGX",
         "wine_lead",
         "wine_taste",
         "wine_details"
