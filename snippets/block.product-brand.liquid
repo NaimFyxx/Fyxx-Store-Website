@@ -5,10 +5,18 @@
   uppercase letter-spaced muted eyebrow. No link (the title block's vendor link
   is a separate thing and stays off). Renders nothing if the metafield is blank.
   No font-family is declared; it inherits the theme body font.
+
+  Guard: custom.brand is "#REF!" on most wines, a broken spreadsheet formula
+  that was imported into the metafield. Treat that exact string as blank and
+  render nothing, so the catalogue-wide rollout never prints "#REF!" above a
+  title. Safety net only; the metafield data is cleaned separately.
 {%- endcomment -%}
 
 {%- liquid
   assign brand = product.metafields.custom.brand.value
+  if brand == '#REF!'
+    assign brand = ''
+  endif
 -%}
 
 {%- if brand != blank -%}
@@ -16,11 +24,11 @@
     {%- render 'element.text', text: brand, as: 'p', text_transform: 'uppercase', classlist: 'fx-brand__text' -%}
   </div>
 
-  {%- stylesheet -%}
+  <style>
     .fx-brand__text {
       font-size: 11px;
       letter-spacing: 0.14em;
       color: rgba(16, 15, 13, 0.55);
     }
-  {%- endstylesheet -%}
+  </style>
 {%- endif -%}

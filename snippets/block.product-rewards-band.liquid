@@ -2,27 +2,33 @@
   Fyxx: Rewards band (product block)
   Part of the wine-template buy column.
   Replaces the old loyalty "member price" line, which stated a false checkout
-  discount. This shows the points the bottle earns, the only figure that comes
-  straight from the LoyaltyLion earn rule.
+  discount. This shows the money value the bottle earns back in points, the only
+  figure that comes straight from the LoyaltyLion earn rule.
 
-  Earn rule: points = (variant price in JD) x (tier rate).
-  Tier rates: Blue 3, Silver 4, Gold 5, Platinum 5.
-  Price is read the same way as the old snippet: variant.price is in fils, so
-  divide by 100.
+  Earn rule: points = floor((variant price in JD, VAT stripped) x tier rate).
+  Prices are tax-inclusive and LoyaltyLion awards points on the subtotal only,
+  not the tax, so the base is price / vat_divisor (a block setting defaulting to
+  1.16 for Jordan's 16% VAT, so a rate change is an admin edit, not a code one).
+  Floor, not round, because the band is a promise and must never state more than
+  the customer actually receives. Tier rates: Blue 3, Silver 4, Gold 5,
+  Platinum 5. variant.price is in fils, so divide by 100 first.
+  The band shows the value in JD, not the raw points: 100 points = 1 JD across
+  the fixed-amount rewards, so jd = points / 100, to two decimals.
 
-  Signed out: #f7f7fa band, calculated points at the Blue rate, a line about
-  what points buy, and Sign in / Create an account pills (each carrying
-  ?return_url back to the product).
-  Signed in: same logo and points line at the member's tier rate, the tier name,
-  and the tier gradient background. No sign in buttons. A signed-in member with
-  no tier value is treated as Blue and kept on the #f7f7fa band, not a gradient.
+  Signed out: #f7f7fa band, the value at the Blue rate shown with "from" (Blue
+  is the lowest of four rates), a line about what points buy, and Sign in /
+  Create an account pills (each carrying ?return_url back to the product).
+  Signed in: same logo and the value at the member's own tier rate (no "from"),
+  the tier name, and the tier gradient background. No sign in buttons. A
+  signed-in member with no tier value is treated as Blue and kept on the
+  #f7f7fa band, not a gradient.
 
   Exclusion: LoyaltyLion zeroes the rate for anything in the collection
   "ll-fyxx-rewards-exclude". On those products this renders nothing at all.
 
-  No JavaScript: the points figure reflects the first/selected variant at page
-  load and does not recalculate when the variant changes (same limit as the old
-  snippet). No font-family is declared.
+  No JavaScript: the value reflects the first/selected variant at page load and
+  does not recalculate when the variant changes (same limit as the old snippet).
+  No font-family is declared.
 
   LOGO: the Fyxx Rewards mark is inlined below from the brand's SVG (Shopify
   Files), stripped of its Illustrator style block, clip paths and class
@@ -49,6 +55,8 @@
 {%- unless excluded -%}
   {%- liquid
     assign price_jd = product.selected_or_first_available_variant.price | divided_by: 100.0
+    assign vat_divisor = block.settings.vat_divisor | default: 1.16
+    assign base_jd = price_jd | divided_by: vat_divisor
 
     assign tier = ''
     if customer
@@ -65,7 +73,11 @@
         assign rate = 5
     endcase
 
-    assign points = price_jd | times: rate | round: 0
+    assign points = base_jd | times: rate | floor
+    assign jd_whole = points | divided_by: 100.0 | floor
+    assign jd_hundreds = jd_whole | times: 100
+    assign jd_cents = points | minus: jd_hundreds
+    assign jd_cents_padded = jd_cents | prepend: '0' | slice: -2, 2
 
     assign variant = 'plain'
     if customer and tier != blank
@@ -90,7 +102,7 @@
       {%- endif -%}
     </div>
 
-    <p class="fx-rewards__points">Earn {{ points }} points on this bottle</p>
+    <p class="fx-rewards__points">Earn {% unless customer %}from {% endunless %}{{ jd_whole }}.{{ jd_cents_padded }} JD back on this bottle</p>
     <p class="fx-rewards__sub">Points go toward discounts and free delivery.</p>
 
     {%- unless customer -%}
@@ -101,7 +113,7 @@
     {%- endunless -%}
   </div>
 
-  {%- stylesheet -%}
+  <style>
     .fx-rewards {
       border-radius: 10px;
       padding: 14px 16px;
@@ -165,5 +177,5 @@
     .fx-rewards__pill:hover {
       background: rgba(16, 15, 13, 0.06);
     }
-  {%- endstylesheet -%}
+  </style>
 {%- endunless -%}
