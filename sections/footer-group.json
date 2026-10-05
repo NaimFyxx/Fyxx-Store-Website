@@ -135,7 +135,7 @@
         "payment"
       ],
       "settings": {
-        "color_scheme": "",
+        "color_scheme": "9",
         "show_newsletter": false,
         "newsletter_richtext": "<p>Subscribe today and get 10% off your first purchase</p>",
         "footer_main_menu": true,
