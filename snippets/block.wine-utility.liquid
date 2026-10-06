@@ -1,6 +1,6 @@
 {%- comment -%}
   Fyxx: Wine utility lines (product block content)
-  The four reassurance lines for the wine buy experience. The wine template
+  The five reassurance lines for the wine buy experience. The wine template
   renders this snippet twice: once under the product image on desktop (inside
   the image column's sticky container, see snippets/section.main-product.liquid)
   and once after the buy column on mobile (the 'wine_utility' block, dispatched
@@ -8,16 +8,20 @@
   small--hide / medium-up--hide helpers, which hide with display:none, so only
   one copy is ever visible and a screen reader hears the lines once.
 
-  The pickup component is deliberately NOT here. It is a live availability
-  statement whose drawer uses fixed element ids, so a second instance would
-  collide; it stays where it is in the buy column. Only these four static lines
-  move. No icons. No font-family is declared; the text inherits the body font.
-  Only ink and alpha steps of ink are used.
+  The delivery and collect lines sit together at the top, the two fulfilment
+  options. Both are static service copy, not stock: "Collect in Swefieh in an
+  hour" describes the service and must never claim a specific bottle is ready,
+  so there is no store link and nothing that implies live availability. The live
+  pickup/availability component is NOT recreated here; its drawer uses fixed
+  element ids, so a second instance would collide. No icons. No font-family is
+  declared; the text inherits the body font. Only ink and alpha steps of ink
+  are used.
 {%- endcomment -%}
 
 <div class="fx-utility" {{ block.shopify_attributes }}>
   <ul class="fx-utility__list">
     <li>Delivery in under an hour</li>
+    <li>Collect in Swefieh in an hour</li>
     <li>Free 7 day returns</li>
     <li>Earns Fyxx Points</li>
     <li>Secure online payment</li>
