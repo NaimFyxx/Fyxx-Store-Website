@@ -52,6 +52,14 @@
           render 'block.product-wine-meta', block: block
         when 'rewards_band'
           render 'block.product-rewards-band', block: block
+        when 'wine_utility'
+          # Mobile mount of the wine utility lines. On desktop this copy renders
+          # under the product image (see snippets/section.main-product.liquid);
+          # here it sits after the buy column and is hidden at 769px and up, so
+          # only one of the two mounts is ever visible.
+          echo '<div class="medium-up--hide">'
+          render 'block.wine-utility', block: block
+          echo '</div>'
       endcase
     endfor
   endcapture
@@ -721,6 +729,11 @@
           "default": "1.16"
         }
       ]
+    },
+    {
+      "type": "wine_utility",
+      "name": "Wine utility lines",
+      "limit": 1
     }
   ]
 }
