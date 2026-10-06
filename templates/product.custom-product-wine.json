@@ -62,6 +62,10 @@
           "type": "wine_meta",
           "settings": {}
         },
+        "judge_me_reviews_preview_badge_tAm7Vf": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -73,10 +77,6 @@
         },
         "price": {
           "type": "price",
-          "settings": {}
-        },
-        "rewards_band": {
-          "type": "rewards_band",
           "settings": {}
         },
         "quantity_selector_kbhzXd": {
@@ -95,16 +95,18 @@
           "type": "buy_buttons",
           "settings": {
             "show_dynamic_checkout": true,
-            "surface_pickup_enable": true,
+            "surface_pickup_enable": false,
             "show_gift_card_recipient": true
+          }
+        },
+        "rewards_band": {
+          "type": "rewards_band",
+          "settings": {
+            "vat_divisor": "1.16"
           }
         },
         "wine_utility": {
           "type": "wine_utility",
-          "settings": {}
-        },
-        "judge_me_reviews_preview_badge_tAm7Vf": {
-          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
         },
         "wine_lead": {
