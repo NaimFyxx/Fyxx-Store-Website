@@ -1,0 +1,197 @@
+/*
+  Fyxx: Appy Hour banner styles.
+  Every rule is scoped to .appy* so nothing leaks into the theme. Brand palette
+  only (ink, white, blush, alpha steps of ink; white alpha on the ink bar). No
+  rounded corners, no shadows, no gradients; 1px hairline rules only. Fonts are
+  loaded by appy-hour.js only while a state is active; the stacks below fall
+  back cleanly (Baskervville -> Georgia serif, Inter / Inter Tight -> system-ui).
+*/
+
+.appy {
+  --appy-ink: #100F0D;
+  --appy-white: #FFFFFF;
+  --appy-blush: #F8D3D7;
+  --appy-grey: rgba(16, 15, 13, 0.64);
+  --appy-hair: rgba(16, 15, 13, 0.16);
+  --appy-hair-on: rgba(255, 255, 255, 0.35);
+  --appy-sec-on: rgba(255, 255, 255, 0.80);
+  --appy-serif: 'Baskervville', Georgia, serif;
+  --appy-sans: 'Inter', system-ui, sans-serif;
+  --appy-num: 'Inter Tight', system-ui, sans-serif;
+  box-sizing: border-box;
+}
+.appy *,
+.appy *::before,
+.appy *::after { box-sizing: border-box; }
+
+.appy-visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* ------------------------------------------------------------------ Top bar */
+.appy-bar:not([hidden]) { display: block; width: 100%; }
+.appy-bar.is-teaser { background: var(--appy-blush); color: var(--appy-ink); }
+.appy-bar.is-on,
+.appy-bar.is-lastcall { background: var(--appy-ink); color: var(--appy-white); }
+
+.appy-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 6px 20px;
+}
+.appy-bar__inner > * { padding: 0 14px; }
+.appy-bar__inner > * + * { border-left: 1px solid var(--appy-hair); }
+.appy-bar.is-on .appy-bar__inner > * + *,
+.appy-bar.is-lastcall .appy-bar__inner > * + * { border-left-color: var(--appy-hair-on); }
+
+.appy-bar__headline { font-family: var(--appy-serif); font-size: 20px; line-height: 1.1; }
+.appy-bar__countdown { font-family: var(--appy-num); font-size: 15px; white-space: nowrap; }
+.appy-bar__num { font-variant-numeric: tabular-nums; }
+.appy-bar.is-lastcall .appy-bar__num { color: var(--appy-blush); }
+.appy-bar__msg { font-family: var(--appy-sans); font-size: 13px; }
+.appy-bar.is-on .appy-bar__msg,
+.appy-bar.is-lastcall .appy-bar__msg { color: var(--appy-sec-on); }
+
+.appy-bar__codewrap { display: inline-flex; align-items: center; gap: 10px; }
+.appy-bar__code-pre { font-family: var(--appy-sans); font-size: 13px; }
+.appy-bar__code {
+  height: 32px; padding: 0 14px;
+  background: transparent; color: inherit;
+  border: 1px solid currentColor;
+  font-family: var(--appy-num); font-size: 13px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+}
+.appy-bar__link {
+  font-family: var(--appy-sans); font-size: 14px;
+  color: inherit; text-decoration: underline; text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+@media (max-width: 749px) {
+  .appy-bar__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "head code" "count code";
+    align-items: center;
+    column-gap: 12px; row-gap: 1px;
+    padding: 6px 16px;
+  }
+  .appy-bar__inner > * { padding: 0; border-left: 0 !important; }
+  .appy-bar__headline { grid-area: head; font-size: 17px; }
+  .appy-bar__countdown { grid-area: count; font-size: 13px; }
+  .appy-bar__codewrap { grid-area: code; }
+  .appy-bar__code-pre { display: none; }
+  .appy-bar__code { height: 44px; }
+  .appy-bar__msg,
+  .appy-bar__link { display: none !important; }
+}
+
+/* -------------------------------------------------------------- Corner card */
+.appy-card:not([hidden]) {
+  display: block;
+  position: fixed;
+  right: 32px; bottom: 32px;
+  width: 360px;
+  z-index: 9000;
+}
+.appy-card__panel {
+  position: relative;
+  background: var(--appy-white);
+  border: 1px solid var(--appy-ink);
+  padding: 28px;
+  display: flex; flex-direction: column; gap: 18px;
+  animation: appy-fade 0.28s ease both;
+}
+@keyframes appy-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .appy-card__panel { animation: none; }
+}
+
+.appy-card__min {
+  position: absolute; top: 0; right: 0;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: 0;
+  color: var(--appy-ink); font-size: 22px; line-height: 1;
+  cursor: pointer;
+}
+.appy-card__eyebrow {
+  margin: 0; padding-right: 44px;
+  font-family: var(--appy-sans); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--appy-grey);
+}
+.appy-card__title {
+  margin: 0; font-family: var(--appy-serif); font-weight: 400;
+  font-size: 40px; line-height: 1.04; color: var(--appy-ink);
+}
+.appy-card__count {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--appy-hair);
+  border-bottom: 1px solid var(--appy-hair);
+}
+.appy-card__num {
+  font-family: var(--appy-num); font-size: 44px; line-height: 1;
+  font-variant-numeric: tabular-nums; color: var(--appy-ink);
+}
+.appy-card__countlabel { font-family: var(--appy-sans); font-size: 13px; color: var(--appy-grey); }
+
+.appy-card__code { display: flex; align-items: center; gap: 12px; }
+.appy-card__code-pre { font-family: var(--appy-sans); font-size: 14px; color: var(--appy-ink); }
+.appy-card__codebtn {
+  height: 44px; padding: 0 16px;
+  background: transparent; color: var(--appy-ink);
+  border: 1px dashed var(--appy-ink);
+  font-family: var(--appy-num); font-size: 14px;
+  letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer;
+}
+.appy-card__cta { font-family: var(--appy-sans); }
+.appy-card__cta--link {
+  color: var(--appy-ink); text-decoration: underline; text-underline-offset: 3px;
+  font-size: 14px;
+}
+.appy-card__cta--btn {
+  height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--appy-ink); color: var(--appy-white);
+  text-decoration: none; font-size: 15px; font-weight: 500;
+}
+
+/* State-driven card content visibility */
+.appy-card .appy-card__cta--link,
+.appy-card .appy-card__cta--btn { display: none; }
+.appy-card.is-teaser .appy-card__cta--link { display: inline-block; }
+.appy-card.is-on .appy-card__cta--btn,
+.appy-card.is-lastcall .appy-card__cta--btn { display: flex; }
+.appy-card.is-teaser .appy-card__code { display: none !important; }
+
+@media (max-width: 749px) {
+  .appy-card:not([hidden]) { left: 16px; right: 16px; bottom: 16px; width: auto; }
+  .appy-card__eyebrow { display: none; }
+  .appy-card__code { display: none !important; }
+  .appy-card__title { font-size: 24px; }
+  .appy-card__num { font-size: 30px; }
+}
+
+/* ------------------------------------------------------------ Minimised tab */
+.appy-tab:not([hidden]) {
+  display: inline-flex;
+  position: fixed; right: 32px; bottom: 32px;
+  z-index: 9000;
+  height: 48px; align-items: center; gap: 12px; padding: 0 16px;
+  background: var(--appy-ink); color: var(--appy-white);
+  border: 0; cursor: pointer;
+}
+.appy-tab__name { font-family: var(--appy-serif); font-size: 18px; }
+.appy-tab__rule { width: 1px; height: 20px; background: var(--appy-hair-on); }
+.appy-tab__num { font-family: var(--appy-num); font-size: 15px; font-variant-numeric: tabular-nums; }
+@media (max-width: 749px) {
+  .appy-tab:not([hidden]) { right: 16px; bottom: 16px; }
+}

@@ -1,0 +1,85 @@
+{%- comment -%}
+  Fyxx: Appy Hour banner (top bar + corner card)
+  Self-contained, metafield-driven promo banner for the weekly Appy Hour window.
+
+  Rendered once from layout/theme.liquid, immediately after <body>, so the top
+  bar sits in normal flow above the header group, and the corner card (fixed) is
+  stacked beneath the cart drawer.
+
+  Timing is NOT hard-coded. The window comes from the shop metafield
+  fyxx.appy_hour_window (JSON {starts_at, ends_at} in UTC), written by a Shopify
+  Flow on each Appy Hour day. It is emitted below as a JSON script tag and read
+  by assets/appy-hour.js, which recomputes the state (teaser / on / last call /
+  nothing) every second. Empty, missing or stale metafield renders nothing.
+
+  Preview without waiting for 6pm: ?appyhour=teaser | on | lastcall forces that
+  state from a fake window and ignores the metafield. No parameter, no preview.
+
+  The top bar always renders (it shows on every theme page). The corner card is
+  gated to the shopping templates and excluded from the Appy Hour collection
+  itself. Both start hidden; the JS reveals them only in an active state, so
+  there is no load flash and no header layout shift. Fonts (Baskervville, Inter,
+  Inter Tight) are loaded by the JS only when a state is active; nothing is
+  requested when the banner is idle. Colours and type per the brand brief; all
+  rules scoped to .appy* so nothing leaks into the theme.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_card = false
+  if request.page_type == 'index' or request.page_type == 'collection' or request.page_type == 'product' or request.page_type == 'search' or request.page_type == 'cart'
+    assign show_card = true
+    if request.page_type == 'collection' and collection.handle == 'happy-hour'
+      assign show_card = false
+    endif
+  endif
+-%}
+
+<script type="application/json" id="appy-hour-window">{{ shop.metafields.fyxx.appy_hour_window.value | json }}</script>
+
+{%- comment -%} Top bar: every page, normal flow, above the header group. {%- endcomment -%}
+<section class="appy appy-bar" data-appy-bar role="region" aria-label="Appy Hour" hidden>
+  <div class="appy-bar__inner">
+    <span class="appy-bar__headline" data-appy="bar-headline"></span>
+    <span class="appy-bar__grp appy-bar__countdown">
+      <span class="appy-bar__num" data-appy="bar-count">00:00</span><span data-appy="bar-count-suffix"></span>
+    </span>
+    <span class="appy-bar__grp appy-bar__msg" data-appy="bar-msg" hidden></span>
+    <span class="appy-bar__grp appy-bar__codewrap" data-appy="bar-code" hidden>
+      <span class="appy-bar__code-pre">Code</span>
+      <button type="button" class="appy-bar__code" data-appy-copy aria-label="Copy code APPYHOUR"><span data-appy-copytext>APPYHOUR</span></button>
+    </span>
+    <a class="appy-bar__grp appy-bar__link" data-appy="bar-link" href="/collections/happy-hour"></a>
+  </div>
+</section>
+
+{%- if show_card -%}
+  {%- comment -%} Corner card + minimised tab: shopping templates only. {%- endcomment -%}
+  <section class="appy appy-card" data-appy-card role="region" aria-label="Appy Hour" hidden>
+    <div class="appy-card__panel">
+      <button type="button" class="appy-card__min" data-appy-min aria-label="Minimise Appy Hour"><span aria-hidden="true">&#8722;</span></button>
+      <p class="appy-card__eyebrow">Tonight, 6 to 7 pm</p>
+      <h2 class="appy-card__title" data-appy="card-title"></h2>
+      <div class="appy-card__count">
+        <span class="appy-card__num" data-appy="card-count">00:00</span>
+        <span class="appy-card__countlabel" data-appy="card-label"></span>
+      </div>
+      <div class="appy-card__code" data-appy="card-code" hidden>
+        <span class="appy-card__code-pre">Use code</span>
+        <button type="button" class="appy-card__codebtn" data-appy-copy aria-label="Copy code APPYHOUR"><span data-appy-copytext>APPYHOUR</span></button>
+      </div>
+      <a class="appy-card__cta appy-card__cta--link" data-appy="card-link" href="/collections/happy-hour"></a>
+      <a class="appy-card__cta appy-card__cta--btn" data-appy="card-btn" href="/collections/happy-hour">Shop Appy Hour</a>
+    </div>
+  </section>
+
+  <button type="button" class="appy appy-tab" data-appy-tab aria-label="Open Appy Hour" hidden>
+    <span class="appy-tab__name">Appy Hour</span>
+    <span class="appy-tab__rule" aria-hidden="true"></span>
+    <span class="appy-tab__num" data-appy="tab-count">00:00</span>
+  </button>
+{%- endif -%}
+
+<span class="appy-visually-hidden" data-appy-live aria-live="polite"></span>
+
+{{ 'appy-hour.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'appy-hour.js' | asset_url }}" defer></script>
