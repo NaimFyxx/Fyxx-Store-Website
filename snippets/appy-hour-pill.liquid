@@ -8,34 +8,64 @@
   the text per state) when a state is active, including the ?appyhour= preview,
   and hides it again at 7:00.
 
-  Two variants:
-    'card'  (default) - a small corner pill for product cards.
-    'price' - the pill plus an under-price note and a copy-code button, for the
-              product page near the price.
+  Three variants:
+    'card'  (default) - a small corner pill for product cards (image corner).
+    'cardprice' - the struck regular price + Appy Hour price, for product cards
+              (sits in the card's price line; appy-hour.js hides the normal one).
+    'price' - the pill, the struck + Appy Hour price, an under-price note and a
+              copy-code button, for the product page near the price.
 
-  @param {object} product  - the product to test for happy-hour membership.
-  @param {string} [variant] - 'card' | 'price'.
+  The Appy Hour price itself is NOT computed here. appy-hour.js reads the
+  regular price in cents (data-appy-reg-cents) and the window percentage, works
+  in the currency's smallest unit, and formats with the theme's money format.
+  Only shown in the on / last-call states (and those ?appyhour= previews).
+  Products with a real compare-at price are left untouched (never a sale item).
+
+  @param {object} product  - the product to test for collection membership.
+  @param {string} [variant] - 'card' | 'cardprice' | 'price'.
+  @param {boolean} [in_appy] - precomputed membership, to avoid re-looping
+              product.collections when the caller renders several variants.
 {%- endcomment -%}
 {%- liquid
-  assign in_appy = false
-  for c in product.collections
-    if c.handle == 'internal-appy-hour-discount-permnited-products'
-      assign in_appy = true
-      break
-    endif
-  endfor
+  unless in_appy == true or in_appy == false
+    assign in_appy = false
+    for c in product.collections
+      if c.handle == 'internal-appy-hour-discount-permnited-products'
+        assign in_appy = true
+        break
+      endif
+    endfor
+  endunless
+  assign appy_var = product.selected_or_first_available_variant
+  assign appy_on_sale = false
+  if appy_var.compare_at_price and appy_var.compare_at_price > appy_var.price
+    assign appy_on_sale = true
+  endif
 -%}
 {%- if in_appy -%}
   {%- assign variant = variant | default: 'card' -%}
   {%- if variant == 'price' -%}
     {%- capture appy_copy_icon -%}<svg class="appy-ic" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.75" y="5.75" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.25 10.25H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6.25a1 1 0 0 1 1 1v.25" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
-    <div class="appy appy-pprice" data-appy-pill-group hidden>
+    <div class="appy appy-pprice" data-appy-pill-group{% unless appy_on_sale %} data-appy-reg-cents="{{ appy_var.price }}"{% endunless %} hidden>
       <span class="appy-pill appy-pill--inline" data-appy-pill></span>
+      {%- unless appy_on_sale -%}
+        <div class="appy-pprice__prices" data-appy-prices hidden>
+          <span class="appy-was" data-appy="price-reg"></span>
+          <span class="appy-now" data-appy="price-appy"></span>
+        </div>
+      {%- endunless -%}
       <div class="appy-pprice__note-row">
         <span class="appy-pprice__note" data-appy="pill-note"></span>
         <button type="button" class="appy-pprice__copy" data-appy-copy aria-label="Copy code APPYHOUR"><span data-appy-copytext>APPYHOUR</span>{{ appy_copy_icon }}</button>
       </div>
     </div>
+  {%- elsif variant == 'cardprice' -%}
+    {%- unless appy_on_sale or product.price_varies -%}
+      <span class="appy appy-cardprice" data-appy-reg-cents="{{ product.price }}" hidden>
+        <span class="appy-was" data-appy="price-reg"></span>
+        <span class="appy-now" data-appy="price-appy"></span>
+      </span>
+    {%- endunless -%}
   {%- else -%}
     <span class="appy appy-pill appy-pill--card" data-appy-pill hidden></span>
   {%- endif -%}

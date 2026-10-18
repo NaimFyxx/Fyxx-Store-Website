@@ -28,6 +28,8 @@
 .appy-cart-strip__panel[hidden],
 .appy-pill[hidden],
 .appy-pprice[hidden],
+.appy-cardprice[hidden],
+.appy-pprice__prices[hidden],
 .appy-bar__whatsthis[hidden] { display: none !important; }
 
 .appy-visually-hidden {
@@ -235,3 +237,19 @@
   background: transparent; border: 0; cursor: pointer; padding: 2px 0;
   color: var(--ah-navy); font-family: var(--ah-sans); font-weight: 700; font-size: 13px;
 }
+
+/* ------------------------------ Appy Hour price (product cards + product page) */
+/* The normal price is wrapped so the JS can hide it during the window without
+   disturbing the theme's flex layout (gap-based, so display:contents is safe). */
+.appy-normalprice { display: contents; }
+.appy-normalprice[hidden] { display: none !important; }
+.appy-pprice__prices:not([hidden]) {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 19px; line-height: 1.15; margin-top: 2px;
+}
+.appy-cardprice:not([hidden]) {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  font-size: 14px; line-height: 1.15;
+}
+.appy-was { font-family: var(--ah-sans); color: var(--ah-navy); opacity: 0.6; text-decoration: line-through; }
+.appy-now { font-family: var(--ah-sans); font-weight: 700; color: var(--ah-navy); }

@@ -21,6 +21,8 @@
 {%- capture appy_copy_icon -%}<svg class="appy-ic" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.75" y="5.75" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.25 10.25H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6.25a1 1 0 0 1 1 1v.25" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
 
 <script type="application/json" id="appy-hour-window">{{ shop.metafields.fyxx.appy_hour_window.value | json }}</script>
+{%- comment -%} Money oracle: two reference prices run through the theme's own `money` filter, so appy-hour.js can format the Appy Hour price exactly like the rest of the page (decimals, separators, JD suffix) without re-implementing it. {%- endcomment -%}
+<script type="application/json" id="appy-money">{"zero": {{ 0 | money | json }}, "k": {{ 100000 | money | json }}}</script>
 
 {%- comment -%} Sticky top bar: every page, above the header group. {%- endcomment -%}
 <section class="appy appy-bar" data-appy-bar role="region" aria-label="Appy Hour" hidden>

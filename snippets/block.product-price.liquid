@@ -135,16 +135,32 @@
     </div>
   {%- endcapture -%}
 
-  {%- render 'layout.stack',
-    slot: price,
-    horizontal: true,
-    align: 'baseline',
-    attributes: price_attributes,
-    gap: 'xs'
+  {%- comment -%} Fyxx: detect Appy Hour membership once and whether this is a (guarded) sale item, so the normal price can be hidden during the window and the Appy Hour price shown in its place. {%- endcomment -%}
+  {%- liquid
+    assign appy_in = false
+    for appy_c in product.collections
+      if appy_c.handle == 'internal-appy-hour-discount-permnited-products'
+        assign appy_in = true
+        break
+      endif
+    endfor
+    assign appy_sv = product.selected_or_first_available_variant
+    assign appy_sale = false
+    if appy_sv.compare_at_price and appy_sv.compare_at_price > appy_sv.price
+      assign appy_sale = true
+    endif
   -%}
+  {%- capture appy_price_stack -%}
+    {%- render 'layout.stack', slot: price, horizontal: true, align: 'baseline', attributes: price_attributes, gap: 'xs' -%}
+  {%- endcapture -%}
+  {%- if appy_in and appy_sale == false -%}
+    <span class="appy-normalprice" data-appy-normalprice>{{ appy_price_stack }}</span>
+  {%- else -%}
+    {{ appy_price_stack }}
+  {%- endif -%}
 
-  {%- comment -%} Fyxx: Appy Hour pill + under-price note, only for happy-hour products during the window. {%- endcomment -%}
-  {%- render 'appy-hour-pill', product: product, variant: 'price' -%}
+  {%- comment -%} Fyxx: Appy Hour pill + struck/Appy Hour price + note, only for products in the window. {%- endcomment -%}
+  {%- render 'appy-hour-pill', product: product, variant: 'price', in_appy: appy_in -%}
 </block-price>
 
 <script type="module">
