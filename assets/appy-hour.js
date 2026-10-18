@@ -397,9 +397,9 @@
   // drawer's own refresh is async, so re-assert a couple of times to land after it.
   function reassertCart() {
     if (!current) return;
-    paintSurfaces(current); updateCountdown(current, Date.now());
-    setTimeout(function () { if (current) { paintSurfaces(current); updateCountdown(current, Date.now()); } }, 400);
-    setTimeout(function () { if (current) { paintSurfaces(current); updateCountdown(current, Date.now()); } }, 900);
+    paintSurfaces(current); paintPrices(current); updateCountdown(current, Date.now());
+    setTimeout(function () { if (current) { paintSurfaces(current); paintPrices(current); updateCountdown(current, Date.now()); } }, 400);
+    setTimeout(function () { if (current) { paintSurfaces(current); paintPrices(current); updateCountdown(current, Date.now()); } }, 900);
   }
   document.addEventListener('fyxx-cart:mutated', reassertCart);
   document.addEventListener('fyxx-cart:open', reassertCart);
