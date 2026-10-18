@@ -178,6 +178,23 @@
     }
   }
 
+  // Re-assert the cart surfaces every tick. The drawer re-renders its strip
+  // from the Section Rendering API (on open and on mutate), and the cart page
+  // re-renders its block on qty change, each time resetting our node to hidden.
+  // This idempotent re-apply restores state/headline/visibility within a tick,
+  // winning the race against those async re-renders.
+  function ensureCartSurfaces(st) {
+    var c = COPY[st];
+    ['[data-appy-strip]', '[data-appy-block]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      if (!el.classList.contains('is-' + st)) setState(el, st);
+      var head = el.querySelector('[data-appy="strip-headline"], [data-appy="block-headline"]');
+      if (head) head.textContent = c.stripHeadline;
+      if (el.hidden) el.hidden = false;
+    });
+  }
+
   // ---- Countdown -----------------------------------------------------------
   function target(st) { return st === 'teaser' ? win.s : win.e; }
   function updateCountdown(st, now) {
@@ -200,7 +217,7 @@
       if (st && live) live.textContent = COPY[st].announce;
       current = st;
     }
-    if (st) { updateCountdown(st, now); positionCorner(); }
+    if (st) { updateCountdown(st, now); positionCorner(); ensureCartSurfaces(st); }
     if (now >= win.e) {
       [bar, card, tab, document.querySelector('[data-appy-strip]'), document.querySelector('[data-appy-block]')]
         .forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
@@ -257,10 +274,16 @@
     }
   });
 
-  // Re-apply after the cart drawer re-renders (strip node is replaced).
-  document.addEventListener('fyxx-cart:mutated', function () {
-    if (current) { applyState(current); updateCountdown(current, Date.now()); }
-  });
+  // Re-apply after the cart drawer re-renders (strip node is replaced). The
+  // drawer's own refresh is async, so re-assert a couple of times to land after it.
+  function reassertCart() {
+    if (!current) return;
+    ensureCartSurfaces(current); updateCountdown(current, Date.now());
+    setTimeout(function () { if (current) { ensureCartSurfaces(current); updateCountdown(current, Date.now()); } }, 400);
+    setTimeout(function () { if (current) { ensureCartSurfaces(current); updateCountdown(current, Date.now()); } }, 900);
+  }
+  document.addEventListener('fyxx-cart:mutated', reassertCart);
+  document.addEventListener('fyxx-cart:open', reassertCart);
 
   // Keep floater offset correct on resize.
   window.addEventListener('resize', positionCorner);
