@@ -25,8 +25,10 @@
 .appy-card[hidden],
 .appy-tab[hidden],
 .appy-cart-strip[hidden],
-.appy-cart-block[hidden],
-.appy-cart-strip__panel[hidden] { display: none !important; }
+.appy-cart-strip__panel[hidden],
+.appy-pill[hidden],
+.appy-pprice[hidden],
+.appy-bar__whatsthis[hidden] { display: none !important; }
 
 .appy-visually-hidden {
   position: absolute !important;
@@ -81,6 +83,12 @@
   text-transform: uppercase; color: var(--ah-white);
   text-decoration: underline; text-underline-offset: 3px; white-space: nowrap;
 }
+.appy-bar__whatsthis:not([hidden]) {
+  display: inline-block;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--ah-white); font-family: var(--ah-sans); font-weight: 500; font-size: 13px;
+  text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; opacity: 0.9;
+}
 
 @media (max-width: 749px) {
   .appy-bar__inner {
@@ -95,6 +103,7 @@
   .appy-chip--code { height: 40px; }
   .appy-bar__spacer { display: block; flex: 1 1 auto; }
   .appy-bar__link { display: none; }
+  .appy-bar__whatsthis { display: none !important; }
 }
 
 /* --------------------------------------------------------------- Pop-up card */
@@ -105,6 +114,7 @@
 .appy-card__panel {
   position: relative; background: var(--ah-white);
   border-radius: 24px 24px 0 0; overflow: hidden;
+  border-left: 3px solid var(--ah-navy);
   box-shadow: 8px 8px 0 var(--ah-orange);
   animation: appy-fade 0.28s ease both;
 }
@@ -120,14 +130,18 @@
   font-size: 22px; line-height: 1; cursor: pointer;
 }
 .appy-card__body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-.appy-card__countrow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.appy-card__countrow { display: flex; align-items: baseline; justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
 .appy-card__num {
   font-family: var(--ah-num); font-weight: 500; font-size: 44px; line-height: 1;
   font-variant-numeric: tabular-nums; color: var(--ah-navy);
 }
 .appy-card__countlabel {
   font-family: var(--ah-sans); font-weight: 700; font-size: 12px;
-  text-transform: uppercase; letter-spacing: 0.04em; text-align: right; color: var(--ah-navy);
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: left; color: var(--ah-navy);
+}
+.appy-card__explainer {
+  margin: -4px 0 0; font-family: var(--ah-sans); font-weight: 400; font-size: 13px;
+  line-height: 1.4; color: var(--ah-navy);
 }
 .appy-card__code {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -163,8 +177,11 @@
 .appy-tab__chev { display: inline-flex; color: var(--ah-white); }
 @media (max-width: 749px) { .appy-tab:not([hidden]) { right: 22px; bottom: 22px; } }
 
-/* ---------------------------------------------------- Cart drawer strip */
-.appy-cart-strip:not([hidden]) { display: block; margin: 12px 20px 0; }
+/* ------------------------------------------- Cart strip (drawer + cart page) */
+.appy-cart-strip:not([hidden]) { display: block; }
+.appy-cart-strip--drawer:not([hidden]) { margin: 12px 20px 0; }
+.appy-cart-strip--page:not([hidden]) { margin: 0 0 16px; width: 100%; max-width: 420px; }
+.appy-cart-strip--page.appy-cart-strip--empty:not([hidden]) { margin-left: auto; margin-right: auto; }
 .appy-cart-strip__fold {
   display: flex; align-items: center; gap: 10px; width: 100%;
   min-height: 48px; padding: 8px 14px; cursor: pointer; text-align: left;
@@ -174,12 +191,13 @@
 .appy-cart-strip__headline { font-family: var(--ah-sans); font-weight: 700; font-size: 13px; text-transform: uppercase; white-space: nowrap; }
 .appy-cart-strip__chip { font-size: 13px; }
 .appy-cart-strip__spacer { flex: 1 1 auto; }
-.appy-cart-strip__use { font-family: var(--ah-sans); font-weight: 700; font-size: 12px; text-transform: uppercase; }
+.appy-cart-strip__use { font-family: var(--ah-sans); font-weight: 700; font-size: 12px; text-transform: uppercase; white-space: nowrap; }
 .appy-cart-strip__chev { display: inline-flex; transition: transform 0.2s ease; }
 .appy-cart-strip__fold[aria-expanded="true"] .appy-cart-strip__chev { transform: rotate(180deg); }
 @media (prefers-reduced-motion: reduce) { .appy-cart-strip__chev { transition: none; } }
 
 .appy-cart-strip__panel { padding: 10px 0 2px; display: flex; flex-direction: column; gap: 8px; }
+.appy-cart-strip__explainer { margin: 0; font-family: var(--ah-sans); font-weight: 400; font-size: 12px; line-height: 1.4; color: var(--ah-white); }
 .appy-cart-strip__apply,
 .appy-cart-strip__browse {
   display: none; align-items: center; justify-content: center; height: 44px;
@@ -188,7 +206,6 @@
   font-family: var(--ah-sans); font-weight: 700; font-size: 14px;
   text-transform: uppercase; letter-spacing: 0.04em;
 }
-.appy-cart-strip__subline { display: none; margin: 0; font-family: var(--ah-sans); font-size: 12px; color: var(--ah-white); }
 .appy-cart-strip__copy {
   display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
   background: transparent; border: 0; cursor: pointer; padding: 2px 0;
@@ -197,37 +214,24 @@
 .appy-cart-strip.is-on .appy-cart-strip__apply,
 .appy-cart-strip.is-lastcall .appy-cart-strip__apply { display: flex; }
 .appy-cart-strip.is-teaser .appy-cart-strip__browse { display: flex; }
-.appy-cart-strip.is-teaser .appy-cart-strip__subline { display: block; }
+.appy-cart-strip--empty .appy-cart-strip__apply { display: none !important; }
+.appy-cart-strip--empty .appy-cart-strip__browse { display: flex; }
 
-/* ------------------------------------------------------------- Cart page block */
-.appy-cart-block:not([hidden]) {
-  display: block; margin: 0 0 16px;
-  border: 2px solid var(--ah-navy); box-shadow: 6px 6px 0 var(--ah-orange);
-  background: var(--ah-blue);
+/* ------------------------------------------------------------- Product pill */
+.appy-pill:not([hidden]) {
+  display: inline-flex; align-items: center;
+  background: var(--ah-amber); color: var(--ah-navy);
+  border: 2px solid var(--ah-navy); box-shadow: 2px 2px 0 var(--ah-orange);
+  font-family: var(--ah-sans); font-weight: 700; font-size: 11px; line-height: 1;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  height: 24px; padding: 0 8px; white-space: nowrap;
 }
-.appy-cart-block__media { line-height: 0; }
-.appy-cart-block__img { display: block; width: 100%; height: auto; }
-.appy-cart-block__body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-.appy-cart-block__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.appy-cart-block__headline { font-family: var(--ah-sans); font-weight: 700; font-size: 19px; text-transform: uppercase; color: var(--ah-white); }
-.appy-cart-block__chip { font-size: 14px; }
-.appy-cart-block__apply,
-.appy-cart-block__browse {
-  display: none; align-items: center; justify-content: center; height: 48px;
-  background: var(--ah-amber); color: var(--ah-navy); text-decoration: none;
-  border: 2px solid var(--ah-navy);
-  font-family: var(--ah-sans); font-weight: 700; font-size: 15px;
-  text-transform: uppercase; letter-spacing: 0.04em;
-}
-.appy-cart-block__subline { display: none; margin: 0; font-family: var(--ah-sans); font-size: 12px; color: var(--ah-white); }
-.appy-cart-block__copy {
-  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+.appy-pill--card { position: absolute; top: 8px; left: 8px; z-index: 2; pointer-events: none; }
+.appy-pprice:not([hidden]) { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-top: 10px; }
+.appy-pprice__note-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.appy-pprice__note { font-family: var(--ah-sans); font-weight: 400; font-size: 13px; color: var(--ah-navy); }
+.appy-pprice__copy {
+  display: inline-flex; align-items: center; gap: 6px;
   background: transparent; border: 0; cursor: pointer; padding: 2px 0;
-  color: var(--ah-white); font-family: var(--ah-sans); font-weight: 700; font-size: 13px;
+  color: var(--ah-navy); font-family: var(--ah-sans); font-weight: 700; font-size: 13px;
 }
-.appy-cart-block.is-on .appy-cart-block__apply,
-.appy-cart-block.is-lastcall .appy-cart-block__apply { display: flex; }
-.appy-cart-block--empty .appy-cart-block__apply { display: none !important; }
-.appy-cart-block.is-teaser .appy-cart-block__browse,
-.appy-cart-block--empty .appy-cart-block__browse { display: flex; }
-.appy-cart-block.is-teaser .appy-cart-block__subline { display: block; }

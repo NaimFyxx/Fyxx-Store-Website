@@ -655,6 +655,7 @@
         <div class="grid-item__link">
           <a href="{{ product.url | within: collection }}" class="grid-item__overlay-link" aria-label="{{ product.title | escape }}"{% if enable_swatches %} tabindex="-1"{% endif %}></a>
           <div class="grid-product__image-wrap">
+            {%- render 'appy-hour-pill', product: product -%}
             {%- liquid
               capture product_tags
                 if has_custom_label

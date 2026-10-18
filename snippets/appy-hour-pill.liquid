@@ -1,0 +1,42 @@
+{%- comment -%}
+  Fyxx: Appy Hour product pill.
+  Shown only for products the APPYHOUR code actually applies to, during the Appy
+  Hour window. Membership is the smart collection
+  'internal-appy-hour-discount-permnited-products' (the discount's product scope),
+  which is published to the Online Store channel so it appears in
+  product.collections. Starts hidden; assets/appy-hour.js reveals it (and sets
+  the text per state) when a state is active, including the ?appyhour= preview,
+  and hides it again at 7:00.
+
+  Two variants:
+    'card'  (default) - a small corner pill for product cards.
+    'price' - the pill plus an under-price note and a copy-code button, for the
+              product page near the price.
+
+  @param {object} product  - the product to test for happy-hour membership.
+  @param {string} [variant] - 'card' | 'price'.
+{%- endcomment -%}
+{%- liquid
+  assign in_appy = false
+  for c in product.collections
+    if c.handle == 'internal-appy-hour-discount-permnited-products'
+      assign in_appy = true
+      break
+    endif
+  endfor
+-%}
+{%- if in_appy -%}
+  {%- assign variant = variant | default: 'card' -%}
+  {%- if variant == 'price' -%}
+    {%- capture appy_copy_icon -%}<svg class="appy-ic" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.75" y="5.75" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.25 10.25H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6.25a1 1 0 0 1 1 1v.25" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
+    <div class="appy appy-pprice" data-appy-pill-group hidden>
+      <span class="appy-pill appy-pill--inline" data-appy-pill></span>
+      <div class="appy-pprice__note-row">
+        <span class="appy-pprice__note" data-appy="pill-note"></span>
+        <button type="button" class="appy-pprice__copy" data-appy-copy aria-label="Copy code APPYHOUR"><span data-appy-copytext>APPYHOUR</span>{{ appy_copy_icon }}</button>
+      </div>
+    </div>
+  {%- else -%}
+    <span class="appy appy-pill appy-pill--card" data-appy-pill hidden></span>
+  {%- endif -%}
+{%- endif -%}
