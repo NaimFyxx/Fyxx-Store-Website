@@ -1,0 +1,26 @@
+{%- comment -%}
+  Fyxx: Appy Hour cart-drawer strip.
+  Rendered by sections/fyxx-cart-drawer.liquid directly above the subtotal
+  footer, inside the cart-has-items branch. Because the drawer re-renders itself
+  via the Section Rendering API, this Liquid strip survives add/remove/qty
+  changes. It starts hidden; assets/appy-hour.js reveals and drives it (state,
+  countdown, expand, copy) and re-applies on the document 'fyxx-cart:mutated'
+  event. Folded by default; the whole folded bar is the expand toggle.
+{%- endcomment -%}
+{%- capture appy_copy_icon -%}<svg class="appy-ic" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.75" y="5.75" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.25 10.25H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h6.25a1 1 0 0 1 1 1v.25" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
+
+<div class="appy appy-cart-strip" data-appy-strip hidden>
+  <button type="button" class="appy-cart-strip__fold" data-appy-strip-toggle aria-expanded="false">
+    <span class="appy-cart-strip__headline" data-appy="strip-headline"></span>
+    <span class="appy-chip appy-chip--count appy-cart-strip__chip"><span data-appy="strip-count">00:00</span></span>
+    <span class="appy-cart-strip__spacer" aria-hidden="true"></span>
+    <span class="appy-cart-strip__use">Use code</span>
+    <span class="appy-cart-strip__chev" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg></span>
+  </button>
+  <div class="appy-cart-strip__panel" data-appy-strip-panel hidden>
+    <a class="appy-cart-strip__apply" href="/discount/APPYHOUR?redirect=/cart">APPLY CODE APPYHOUR</a>
+    <a class="appy-cart-strip__browse" href="/collections/happy-hour">BROWSE THE COLLECTION</a>
+    <p class="appy-cart-strip__subline">Prepare your cart, code APPYHOUR goes live at 6 pm</p>
+    <button type="button" class="appy-cart-strip__copy" data-appy-copy aria-label="Copy code APPYHOUR"><span data-appy-copytext>or copy the code</span>{{ appy_copy_icon }}</button>
+  </div>
+</div>

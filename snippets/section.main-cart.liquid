@@ -75,6 +75,7 @@
           <p>
             {%- render 'element.button', text: button_continue_shopping_text, href: routes.root_url -%}
           </p>
+          {%- render 'appy-hour-cart-block', cart_empty: true -%}
         {%- endif -%}
       </div>
     </header>
@@ -106,6 +107,8 @@
                 {%- render 'cart.order-note' -%}
               </div>
             {% endif %}
+
+            {%- render 'appy-hour-cart-block' -%}
 
             <div class="cart__item-sub cart__item-row cart__item--subtotal">
               <div>
