@@ -649,13 +649,25 @@
         endif
 
         assign preview_image = product.featured_media.preview_image
+
+        comment
+          Fyxx: compute Appy Hour membership once; reused for the corner pill and
+          the card price treatment below (avoids re-looping product.collections).
+        endcomment
+        assign appy_in = false
+        for appy_c in product.collections
+          if appy_c.handle == 'internal-appy-hour-discount-permnited-products'
+            assign appy_in = true
+            break
+          endif
+        endfor
       -%}
 
       {% capture card_content %}
         <div class="grid-item__link">
           <a href="{{ product.url | within: collection }}" class="grid-item__overlay-link" aria-label="{{ product.title | escape }}"{% if enable_swatches %} tabindex="-1"{% endif %}></a>
           <div class="grid-product__image-wrap">
-            {%- render 'appy-hour-pill', product: product -%}
+            {%- render 'appy-hour-pill', product: product, in_appy: appy_in -%}
             {%- liquid
               capture product_tags
                 if has_custom_label
@@ -849,6 +861,11 @@
                 </div>
               {%- endif -%}
             {%- endcapture -%}
+
+            {%- comment -%} Fyxx: for Appy Hour products, wrap the normal price so appy-hour.js can hide it during the window, and append the struck + Appy Hour price (shown in the on / last-call states). {%- endcomment -%}
+            {%- if appy_in -%}
+              {%- capture product_price -%}<span class="appy-normalprice" data-appy-normalprice>{{ product_price }}</span>{%- render 'appy-hour-pill', product: product, variant: 'cardprice', in_appy: appy_in -%}{%- endcapture -%}
+            {%- endif -%}
 
             {% capture meta_content %}
               {%- if enable_swatches and type == blank -%}

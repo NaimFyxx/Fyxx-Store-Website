@@ -21,12 +21,18 @@
   var HOUR = 60 * 60 * 1000;
   var CODE = 'APPYHOUR';
 
+  // Kill switch for the Appy Hour PRICE display only (the struck regular price +
+  // Appy Hour price on product cards and the product page). Everything else (bar,
+  // card, pills, cart strip, copy) is unaffected. Flip to false to fall straight
+  // back to normal prices if the checkout-rounding check ever disagrees.
+  var SHOW_APPY_PRICE = true;
+
   var bar = document.querySelector('[data-appy-bar]');
   var card = document.querySelector('[data-appy-card]');
   var tab = document.querySelector('[data-appy-tab]');
   var live = document.querySelector('[data-appy-live]');
   var whatsthis = document.querySelector('[data-appy-whatsthis]');
-  var hasAny = bar || card || document.querySelector('[data-appy-strip]') || document.querySelector('[data-appy-pill]');
+  var hasAny = bar || card || document.querySelector('[data-appy-strip]') || document.querySelector('[data-appy-pill]') || document.querySelector('[data-appy-reg-cents]');
   if (!hasAny) return;
 
   var mqMobile = window.matchMedia('(max-width: 749px)');
@@ -48,6 +54,7 @@
       stripHeadline: 'APPY HOUR IS ON',
       explainer: 'Every Sunday, Monday and Tuesday, 6 to 7 pm: hundreds of bottles at Appy Hour prices with code APPYHOUR.',
       pill: 'APPY HOUR', pillNote: 'Use code APPYHOUR at checkout, until 7 pm',
+      pillNotePrice: 'Appy Hour price with code APPYHOUR, until 7 pm',
       announce: 'Appy Hour is on. Use code APPYHOUR.'
     },
     lastcall: {
@@ -57,6 +64,7 @@
       stripHeadline: 'LAST CALL',
       explainer: 'Every Sunday, Monday and Tuesday, 6 to 7 pm: hundreds of bottles at Appy Hour prices with code APPYHOUR.',
       pill: 'APPY HOUR', pillNote: 'Use code APPYHOUR at checkout, until 7 pm',
+      pillNotePrice: 'Appy Hour price with code APPYHOUR, until 7 pm',
       announce: 'Appy Hour last call. Use code APPYHOUR.'
     }
   };
@@ -82,6 +90,50 @@
 
   var win = resolveWindow();
   if (!win) return;
+
+  // ---- Appy Hour price inputs ----------------------------------------------
+  // The preview param (if any) and the window percentage. Live prices only use
+  // a real metafield percentage; the 0.13 fallback is for ?appyhour= previews.
+  var previewParam = null;
+  try { previewParam = new URLSearchParams(window.location.search).get('appyhour'); } catch (e) { previewParam = null; }
+  var previewActive = previewParam === 'teaser' || previewParam === 'on' || previewParam === 'lastcall';
+  var metaPct = (function () {
+    try {
+      var d = JSON.parse(document.getElementById('appy-hour-window').textContent);
+      var p = d && d.percentage;
+      return (typeof p === 'number' && p > 0 && p < 1) ? p : null;
+    } catch (e) { return null; }
+  })();
+
+  // Money formatter built from the theme's own `money` filter (two reference
+  // prices in #appy-money), so the Appy Hour price matches the page exactly:
+  // decimals, decimal/thousands separators and the currency affix.
+  var money = (function () {
+    var prefix = '', suffix = '', decimals = 2, dsep = '.', tsep = ',';
+    try {
+      var m = JSON.parse(document.getElementById('appy-money').textContent);
+      var z = String(m.zero), k = String(m.k);
+      var zn = z.match(/[\d.,]*\d/);
+      if (zn) {
+        prefix = z.slice(0, zn.index);
+        suffix = z.slice(zn.index + zn[0].length);
+        var sep = zn[0].match(/[^\d]/);
+        if (sep) { dsep = sep[0]; decimals = zn[0].length - (zn[0].indexOf(dsep) + 1); } else { decimals = 0; }
+        var kn = (k.match(/[\d.,]*\d/) || [''])[0];
+        var intPart = decimals > 0 ? kn.slice(0, kn.lastIndexOf(dsep)) : kn;
+        var tm = intPart.match(/[^\d]/);
+        tsep = tm ? tm[0] : '';
+      }
+    } catch (e) {}
+    return function (cents) {
+      var v = cents / 100;
+      var s = Math.abs(v).toFixed(decimals);
+      var parts = s.split('.');
+      var ip = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, tsep || '');
+      var out = decimals > 0 ? ip + dsep + (parts[1] || '') : ip;
+      return prefix + (v < 0 ? '-' : '') + out + suffix;
+    };
+  })();
 
   function stateAt(now) {
     if (now >= win.e) return null;
@@ -166,12 +218,69 @@
     });
   }
 
+  // ---- Appy Hour price (product cards + product page) ----------------------
+  // Decide the effective percentage, then for every price host either show the
+  // struck regular + Appy Hour price (hiding the normal price) or restore the
+  // normal price. Idempotent; safe to run every tick and on variant change.
+  function effectivePct(st) {
+    if (!SHOW_APPY_PRICE) return null;
+    if (st !== 'on' && st !== 'lastcall') return null;   // not in teaser / none
+    if (metaPct != null) return metaPct;                 // real window percentage
+    if (previewActive) return 0.13;                      // preview only
+    return null;                                         // never guess on a live page
+  }
+  function paintPrices(st) {
+    var pct = effectivePct(st);
+    var hosts = document.querySelectorAll('[data-appy-reg-cents]');
+    [].forEach.call(hosts, function (host) {
+      var row = host.querySelector('[data-appy-prices]');   // PDP: inner row; card host has none
+      var box = row || host;
+      var normal = host.parentNode ? host.parentNode.querySelector('[data-appy-normalprice]') : null;
+      var note = host.querySelector('[data-appy="pill-note"]');
+      var reg = parseFloat(host.getAttribute('data-appy-reg-cents'));
+      if (pct == null || isNaN(reg) || reg <= 0) {
+        hide(box); if (normal) show(normal);
+        return;
+      }
+      var regFils = reg * 10;                              // JOD smallest unit (3 dp); .price is in cents
+      var appyFils = regFils - Math.round(regFils * pct);  // round the amount off, like a checkout % code
+      setText(host.querySelector('[data-appy="price-reg"]'), money(reg));
+      setText(host.querySelector('[data-appy="price-appy"]'), money(appyFils / 10));
+      show(box); if (normal) hide(normal);
+      if (note && COPY[st]) note.textContent = COPY[st].pillNotePrice || COPY[st].pillNote;
+    });
+  }
+
+  // Hook the theme's scoped variant:change event on each product price block so
+  // the Appy Hour price recalculates from the newly selected variant.
+  function ensureVariantHooks() {
+    var blocks = document.querySelectorAll('block-price[data-section-id][data-product-id]');
+    [].forEach.call(blocks, function (bp) {
+      if (bp.getAttribute('data-appy-vhook') === '1') return;
+      if (!bp.querySelector('[data-appy-reg-cents]')) return;
+      bp.setAttribute('data-appy-vhook', '1');
+      document.addEventListener('variant:change:' + bp.dataset.sectionId + ':' + bp.dataset.productId, function (e) {
+        var host = bp.querySelector('[data-appy-reg-cents]');
+        if (!host) return;
+        var src = null;
+        try { src = e.detail && e.detail.html && e.detail.html.querySelector('block-price[data-section-id="' + bp.dataset.sectionId + '"][data-product-id="' + bp.dataset.productId + '"] [data-appy-reg-cents]'); } catch (err) {}
+        if (src && src.getAttribute('data-appy-reg-cents')) {
+          host.setAttribute('data-appy-reg-cents', src.getAttribute('data-appy-reg-cents'));
+        } else if (e.detail && e.detail.variant && typeof e.detail.variant.price === 'number') {
+          host.setAttribute('data-appy-reg-cents', e.detail.variant.price);
+        }
+        if (current) paintPrices(current);
+      });
+    });
+  }
+
   // ---- State application ---------------------------------------------------
   var current;
   function applyState(st) {
     if (!st) {
       hide(bar); hide(card); hide(tab); hide(whatsthis);
       paintSurfaces(null);
+      paintPrices(null);
       return;
     }
     injectFonts();
@@ -200,6 +309,7 @@
     }
 
     paintSurfaces(st);
+    paintPrices(st);
   }
 
   // ---- Countdown -----------------------------------------------------------
@@ -224,8 +334,9 @@
       if (st && live) live.textContent = COPY[st].announce;
       current = st;
     }
-    if (st) { updateCountdown(st, now); positionCorner(); paintSurfaces(st); }
+    if (st) { updateCountdown(st, now); positionCorner(); paintSurfaces(st); paintPrices(st); }
     if (now >= win.e) {
+      paintPrices(null);   // restore normal prices (un-hide) before tearing down
       var all = [bar, card, tab, whatsthis];
       [].forEach.call(document.querySelectorAll('[data-appy-strip],[data-appy-pill],[data-appy-pill-group]'), function (el) { all.push(el); });
       all.forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
@@ -304,6 +415,7 @@
   window.addEventListener('resize', positionCorner);
 
   // ---- Go ------------------------------------------------------------------
+  ensureVariantHooks();
   tick();
   timer = setInterval(tick, 1000);
 })();
