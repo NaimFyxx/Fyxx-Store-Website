@@ -75,7 +75,7 @@
           <p>
             {%- render 'element.button', text: button_continue_shopping_text, href: routes.root_url -%}
           </p>
-          {%- render 'appy-hour-cart-block', cart_empty: true -%}
+          {%- render 'appy-hour-cart-strip', context: 'page', cart_empty: true -%}
         {%- endif -%}
       </div>
     </header>
@@ -108,7 +108,7 @@
               </div>
             {% endif %}
 
-            {%- render 'appy-hour-cart-block' -%}
+            {%- render 'appy-hour-cart-strip', context: 'page' -%}
 
             <div class="cart__item-sub cart__item-row cart__item--subtotal">
               <div>

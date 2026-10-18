@@ -25,7 +25,8 @@
   var card = document.querySelector('[data-appy-card]');
   var tab = document.querySelector('[data-appy-tab]');
   var live = document.querySelector('[data-appy-live]');
-  var hasAny = bar || card || document.querySelector('[data-appy-strip]') || document.querySelector('[data-appy-block]');
+  var whatsthis = document.querySelector('[data-appy-whatsthis]');
+  var hasAny = bar || card || document.querySelector('[data-appy-strip]') || document.querySelector('[data-appy-pill]');
   if (!hasAny) return;
 
   var mqMobile = window.matchMedia('(max-width: 749px)');
@@ -36,6 +37,8 @@
       barLink: 'BROWSE THE COLLECTION', barLinkHref: '/collections/happy-hour',
       cardLabel: 'TO GO, STARTS AT 6 PM', cardCode: 'CODE APPYHOUR, LIVE AT 6 PM', cardShop: 'BROWSE THE COLLECTION',
       stripHeadline: 'APPY HOUR STARTS AT 6',
+      explainer: 'Starts at 6 pm. Every Sunday, Monday and Tuesday, hundreds of bottles at Appy Hour prices with code APPYHOUR.',
+      pill: 'APPY HOUR AT 6', pillNote: 'Code APPYHOUR goes live at 6 pm',
       announce: 'Appy Hour starts soon. Code APPYHOUR goes live at 6 pm.'
     },
     on: {
@@ -43,6 +46,8 @@
       barLink: 'SHOP NOW', barLinkHref: '/collections/happy-hour',
       cardLabel: 'LEFT, UNTIL 7 PM', cardCode: 'USE CODE APPYHOUR', cardShop: 'SHOP APPY HOUR',
       stripHeadline: 'APPY HOUR IS ON',
+      explainer: 'Every Sunday, Monday and Tuesday, 6 to 7 pm: hundreds of bottles at Appy Hour prices with code APPYHOUR.',
+      pill: 'APPY HOUR', pillNote: 'Use code APPYHOUR at checkout, until 7 pm',
       announce: 'Appy Hour is on. Use code APPYHOUR.'
     },
     lastcall: {
@@ -50,6 +55,8 @@
       barLink: 'CHECK OUT BEFORE 7', barLinkHref: '/cart',
       cardLabel: 'LEFT, UNTIL 7 PM', cardCode: 'USE CODE APPYHOUR', cardShop: 'SHOP APPY HOUR',
       stripHeadline: 'LAST CALL',
+      explainer: 'Every Sunday, Monday and Tuesday, 6 to 7 pm: hundreds of bottles at Appy Hour prices with code APPYHOUR.',
+      pill: 'APPY HOUR', pillNote: 'Use code APPYHOUR at checkout, until 7 pm',
       announce: 'Appy Hour last call. Use code APPYHOUR.'
     }
   };
@@ -132,13 +139,39 @@
     if (tab) tab.style.bottom = val;
   }
 
+  // ---- Cart strips + product pills (idempotent; may be re-rendered) --------
+  // The drawer re-renders its strip from the Section Rendering API, the cart
+  // page re-renders on qty change, and the price block can re-render on variant
+  // change. paintSurfaces re-applies state/text/visibility to every strip and
+  // pill each tick and on cart events, winning the race against those refreshes.
+  function paintSurfaces(st) {
+    var strips = document.querySelectorAll('[data-appy-strip]');
+    var pills = document.querySelectorAll('[data-appy-pill]');
+    var groups = document.querySelectorAll('[data-appy-pill-group]');
+    if (!st) {
+      [].forEach.call(strips, hide); [].forEach.call(pills, hide); [].forEach.call(groups, hide);
+      return;
+    }
+    var c = COPY[st];
+    [].forEach.call(strips, function (el) {
+      setState(el, st);
+      setText(el.querySelector('[data-appy="strip-headline"]'), c.stripHeadline);
+      setText(el.querySelector('[data-appy="strip-explainer"]'), c.explainer);
+      if (el.hidden) el.hidden = false;
+    });
+    [].forEach.call(pills, function (el) { el.textContent = c.pill; if (el.hidden) el.hidden = false; });
+    [].forEach.call(groups, function (el) {
+      setText(el.querySelector('[data-appy="pill-note"]'), c.pillNote);
+      if (el.hidden) el.hidden = false;
+    });
+  }
+
   // ---- State application ---------------------------------------------------
   var current;
   function applyState(st) {
     if (!st) {
-      hide(bar); hide(card); hide(tab);
-      var s0 = document.querySelector('[data-appy-strip]'); hide(s0);
-      var b0 = document.querySelector('[data-appy-block]'); hide(b0);
+      hide(bar); hide(card); hide(tab); hide(whatsthis);
+      paintSurfaces(null);
       return;
     }
     injectFonts();
@@ -151,12 +184,14 @@
       var link = q(bar, 'bar-link');
       if (link) { link.textContent = c.barLink; link.setAttribute('href', c.barLinkHref); }
       show(bar);
+      if (whatsthis) { if (card) { show(whatsthis); } else { hide(whatsthis); } }
     }
 
     if (card) {
       setState(card, st);
       setText(q(card, 'card-label'), c.cardLabel);
       setText(q(card, 'card-code'), c.cardCode);
+      setText(q(card, 'card-explainer'), c.explainer);
       var shop = q(card, 'card-shop');
       if (shop) shop.textContent = c.cardShop;
       if (minimised) { hide(card); if (tab) { setState(tab, st); show(tab); } }
@@ -164,35 +199,7 @@
       positionCorner();
     }
 
-    var strip = document.querySelector('[data-appy-strip]');
-    if (strip) {
-      setState(strip, st);
-      setText(q(strip, 'strip-headline'), c.stripHeadline);
-      show(strip);
-    }
-    var block = document.querySelector('[data-appy-block]');
-    if (block) {
-      setState(block, st);
-      setText(q(block, 'block-headline'), c.stripHeadline);
-      show(block);
-    }
-  }
-
-  // Re-assert the cart surfaces every tick. The drawer re-renders its strip
-  // from the Section Rendering API (on open and on mutate), and the cart page
-  // re-renders its block on qty change, each time resetting our node to hidden.
-  // This idempotent re-apply restores state/headline/visibility within a tick,
-  // winning the race against those async re-renders.
-  function ensureCartSurfaces(st) {
-    var c = COPY[st];
-    ['[data-appy-strip]', '[data-appy-block]'].forEach(function (sel) {
-      var el = document.querySelector(sel);
-      if (!el) return;
-      if (!el.classList.contains('is-' + st)) setState(el, st);
-      var head = el.querySelector('[data-appy="strip-headline"], [data-appy="block-headline"]');
-      if (head) head.textContent = c.stripHeadline;
-      if (el.hidden) el.hidden = false;
-    });
+    paintSurfaces(st);
   }
 
   // ---- Countdown -----------------------------------------------------------
@@ -203,8 +210,8 @@
     setText(q(bar, 'bar-count'), text);
     setText(q(card, 'card-count'), text);
     setText(q(tab, 'tab-count'), text);
-    var strip = document.querySelector('[data-appy-strip]'); setText(q(strip, 'strip-count'), text);
-    var block = document.querySelector('[data-appy-block]'); setText(q(block, 'block-count'), text);
+    var strips = document.querySelectorAll('[data-appy-strip]');
+    [].forEach.call(strips, function (el) { setText(el.querySelector('[data-appy="strip-count"]'), text); });
   }
 
   // ---- Tick ----------------------------------------------------------------
@@ -217,10 +224,11 @@
       if (st && live) live.textContent = COPY[st].announce;
       current = st;
     }
-    if (st) { updateCountdown(st, now); positionCorner(); ensureCartSurfaces(st); }
+    if (st) { updateCountdown(st, now); positionCorner(); paintSurfaces(st); }
     if (now >= win.e) {
-      [bar, card, tab, document.querySelector('[data-appy-strip]'), document.querySelector('[data-appy-block]')]
-        .forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
+      var all = [bar, card, tab, whatsthis];
+      [].forEach.call(document.querySelectorAll('[data-appy-strip],[data-appy-pill],[data-appy-pill-group]'), function (el) { all.push(el); });
+      all.forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
       clearInterval(timer);
     }
   }
@@ -278,12 +286,19 @@
   // drawer's own refresh is async, so re-assert a couple of times to land after it.
   function reassertCart() {
     if (!current) return;
-    ensureCartSurfaces(current); updateCountdown(current, Date.now());
-    setTimeout(function () { if (current) { ensureCartSurfaces(current); updateCountdown(current, Date.now()); } }, 400);
-    setTimeout(function () { if (current) { ensureCartSurfaces(current); updateCountdown(current, Date.now()); } }, 900);
+    paintSurfaces(current); updateCountdown(current, Date.now());
+    setTimeout(function () { if (current) { paintSurfaces(current); updateCountdown(current, Date.now()); } }, 400);
+    setTimeout(function () { if (current) { paintSurfaces(current); updateCountdown(current, Date.now()); } }, 900);
   }
   document.addEventListener('fyxx-cart:mutated', reassertCart);
   document.addEventListener('fyxx-cart:open', reassertCart);
+
+  // "What's this?" (desktop bar) opens the card if it is minimised.
+  if (whatsthis) whatsthis.addEventListener('click', function () {
+    if (!card) return;
+    minimised = false; writeMin(false);
+    hide(tab); show(card); positionCorner();
+  });
 
   // Keep floater offset correct on resize.
   window.addEventListener('resize', positionCorner);

@@ -142,6 +142,9 @@
     attributes: price_attributes,
     gap: 'xs'
   -%}
+
+  {%- comment -%} Fyxx: Appy Hour pill + under-price note, only for happy-hour products during the window. {%- endcomment -%}
+  {%- render 'appy-hour-pill', product: product, variant: 'price' -%}
 </block-price>
 
 <script type="module">
