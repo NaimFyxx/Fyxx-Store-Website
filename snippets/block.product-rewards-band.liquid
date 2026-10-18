@@ -52,9 +52,18 @@
     endif
     assign base_jd = price_jd | divided_by: vat_divisor
 
+    comment
+      loyalty_tier is a typed single_line_text_field, so .value is the documented
+      form, but accept the bare form too so a metafield-access change can never
+      silently drop every signed-in member into the no-tier (signed-out) state.
+    endcomment
     assign tier = ''
     if customer
-      assign tier = customer.metafields.loyaltylion.loyalty_tier
+      assign tier = customer.metafields.loyaltylion.loyalty_tier.value
+      if tier == blank
+        assign tier = customer.metafields.loyaltylion.loyalty_tier
+      endif
+      assign tier = tier | strip
     endif
 
     assign rate = 3
@@ -94,8 +103,22 @@
         assign badge_w = 206
     endcase
 
+    comment
+      The two progress metafields are typed too (tier_upgrade_tier_name is a
+      single_line_text_field, tier_progress_needed_for_upgrade is number_decimal),
+      so prefer .value and fall back to the bare form the same way.
+    endcomment
     assign up_name = customer.metafields.loyaltylion.tier_upgrade_tier_name.value
-    assign up_need = customer.metafields.loyaltylion.tier_progress_needed_for_upgrade.value | plus: 0 | round: 0
+    if up_name == blank
+      assign up_name = customer.metafields.loyaltylion.tier_upgrade_tier_name
+    endif
+    assign up_name = up_name | strip
+
+    assign up_need_raw = customer.metafields.loyaltylion.tier_progress_needed_for_upgrade.value
+    if up_need_raw == blank
+      assign up_need_raw = customer.metafields.loyaltylion.tier_progress_needed_for_upgrade
+    endif
+    assign up_need = up_need_raw | plus: 0 | round: 0
   -%}
 
   <div class="fx-rewards" {{ block.shopify_attributes }}>
