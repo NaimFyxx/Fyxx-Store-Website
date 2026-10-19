@@ -1,36 +1,80 @@
 {%- comment -%}
   Fyxx: Brand line (product block)
-  Part of the wine-template buy column.
-  Renders product.metafields.custom.brand directly above the <h1> as the lead of
-  the buy column: uppercase, letter-spaced, bold and full ink, so it reads as the
-  producer name rather than a faint eyebrow. Not clickable yet (a link is a later
-  job). Renders nothing if the metafield is blank. No font-family is declared; it
-  inherits the theme body font.
+  Part of the wine-template buy column, directly above the <h1>: uppercase,
+  letter-spaced, bold and full ink, so it reads as the producer name rather than
+  a faint eyebrow. No font-family is declared; it inherits the theme body font.
 
-  Guard: custom.brand is "#REF!" on most wines, a broken spreadsheet formula
-  that was imported into the metafield. Treat that exact string as blank and
-  render nothing, so the catalogue-wide rollout never prints "#REF!" above a
-  title. Safety net only; the metafield data is cleaned separately.
+  Source. custom.brand is "#REF!" on most wines (a broken spreadsheet formula
+  that got imported), so it cannot be trusted. Every wine instead carries a clean
+  "Brand_<name>" tag, the live source, read the same way block.product-wine-meta
+  reads Country_ and Region_. So:
+    1. Find the first tag beginning "Brand_". Keep the raw tag (for the link) and
+       the name with the prefix removed and trimmed (some tags have a leading
+       space after the underscore, e.g. "Brand_ Machareus").
+    2. Display name: use custom.brand when it is present and is not "#REF!",
+       otherwise the name from the tag.
+    3. Render nothing at all when there is neither.
+    4. When a Brand_ tag exists, link the name to the "wine" collection filtered
+       by that tag: {{ routes.collections_url }}/wine/{{ brand_tag | handleize }}.
+       handleize of the raw tag is exactly what Shopify matches the product's own
+       tag against, so accents, ampersands and apostrophes all resolve (verified
+       live: Gato Negro, Gerard Bertrand, Moet & Chandon, Chateau d'Esclans).
+       With no tag there is no link, just text.
+
+  No JavaScript. The first Brand_ tag wins; a handful of wines carry two (the
+  Domaine Derain wines), which is reported separately.
 {%- endcomment -%}
 
 {%- liquid
-  assign brand = product.metafields.custom.brand.value
-  if brand == '#REF!'
-    assign brand = ''
+  assign brand_meta = product.metafields.custom.brand.value | default: ''
+  if brand_meta == '#REF!'
+    assign brand_meta = ''
+  endif
+
+  assign brand_tag = ''
+  assign tag_name = ''
+  for tag in product.tags
+    assign t = tag | strip
+    assign p6 = t | slice: 0, 6
+    if p6 == 'Brand_'
+      assign brand_tag = t
+      assign tag_name = t | remove_first: 'Brand_' | strip
+      break
+    endif
+  endfor
+
+  assign brand_name = brand_meta
+  if brand_name == blank
+    assign brand_name = tag_name
   endif
 -%}
 
-{%- if brand != blank -%}
+{%- if brand_name != blank -%}
   <div class="fx-brand" {{ block.shopify_attributes }}>
-    {%- render 'element.text', text: brand, as: 'p', text_transform: 'uppercase', classlist: 'fx-brand__text' -%}
+    {%- if brand_tag != blank -%}
+      <p class="fx-brand__text"><a class="fx-brand__link" href="{{ routes.collections_url }}/wine/{{ brand_tag | handleize }}">{{ brand_name | escape }}</a></p>
+    {%- else -%}
+      <p class="fx-brand__text">{{ brand_name | escape }}</p>
+    {%- endif -%}
   </div>
 
   <style>
     .fx-brand__text {
+      margin: 0;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: #100F0D;
+    }
+    .fx-brand__link {
+      color: inherit;
+      text-decoration: none;
+    }
+    .fx-brand__link:hover,
+    .fx-brand__link:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
   </style>
 {%- endif -%}
