@@ -61,6 +61,16 @@
     endif
 
     assign noun = block.settings.noun | default: '' | strip
+    comment
+      The noun is meant to come from the block setting, but Shopify is not
+      syncing JSON template settings from GitHub to the live theme, so the wine
+      template's noun setting never lands. Fall back to "bottle" on the wine
+      template itself (a stable suffix) so wine keeps "on this bottle". The block
+      setting still wins if it is ever present. Every other template stays empty.
+    endcomment
+    if noun == blank and template.suffix == 'custom-product-wine'
+      assign noun = 'bottle'
+    endif
     assign base_jd = price_jd | divided_by: vat_divisor
 
     comment
