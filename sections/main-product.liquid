@@ -727,6 +727,13 @@
           "label": "VAT divisor",
           "info": "Price is divided by this to strip tax before the rewards points are calculated. 1.16 for Jordan's 16% VAT. A number setting caps the default at one decimal, so this is text.",
           "default": "1.16"
+        },
+        {
+          "type": "text",
+          "id": "noun",
+          "label": "Noun",
+          "info": "The thing points are earned on, e.g. bottle. Leave empty to read 'You earn X JD back' with no noun. Only set it where the word is unambiguous (bottle on the wine template). Empty is the safe default: a new product type gets no noun rather than a borrowed one.",
+          "default": ""
         }
       ]
     },
