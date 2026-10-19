@@ -24,9 +24,11 @@
   Tag choice. A handful of wines carry two Brand_ tags (e.g. Chateau Magnol is
   tagged both Brand_Barton & Guestier and Brand_Chateau Magnol). When
   custom.brand is set, the display name is that brand, so the link must point at
-  the tag for THAT brand, not whichever happens to be first. So pick the Brand_
-  tag whose handle equals handleize of "Brand_" + custom.brand; only when none
-  matches (or custom.brand is absent) does the first Brand_ tag win.
+  the tag for THAT brand. So pick the Brand_ tag whose handle equals handleize of
+  "Brand_" + custom.brand. When custom.brand is set but nothing matches, render
+  the name with NO link: a wrong destination (one brand shown, another linked)
+  is worse than no link. The first Brand_ tag is used only when custom.brand is
+  absent, where the tag is itself the name and so can never disagree with it.
 
   No JavaScript.
 {%- endcomment -%}
@@ -64,7 +66,7 @@
     endif
   endfor
 
-  if brand_tag == blank
+  if brand_tag == blank and want_handle == blank
     assign brand_tag = first_tag
     assign tag_name = first_name
   endif
