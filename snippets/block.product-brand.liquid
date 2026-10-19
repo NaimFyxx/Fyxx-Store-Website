@@ -21,8 +21,14 @@
        live: Gato Negro, Gerard Bertrand, Moet & Chandon, Chateau d'Esclans).
        With no tag there is no link, just text.
 
-  No JavaScript. The first Brand_ tag wins; a handful of wines carry two (the
-  Domaine Derain wines), which is reported separately.
+  Tag choice. A handful of wines carry two Brand_ tags (e.g. Chateau Magnol is
+  tagged both Brand_Barton & Guestier and Brand_Chateau Magnol). When
+  custom.brand is set, the display name is that brand, so the link must point at
+  the tag for THAT brand, not whichever happens to be first. So pick the Brand_
+  tag whose handle equals handleize of "Brand_" + custom.brand; only when none
+  matches (or custom.brand is absent) does the first Brand_ tag win.
+
+  No JavaScript.
 {%- endcomment -%}
 
 {%- liquid
@@ -31,17 +37,37 @@
     assign brand_meta = ''
   endif
 
+  assign want_handle = ''
+  if brand_meta != blank
+    assign want_handle = 'Brand_' | append: brand_meta | handleize
+  endif
+
   assign brand_tag = ''
   assign tag_name = ''
+  assign first_tag = ''
+  assign first_name = ''
   for tag in product.tags
     assign t = tag | strip
     assign p6 = t | slice: 0, 6
     if p6 == 'Brand_'
-      assign brand_tag = t
-      assign tag_name = t | remove_first: 'Brand_' | strip
-      break
+      if first_tag == blank
+        assign first_tag = t
+        assign first_name = t | remove_first: 'Brand_' | strip
+      endif
+      if want_handle != blank and brand_tag == blank
+        assign th = t | handleize
+        if th == want_handle
+          assign brand_tag = t
+          assign tag_name = t | remove_first: 'Brand_' | strip
+        endif
+      endif
     endif
   endfor
+
+  if brand_tag == blank
+    assign brand_tag = first_tag
+    assign tag_name = first_name
+  endif
 
   assign brand_name = brand_meta
   if brand_name == blank
