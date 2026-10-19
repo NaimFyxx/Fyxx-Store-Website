@@ -1,0 +1,21 @@
+# Fyxx: default Shopify robots rules, plus a Disallow for the internal
+# "ll-fyxx-rewards-exclude" collection. That collection is published to the
+# Online Store so Liquid can read product membership (the rewards band uses it
+# to render nothing on zero-point products), but it is not a shopping
+# destination, so keep it out of search.
+{% for group in robots.default_groups %}
+  {{- group.user_agent }}
+
+  {%- for rule in group.rules -%}
+    {{ rule }}
+  {%- endfor -%}
+
+  {%- if group.user_agent.value == '*' -%}
+    {{ 'Disallow: /collections/ll-fyxx-rewards-exclude' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+
+{% endfor %}

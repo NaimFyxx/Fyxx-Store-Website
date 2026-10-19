@@ -15,10 +15,10 @@
   rewards, so jd = points / 100, to two decimals.
 
   Three states:
-    Signed out (no customer): "Earn from X JD back on this bottle" (Blue is the
+    Signed out (no customer): "Earn from X JD back[ on this NOUN]" (Blue is the
       lowest of four rates, hence "from"), plus a line that links to sign in and
       sign up. No badge.
-    Signed in with a known tier: "You earn X JD back on this bottle" (the
+    Signed in with a known tier: "You earn X JD back[ on this NOUN]" (the
       member's own rate, no "from"), the tier badge on the right, and a second
       line showing points to the next tier, or a link to all benefits when there
       is no higher tier or the progress fields have not synced yet.
@@ -26,8 +26,17 @@
       "Earn from X" wording and no second line and no badge, so this person is
       never shown a Blue figure as definite or asked to sign in while signed in.
 
+  Noun: the thing the points are earned on. It is the block setting "noun" and
+  defaults to EMPTY, so unset it reads "You earn X JD back" with no noun, which
+  is never wrong on any product type. Only the wine template sets it (to
+  "bottle"), the one category where the word is unambiguous. An unmapped or new
+  product type falls through to no noun, never to a noun borrowed from another
+  category.
+
   Exclusion: LoyaltyLion zeroes the rate for anything in the collection
-  "ll-fyxx-rewards-exclude". On those products this renders nothing at all.
+  "ll-fyxx-rewards-exclude". On those products this renders nothing at all. The
+  check reads product.collections, so that collection must be published to the
+  Online Store channel for it to be visible here.
 
   No JavaScript: the value reflects the first/selected variant at page load and
   does not recalculate when the variant changes. No font-family is declared.
@@ -50,6 +59,8 @@
     if vat_divisor <= 0
       assign vat_divisor = 1.16
     endif
+
+    assign noun = block.settings.noun | default: '' | strip
     assign base_jd = price_jd | divided_by: vat_divisor
 
     comment
@@ -132,7 +143,7 @@
       {%- endif -%}
     </div>
 
-    <p class="fx-rewards__points">{% if signed_in %}You earn{% else %}Earn from{% endif %} {{ jd_whole }}.{{ jd_cents_padded }} JD back on this bottle</p>
+    <p class="fx-rewards__points">{% if signed_in %}You earn{% else %}Earn from{% endif %} {{ jd_whole }}.{{ jd_cents_padded }} JD back{% if noun != blank %} on this {{ noun }}{% endif %}</p>
 
     {%- if signed_in -%}
       <p class="fx-rewards__sub">{% if up_name != blank and up_need > 0 %}{{ up_need }} points from {{ up_name }}{% else %}<a href="/pages/rewards">See all your benefits</a>{% endif %}</p>
@@ -151,7 +162,7 @@
       padding: 18px 20px;
       margin: 4px 0;
       border-radius: 4px;
-      background: linear-gradient(115deg, #B0CDD8 0%, #A5C4D1 48%, #94BCCA 100%);
+      background: #F8D3D7;
       color: #100F0D;
     }
     .fx-rewards__head {
